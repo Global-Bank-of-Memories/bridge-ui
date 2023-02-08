@@ -1,0 +1,63 @@
+<form class="bridge-form">
+  <div class="bridge-form-heading">
+    <gbm-heading class="bridge-form-heading__title"
+                 [tag]="'h2'"
+                 [className]="'gbm-heading-4'"
+                 [title]="'GBM -> Polygon'">
+    </gbm-heading>
+
+    <gbm-button [title]="'Switch'"
+                [className]="'gbm-btn gbm-btn-sm gbm-btn-primary gbm-btn-rounded gbm-copyright'">
+      <gbm-icon [name]="'switch'"
+                [className]="'switch-icon'"
+                [width]="'14px'"
+                [height]="'14px'"
+                [fill]="'--cool-gray-00_light'">
+      </gbm-icon>
+    </gbm-button>
+  </div>
+
+  <div class="bridge-form-input-container">
+    <div class="bridge-form-input-container__wallet">
+      <span class="bridge-form-input-container__wallet-title">To:</span>
+
+      <gbm-button [title]="'Connect GBM Wallet'"
+                  [className]="'gbm-btn gbm-btn-sm gbm-btn-secondary-light gbm-btn-rounded gbm-copyright'">
+      </gbm-button>
+    </div>
+
+    <label class="gbm-input-label gbm-body-2 bridge-form-input-container__label">
+      Sending
+      <input class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input"
+             type="number" />
+      <span class="bridge-form-input-container__label-currency">WGBM</span>
+    </label>
+  </div>
+
+  <div class="bridge-form-input-container">
+    <div class="bridge-form-input-container__wallet">
+      <span class="bridge-form-input-container__wallet-title">To:</span>
+
+      <gbm-button [title]="'Connect Polygon Wallet'"
+                  [className]="'gbm-btn gbm-btn-sm gbm-btn-secondary-light gbm-btn-rounded gbm-copyright'">
+      </gbm-button>
+    </div>
+
+    <label class="gbm-input-label gbm-body-2 bridge-form-input-container__label">
+      Receive
+      <input class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input"
+             type="number" />
+      <span class="bridge-form-input-container__label-currency">WGBM</span>
+    </label>
+  </div>
+
+  <gbm-button class="pay-form-container__submit"
+              (click)="onSubmit()"
+              [loading]="loading"
+              [title]="'Send Transfer'"
+              [disabled]="submissionDisabled"
+              [className]="
+				'gbm-btn gbm-btn-md gbm-btn-full-width gbm-btn-primary gbm-btn-rounded gbm-button-2 login-form__submit'
+			">
+  </gbm-button>
+</form>

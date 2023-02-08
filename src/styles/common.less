@@ -144,56 +144,6 @@ gbm-heading {
 	z-index: 10005;
 }
 
-.cta-button {
-	width: 280px;
-
-	@media @m {
-		width: 327px;
-	}
-}
-
-.cta-culture {
-	gbm-icon-circle-trident {
-		svg {
-			@media @low-l {
-				width: 30vw;
-				height: 30vw;
-			}
-
-			@media @xl {
-				width: 32vw;
-				height: 32vw;
-			}
-		}
-	}
-
-	.cta-culture-wrapper__lines-1 {
-		height: 515px;
-
-		svg {
-			@media @low-l {
-				width: 450px;
-			}
-
-			@media @xl {
-				width: 550px;
-			}
-		}
-	}
-
-	.cta-culture-wrapper__lines-2 {
-		svg {
-			@media @low-l {
-				width: 450px;
-			}
-
-			@media @xl {
-				width: 550px;
-			}
-		}
-	}
-}
-
 ngb-modal-backdrop {
 	z-index: 10002 !important;
 }
@@ -201,5 +151,18 @@ ngb-modal-backdrop {
 .modal-body {
 	.btn-close:focus {
 		box-shadow: none !important;
+	}
+}
+
+gbm-button {
+	svg {
+		margin-top: 0;
+	}
+
+	&:hover {
+		.switch-icon {
+			fill: var(--static-black);
+			transition: all .3s ease-in-out;
+		}
 	}
 }

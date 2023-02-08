@@ -47,6 +47,7 @@ import { IconRedditModule } from './icon-reddit/icon-reddit.module';
 import { IconRobotModule } from './icon-robot/icon-robot.module';
 import { IconSettingsModule } from './icon-settings/icon-settings.module';
 import { IconSolidArrowDownModule } from './icon-solid-arrow-down/icon-solid-arrow-down.module';
+import { IconSwitchModule } from './icon-switch/icon-switch.module';
 import { IconTetherUsdtModule } from './icon-tether-usdt/icon-tether-usdt.module';
 import { IconTimesCircleModule } from './icon-times-circle/icon-times-circle.module';
 import { IconTridentModule } from './icon-trident/icon-trident.module';
@@ -109,7 +110,8 @@ export const List = [
 	IconZoomInModule,
 	IconZoomOutModule,
 	IconExternalLinkModule,
-	IconPlusModule
+	IconPlusModule,
+	IconSwitchModule
 ];
 
 export * from './icon-arrow-right/icon-arrow-right.module';
@@ -165,3 +167,4 @@ export * from './icon-zoom-in/icon-zoom-in.module';
 export * from './icon-zoom-out/icon-zoom-out.module';
 export * from './icon-external-link/icon-external-link.module';
 export * from './icon-plus/icon-plus.module';
+export * from './icon-switch/icon-switch.module';

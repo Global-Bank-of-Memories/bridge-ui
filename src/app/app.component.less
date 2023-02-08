@@ -5,12 +5,13 @@
 	flex-direction: column;
 	min-height: 100vh;
 	margin: 0;
+	padding-top: 100px;
+
+	@media @low-l {
+		padding-top: 160px;
+	}
 }
 
 .no-header {
-	padding-top: 71px;
-
-	@media @low-l {
-		padding-top: 79px;
-	}
+	padding-top: 0;
 }

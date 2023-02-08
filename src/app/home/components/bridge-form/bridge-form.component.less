@@ -1,0 +1,45 @@
+@import (reference) 'variables.less';
+
+.bridge-form {
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  height: 600px;
+  padding: 32px;
+  position: relative;
+  z-index: 2;
+  gap: 28px;
+  border-radius: 12px;
+  background-color: var(--static-white);
+  box-shadow: 0px 10px 23px rgb(0 0 0 / 23%), 0px 4px 10px rgb(0 0 0 / 6%);
+
+  &-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &-input-container {
+    &__wallet {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    &__label {
+      margin-top: 12px;
+      position: relative;
+
+      &-currency {
+        min-width: 64px;
+        padding: 6px 12px;
+        position: absolute;
+        right: 18px;
+        top: 45px;
+        text-align: center;
+        background-color: var(--blue-20);
+        border-radius: 16px;
+      }
+    }
+  }
+}

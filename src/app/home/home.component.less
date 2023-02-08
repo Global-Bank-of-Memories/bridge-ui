@@ -1,1 +1,21 @@
 @import (reference) 'variables.less';
+
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: calc(100vh - 100px);
+  background: linear-gradient(180deg, #ffffff 30%, #6a87d9 100%);
+
+  @media @low-l {
+    height: calc(100vh - 160px);
+  }
+
+  &-subheading {
+    margin-top: 16px;
+  }
+
+  br-bridge-form {
+    margin-top: 48px;
+  }
+}

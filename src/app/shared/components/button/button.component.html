@@ -11,15 +11,7 @@
 	[attr.width]="width"
 	[attr.height]="height"
 	[style.textTransform]="textTransform">
-	<gbm-icon
-		*ngIf="icon"
-		[name]="getIcon('name', '')"
-		[width]="getIcon('width', '18px')"
-		[height]="getIcon('height', '18px')"
-		[fill]="getIcon('fill', '#fff')"
-		[className]="getIcon('className', '')"
-		[type]="getIcon('type', 'regular')">
-	</gbm-icon>
+	<ng-content></ng-content>
 
 	<span *ngIf="!loading">
 		{{ title }}
