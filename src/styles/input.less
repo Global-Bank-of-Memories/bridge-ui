@@ -1,0 +1,135 @@
+/**
+ * @author Oleh Kuznets
+ * Author GitHub: https://github.com/oleh-kuznets
+ * © 2022 Oleh Kuznets, Bank of Memories Ltd. All rights reserved.
+ */
+
+@import (reference) 'variables.less';
+
+.gbm-input-label {
+	width: 100%;
+	margin-bottom: 24px;
+	background-color: transparent;
+}
+
+.gbm-required {
+	color: var(--red-60);
+}
+
+// Input
+.gbm-input {
+	border: 1px solid var(--static-black);
+	outline: none;
+	color: var(--contrast_default_max);
+	background-color: var(--static-white);
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	padding: 12px;
+	width: 100%;
+	position: relative;
+	right: 0;
+	top: 0;
+	border-radius: 4px;
+
+	&::-webkit-outer-spin-button,
+	&::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	&:read-only {
+		background-color: var(--cool-gray-20);
+	}
+}
+
+.gbm-input-rounded {
+	&:extend(.gbm-input);
+	padding: 20px 16px;
+	border-radius: 16px;
+}
+
+.gbm-input-req {
+	background-color: transparent;
+}
+
+.gbm-input-validation {
+	background-color: transparent;
+}
+
+.gbm-checkbox {
+	display: flex;
+	align-items: center;
+	position: relative;
+	padding-left: 35px;
+	cursor: pointer;
+	font-size: 22px;
+	user-select: none;
+
+	&-highlight {
+		color: var(--blue-60);
+	}
+
+	&-input {
+		position: absolute;
+		opacity: 0;
+		cursor: pointer;
+		height: 0;
+		width: 0;
+
+		&:checked {
+			& ~ .gbm-checkbox-checkmark {
+				background-color: var(--cool-gray-30);
+				transition: all 0.2s ease-in-out;
+
+				&:after {
+					display: block;
+				}
+			}
+
+			& ~ .gbm-checkbox-checked {
+				background-color: var(--blue-50);
+				transition: all 0.2s ease-in-out;
+			}
+		}
+	}
+
+	&:hover {
+		.gbm-checkbox-input {
+			& ~ .gbm-checkbox-checkmark {
+				background-color: var(--blue-60);
+				transition: all 0.2s ease-in-out;
+			}
+		}
+	}
+
+	&-checkmark {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 25px;
+		width: 25px;
+		border-radius: 4px;
+		background-color: var(--cool-gray-30);
+		transition: all 0.2s ease-in-out;
+
+		&:after {
+			content: '';
+			position: absolute;
+			display: none;
+		}
+	}
+
+	&-checked {
+		&:after {
+			left: 9px;
+			top: 5px;
+			width: 7px;
+			height: 12px;
+			border: solid var(--static-white);
+			border-width: 0 3px 3px 0;
+			transform: rotate(45deg);
+			transition: all 0.2s ease-in-out;
+		}
+	}
+}

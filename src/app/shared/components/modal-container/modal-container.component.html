@@ -1,0 +1,26 @@
+<!-- 
+ * @author Oleh Kuznets
+ * Author GitHub: https://github.com/oleh-kuznets
+ * © 2022 Oleh Kuznets, Bank of Memories Ltd. All rights reserved.
+-->
+<div *ngIf="title" class="gbm-modal modal-header">
+	<h4 class="gbm-heading-2 modal-title pull-left">{{ title }}</h4>
+	<button
+		type="button"
+		class="gbm-modal-btn-close btn-close close pull-right"
+		aria-label="Close"
+		(click)="activeModal.close()">
+		<span aria-hidden="true" class="visually-hidden">&times;</span>
+	</button>
+</div>
+<div class="modal-body">
+	<button
+		*ngIf="!title"
+		type="button"
+		class="gbm-modal-body-btn-close btn-close close pull-right"
+		aria-label="Close"
+		(click)="activeModal.close()">
+		<span aria-hidden="true" class="visually-hidden">&times;</span>
+	</button>
+	<ng-container *ngComponentOutlet="modalContent"></ng-container>
+</div>

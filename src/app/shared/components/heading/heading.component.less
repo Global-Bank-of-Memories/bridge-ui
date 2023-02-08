@@ -1,0 +1,32 @@
+/**
+ * @author Oleh Kuznets
+ * Author GitHub: https://github.com/oleh-kuznets
+ * © 2022 Oleh Kuznets, Bank of Memories Ltd. All rights reserved.
+ */
+@import (reference) 'variables.less';
+
+:host {
+	display: block;
+}
+
+.heading-label {
+	padding: 2px 8px;
+	margin-right: 4px;
+	position: relative;
+	bottom: 39px;
+	left: 0;
+	border: 1px solid var(--red-60);
+	border-radius: 12px;
+	height: max-content;
+	font-size: 14px;
+	line-height: 1;
+	color: var(--red-60);
+
+	@media @xxs {
+		bottom: 10px;
+	}
+
+	@media @xs {
+		bottom: 10px;
+	}
+}

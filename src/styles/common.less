@@ -1,0 +1,205 @@
+@import (reference) 'variables.less';
+
+* {
+	font-family: Inter, sans-serif;
+}
+
+body {
+	background: var(--static-white);
+}
+
+a {
+	transition: all 0.15s ease-in-out;
+
+	&:hover {
+		transition: all 0.15s ease-in-out;
+		color: var(--blue-50) !important;
+	}
+}
+
+::-webkit-scrollbar {
+	background-color: var(--static-white);
+	width: 12px;
+}
+
+::-webkit-scrollbar-track {
+	background-color: var(--static-white);
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: var(--cool-gray-40);
+	border: 2px solid var(--static-white);
+	border-radius: 16px;
+}
+
+::-webkit-scrollbar-button {
+	display: none;
+}
+
+@media @xs {
+	.footer-logo {
+		width: 120px;
+		height: 60px;
+	}
+}
+
+@media @m {
+	.logo {
+		width: 96px;
+		height: 48px;
+	}
+}
+
+@media @xl {
+	.footer-logo {
+		width: 160px;
+		height: 80px;
+	}
+}
+
+@media @xxl {
+	.header-logo gbm-icon {
+		svg {
+			width: 140px;
+			height: 70px;
+		}
+	}
+
+	.header-content__lang-title gbm-icon {
+		svg {
+			height: 30px;
+			width: 30px;
+		}
+	}
+
+	.footer-nav-logo gbm-icon {
+		svg {
+			width: 240px;
+			height: 120px;
+		}
+	}
+
+	.footer-short-social__icon--link gbm-icon {
+		svg {
+			height: 35px;
+			width: 35px;
+		}
+	}
+
+	gbm-card gbm-icon {
+		svg {
+			width: 60px;
+			height: 60px;
+		}
+	}
+}
+
+.ngx-slider {
+	.ngx-slider-bar {
+		background: var(--cool-gray-20) !important;
+	}
+
+	.ngx-slider-pointer {
+		background-color: var(--static-black) !important;
+
+		&:after {
+			background-color: var(--static-black) !important;
+		}
+	}
+
+	.ngx-slider-bubble {
+		display: none;
+		font-weight: 700;
+		font-size: 20px !important;
+		line-height: 32px;
+		color: var(--blue-60) !important;
+	}
+
+	.ngx-slider-bubble.ngx-slider-limit {
+		display: none;
+	}
+}
+
+gbm-heading {
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		a {
+			color: var(--blue-60);
+		}
+	}
+}
+
+.gbm-rounded-icon {
+	svg {
+		border-radius: 100%;
+	}
+}
+
+.modal,
+.modal-backdrop {
+	z-index: 10005;
+}
+
+.cta-button {
+	width: 280px;
+
+	@media @m {
+		width: 327px;
+	}
+}
+
+.cta-culture {
+	gbm-icon-circle-trident {
+		svg {
+			@media @low-l {
+				width: 30vw;
+				height: 30vw;
+			}
+
+			@media @xl {
+				width: 32vw;
+				height: 32vw;
+			}
+		}
+	}
+
+	.cta-culture-wrapper__lines-1 {
+		height: 515px;
+
+		svg {
+			@media @low-l {
+				width: 450px;
+			}
+
+			@media @xl {
+				width: 550px;
+			}
+		}
+	}
+
+	.cta-culture-wrapper__lines-2 {
+		svg {
+			@media @low-l {
+				width: 450px;
+			}
+
+			@media @xl {
+				width: 550px;
+			}
+		}
+	}
+}
+
+ngb-modal-backdrop {
+	z-index: 10002 !important;
+}
+
+.modal-body {
+	.btn-close:focus {
+		box-shadow: none !important;
+	}
+}

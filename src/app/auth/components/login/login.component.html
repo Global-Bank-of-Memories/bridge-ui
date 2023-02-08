@@ -1,0 +1,27 @@
+<section class="login">
+	<gbm-icon [name]="'logo'" [width]="'80px'" [height]="'40px'" [className]="'logo'" [fill]="'--cool-gray-100_light'">
+	</gbm-icon>
+
+	<form class="login-form">
+		<label class="gbm-input-label gbm-body-2">
+			Email
+			<input class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input" type="text" />
+		</label>
+
+		<label class="gbm-input-label gbm-body-2">
+			Password
+			<input class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input" type="password" />
+		</label>
+
+		<gbm-button
+			class="pay-form-container__submit"
+			(click)="onSubmit()"
+			[loading]="loading"
+			[title]="'Login'"
+			[disabled]="submissionDisabled"
+			[className]="
+				'gbm-btn gbm-btn-md gbm-btn-full-width gbm-btn-primary gbm-btn-rounded gbm-button-2 login-form__submit'
+			">
+		</gbm-button>
+	</form>
+</section>

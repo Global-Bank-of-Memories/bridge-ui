@@ -1,0 +1,347 @@
+/**
+ * @author Oleh Kuznets
+ * Author GitHub: https://github.com/oleh-kuznets
+ * © 2022 Oleh Kuznets, Bank of Memories Ltd. All rights reserved.
+ */
+
+@import (reference) 'variables.less';
+
+// -------------------------- Mixins --------------------------
+
+.gbm-common-text (@fontFamily, @fontWeight, @fontSize, @lineHeight, @letterSpacing) {
+	font-family: @fontFamily;
+	font-weight: @fontWeight;
+	font-size: @fontSize;
+	line-height: @lineHeight;
+	letter-spacing: @letterSpacing;
+}
+
+// -------------------------- Heading Dots --------------------------
+.gbm-dot-orange {
+	color: var(--orange-40);
+}
+
+.gbm-dot-blue {
+	color: var(--blue-70);
+}
+
+// -------------------------- Headings --------------------------
+.gbm-heading-1 {
+	.gbm-common-text('Inter', bold, 32px, 40px, 0);
+
+	@media @m {
+		.gbm-common-text('Inter', bold, 48px, 56px, 0);
+	}
+
+	@media @l {
+		.gbm-common-text('Inter', bold, 80px, 96px, 0);
+	}
+
+	@media @xxl {
+		.gbm-common-text('Inter', bold, 120px, 154px, 0);
+	}
+}
+
+.gbm-heading-2 {
+	.gbm-common-text('Inter', 600, 28px, 40px, 0);
+
+	@media @s {
+		.gbm-common-text('Inter', 700, 38px, 56px, 0);
+	}
+
+	@media @l {
+		.gbm-common-text('Inter', 700, 48px, 64px, 0);
+	}
+}
+
+.gbm-heading-3 {
+	.gbm-common-text('Inter', 600, 24px, 36px, 0);
+
+	@media @m {
+		.gbm-common-text('Inter', 700, 32px, 48px, 0);
+	}
+
+	@media @l {
+		.gbm-common-text('Inter', 700, 38px, 58px, 0);
+	}
+}
+
+.gbm-heading-4 {
+	.gbm-common-text('Inter', 700, 20px, 32px, 0);
+
+	@media @xxl {
+		.gbm-common-text('Inter', 700, 32px, 64px, 0);
+	}
+}
+
+.gbm-heading-5 {
+	.gbm-common-text('Inter', 700, 20px, 32px, 0);
+
+	@media @m {
+		.gbm-common-text('Inter', 700, 32px, 40px, 0);
+	}
+
+	@media @xxl {
+		.gbm-common-text('Inter', 700, 56px, 64px, 0);
+	}
+}
+
+// -------------------------- Sub-Headings --------------------------
+.gbm-subheading-1 {
+	.gbm-common-text('Inter', 500, 18px, 24px, 1px);
+
+	@media @l {
+		.gbm-common-text('Inter', 500, 20px, 32px, 1px);
+	}
+
+	@media @xxl {
+		.gbm-common-text('Inter', 500, 36px, 56px, 1px);
+	}
+}
+
+// -------------------------- Body Content --------------------------
+.gbm-body-1 {
+	.gbm-common-text('Inter', 500, 16px, 28px, 0);
+
+	@media @l {
+		.gbm-common-text('Inter', 500, 18px, 32px, 0);
+	}
+
+	@media @xxl {
+		.gbm-common-text('Inter', 500, 32px, 54px, 0);
+	}
+}
+
+.gbm-body-2 {
+	.gbm-common-text('Inter', 500, 14px, 24px, 0);
+
+	@media @l {
+		.gbm-common-text('Inter', 500, 16px, 28px, 0);
+	}
+
+	@media @xxl {
+		.gbm-common-text('Inter', 500, 28px, 48px, 0);
+	}
+}
+
+// -------------------------- Anchor Button --------------------------
+.gbm-anchor-1 {
+	.gbm-common-text('Inter', bold, 18px, 24px, 0);
+
+	@media @xxl {
+		.gbm-common-text('Inter', bold, 32px, 56px, 0);
+	}
+}
+
+.gbm-anchor-2 {
+	.gbm-common-text('Inter', 700, 18px, 24px, 0);
+
+	@media @xs {
+		.gbm-common-text('Inter', 700, 22px, 32px, 0);
+	}
+
+	@media @xxl {
+		.gbm-common-text('Inter', 700, 38px, 56px, 0);
+	}
+}
+
+.gbm-anchor-3 {
+	.gbm-common-text('Inter', 500, 16px, 24px, 0);
+
+	@media @xs {
+		.gbm-common-text('Inter', 500, 18px, 28px, 0);
+	}
+
+	@media @xxl {
+		.gbm-common-text('Inter', 500, 36px, 56px, 0);
+	}
+}
+
+.gbm-anchor-burger-1 {
+	.gbm-common-text('Inter', bold, 32px, 40px, 0);
+}
+
+.gbm-anchor-burger-2 {
+	.gbm-common-text('Inter', bold, 28px, 36px, 0);
+}
+
+.gbm-anchor-burger-3 {
+	.gbm-common-text('Inter', bold, 18px, 24px, 0);
+}
+
+// -------------------------- Button --------------------------
+.gbm-button-1 {
+	.gbm-common-text('Inter', 700, 16px, 24px, 0);
+
+	@media @l {
+		.gbm-common-text('Inter', 700, 20px, 32px, 0);
+	}
+
+	@media @xxl {
+		.gbm-common-text('Inter', 700, 28px, 42px, 0);
+	}
+}
+
+.gbm-button-2 {
+	.gbm-common-text('Inter', 500, 16px, 24px, 0);
+
+	@media @l {
+		.gbm-common-text('Inter', 500, 20px, 32px, 0);
+	}
+
+	@media @xxl {
+		.gbm-common-text('Inter', 500, 28px, 42px, 0);
+	}
+}
+
+.gbm-button-3 {
+	.gbm-common-text('Inter', 700, 20px, 24px, 0);
+
+	@media @l {
+		.gbm-common-text('Inter', 700, 24px, 32px, 0);
+	}
+
+	@media @xxl {
+		.gbm-common-text('Inter', 700, 32px, 42px, 0);
+	}
+}
+
+// -------------------------- Input --------------------------
+.gbm-label-1 {
+	.gbm-common-text('Inter', 500, 16px, 24px, 1px);
+
+	@media @l {
+		.gbm-common-text('Inter', 500, 20px, 32px, 1px);
+	}
+
+	@media @xxl {
+		.gbm-common-text('Inter', 500, 28px, 42px, 1px);
+	}
+}
+
+.gbm-input-1 {
+	.gbm-common-text('Inter', 500, 18px, 24px, 0);
+
+	@media @l {
+		.gbm-common-text('Inter', 500, 20px, 32px, 0);
+	}
+
+	@media @xxl {
+		.gbm-common-text('Inter', 500, 28px, 42px, 0);
+	}
+}
+
+// -------------------------- Misc --------------------------
+.gbm-header-cta {
+	.gbm-common-text('Inter', 700, 20px, 32px, 0);
+
+	@media @xxl {
+		.gbm-common-text('Inter', 700, 38px, 56px, 0);
+	}
+}
+
+.gbm-copyright {
+	.gbm-common-text('Inter', 700, 12px, 16px, 0);
+
+	@media @xxl {
+		.gbm-common-text('Inter', 700, 24px, 36px, 0);
+	}
+}
+
+.gbm-numbers {
+	.gbm-common-text('IBM Plex Mono', 700, 72px, 96px, 0);
+
+	@media @xxl {
+		.gbm-common-text('IBM Plex Mono', 700, 96px, 120px, 0);
+	}
+}
+
+.gbm-numbers-caption {
+	.gbm-common-text('Inter', 500, 20px, 32px, 0);
+
+	@media @xxl {
+		.gbm-common-text('Inter', 700, 24px, 32px, 0);
+	}
+}
+
+.gbm-accent-text-1 {
+	.gbm-common-text('Inter', 700, 48px, 56px, 0);
+	color: var(--blue-60);
+
+	@media @xxl {
+		.gbm-common-text('Inter', 700, 56px, 72px, 0);
+	}
+}
+
+.gbm-accent-text-2 {
+	.gbm-common-text('Inter', 700, 32px, 40px, 0);
+	color: var(--blue-60);
+
+	@media @xxl {
+		.gbm-common-text('Inter', 700, 38px, 56px, 0);
+	}
+}
+
+.gbm-link {
+	color: var(--blue-60);
+}
+
+.gbm-list {
+	margin-left: 36px;
+}
+
+.gbm-uppercase {
+	text-transform: uppercase;
+}
+
+.gbm-list-item {
+	list-style: auto;
+}
+
+.gbm-list-item-dot {
+	list-style: disc;
+}
+
+.gbm-text {
+	margin: 16px 0;
+}
+
+.gbm-default-ls {
+	letter-spacing: normal;
+}
+
+.gbm-100 {
+	font-weight: 100;
+}
+
+.gbm-200 {
+	font-weight: 200;
+}
+
+.gbm-300 {
+	font-weight: 300;
+}
+
+.gbm-400 {
+	font-weight: 500;
+}
+
+.gbm-500 {
+	font-weight: 500;
+}
+
+.gbm-600 {
+	font-weight: 600;
+}
+
+.gbm-700 {
+	font-weight: 700;
+}
+
+.gbm-800 {
+	font-weight: 800;
+}
+
+.gbm-900 {
+	font-weight: 900;
+}

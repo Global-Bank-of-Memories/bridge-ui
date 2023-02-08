@@ -1,0 +1,9 @@
+<div #alertWrapper class="toast-wrapper">
+	<gbm-toast-item
+		*ngFor="let toast of toasts$ | async"
+		[alertToast]="toast"
+		[retentionTime]="retentionTime"
+		[position]="alertPosition"
+		[styleMap]="getStyleMap(toast?.type)">
+	</gbm-toast-item>
+</div>

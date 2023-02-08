@@ -1,0 +1,407 @@
+@import (reference) 'variables.less';
+
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	position: fixed;
+	width: 100%;
+	height: 72px;
+	padding: 0 0 0 24px;
+	background-color: var(--cool-gray-10);
+	z-index: 10002;
+
+	@media @low-l {
+		height: 80px;
+		width: 100%;
+		padding: 0 0 0 36px;
+	}
+
+	@media @xxl {
+		height: 140px;
+		width: 100%;
+		padding: 0 0 0 36px;
+	}
+
+	&-logo {
+		cursor: pointer;
+
+		&__img {
+			width: 80px;
+			height: 40px;
+
+			@media @m {
+				width: 96px;
+				height: 48px;
+			}
+		}
+	}
+
+	&-content {
+		display: flex;
+		align-items: center;
+
+		@media @m {
+			width: 100%;
+			justify-content: flex-end;
+		}
+
+		&__navigation {
+			display: none;
+
+			@media @low-l {
+				display: flex;
+				margin: 0 5% 0 0;
+				list-style: none;
+			}
+
+			@media @xxl {
+				margin: 0 7% 0 0;
+			}
+
+			&__item {
+				@media @m {
+					display: flex;
+					margin: 0;
+					cursor: pointer;
+				}
+
+				&__title {
+					@media @m {
+						width: inherit;
+						padding: 10px;
+						margin-right: 6px;
+						font-weight: bold;
+						transition: all @anchor-animation-time ease-in-out;
+					}
+
+					&:hover {
+						@media @m {
+							border-radius: 4px;
+							color: var(--static-white) !important;
+							background-color: var(--cool-gray-40);
+							transition: all @anchor-animation-time ease-in-out;
+						}
+					}
+				}
+
+				&-dropdown {
+					@media @m {
+						position: relative;
+						display: inherit;
+					}
+
+					&-menu {
+						@media @m {
+							min-width: 220px;
+							transform: translate(10px, 50px) !important;
+							padding: 4px 0;
+							border: none;
+							box-shadow: var(--shadow-default-1);
+						}
+
+						&__item {
+							@media @m {
+								padding: 8px 8px 8px 12px;
+								cursor: pointer;
+							}
+
+							&:hover {
+								@media @m {
+									padding: 8px 8px 8px 12px;
+									cursor: pointer;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		&__lang {
+			margin-right: 20px;
+
+			@media @xxl {
+				margin-right: 48px;
+			}
+
+			&-title {
+				display: flex;
+				align-items: center;
+				cursor: pointer;
+				padding-right: 8px;
+			}
+
+			&-menu {
+				width: 180px;
+				transform: translate(-110px, 5px) !important;
+				padding: 4px 0;
+				border: none;
+				box-shadow: var(--shadow-default-1);
+
+				&__item {
+					padding: 8px 8px 8px 12px;
+					cursor: pointer;
+
+					&:hover {
+						background-color: var(--blue-20);
+					}
+				}
+			}
+		}
+
+		&__join {
+			display: flex;
+			height: 72px;
+			width: 186px;
+			border: 0;
+			border-radius: 0;
+			background-color: var(--blue-60);
+			color: var(--static-white);
+			transition: 0.3s;
+
+			@media @xxs {
+				display: none;
+			}
+
+			@media @low-l {
+				height: 80px;
+				width: 245px;
+			}
+
+			@media @xxl {
+				height: 140px;
+				width: 418px;
+			}
+
+			&:hover {
+				background-color: var(--blue-70);
+				transition: 0.3s;
+			}
+		}
+
+		&__burger {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			cursor: pointer;
+			margin-right: 36px;
+
+			@media @low-l {
+				display: none;
+			}
+
+			&-line {
+				width: 24px;
+				height: 2px;
+				margin-bottom: 8px;
+				background-color: var(--static-black);
+				transition: 0.4s;
+
+				&:last-child {
+					margin-bottom: 1px;
+				}
+			}
+
+			&-mid-line {
+				width: 24px;
+				height: 2px;
+				margin: 0 0 8px;
+				background-color: var(--static-black);
+				transition: 0.4s;
+			}
+
+			.burger-line--rotated-top {
+				width: 24px;
+				transform: rotate(-45deg) translate(-7px, 6px);
+			}
+
+			.burger-line--faded {
+				opacity: 0;
+			}
+
+			.burger-line--rotated-bottom {
+				width: 24px;
+				transform: rotate(45deg) translate(-8px, -7px);
+			}
+		}
+	}
+}
+
+.header-dark {
+	background-color: var(--cool-gray-100);
+
+	.header-content__navigation__item__title,
+	.header-content__lang-title {
+		color: var(--static-white);
+	}
+
+	.header-content__burger-line,
+	.header-content__burger-mid-line {
+		background-color: var(--static-white);
+	}
+}
+
+.burger-menu {
+	width: 100%;
+	height: calc(100% - 72px);
+	position: fixed;
+	top: 72px;
+	left: 0;
+	padding: 48px 24px 56px;
+	z-index: 10001;
+	overflow-y: auto;
+	background: var(--static-white);
+
+	@media @low-l {
+		display: none;
+	}
+
+	&-join {
+		display: none;
+
+		@media @xxs {
+			display: flex;
+			position: absolute;
+			border: 0;
+			left: 0;
+			top: 0;
+			height: 80px;
+			width: 100%;
+			border-radius: 0;
+			background-color: var(--blue-60);
+			color: var(--static-white);
+			transition: 0.3s;
+		}
+	}
+
+	&-list {
+		margin: 0;
+		padding: 0;
+
+		@media @xxs {
+			margin-top: 64px;
+		}
+
+		&__title {
+			margin: 0 0 24px;
+
+			&__link {
+				color: var(--static-black);
+				cursor: pointer;
+
+				&:hover {
+					color: var(--blue-80);
+				}
+			}
+		}
+
+		&__subtitle {
+			margin: 0 0 16px 32px;
+
+			&__link {
+				color: var(--static-black);
+				cursor: pointer;
+
+				&:hover {
+					color: var(--blue-80);
+				}
+			}
+		}
+
+		&__item {
+			list-style: none;
+			margin: 0 0 18px 24px;
+
+			&--link {
+				cursor: pointer;
+			}
+		}
+	}
+
+	&-footer {
+		width: 100%;
+		height: 64px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		padding-left: 24px;
+		background: var(--static-white);
+
+		&__item {
+			display: block;
+			padding-right: 24px;
+			color: var(--static-black);
+			cursor: pointer;
+
+			&:hover {
+				color: var(--blue-80);
+			}
+		}
+	}
+}
+
+.digital-monuments {
+	background-color: var(--blue-70);
+
+	.header-logo {
+		::ng-deep {
+			gbm-icon {
+				gbm-icon-logo {
+					svg {
+						fill: var(--static-white);
+					}
+				}
+			}
+		}
+	}
+
+	.header-content {
+		&__navigation {
+			&__item {
+				&__title {
+					color: var(--static-white);
+
+					&:hover {
+						@media @m {
+							color: var(--static-white) !important;
+							background-color: var(--blue-40);
+						}
+					}
+				}
+			}
+		}
+
+		&__lang {
+			&-menu {
+				&__item {
+					&:hover {
+						background-color: var(--cool-gray-10);
+					}
+				}
+			}
+		}
+
+		&__join {
+			background-color: var(--blue-50);
+
+			&:hover {
+				background-color: var(--blue-40);
+			}
+		}
+
+		&__burger {
+			&-line {
+				background-color: var(--static-white);
+			}
+
+			&-mid-line {
+				background-color: var(--static-white);
+			}
+		}
+	}
+}

@@ -1,0 +1,29 @@
+<!-- 
+ * @author Oleh Kuznets
+ * Author GitHub: https://github.com/oleh-kuznets
+ * © 2022 Oleh Kuznets, Bank of Memories Ltd. All rights reserved.
+-->
+<button
+	class="button {{ className }}"
+	[class.button-icon-position-right]="iconPosition === 'right'"
+	[class.loading]="loading"
+	[disabled]="disabled || loading"
+	[attr.width]="width"
+	[attr.height]="height"
+	[style.textTransform]="textTransform">
+	<gbm-icon
+		*ngIf="icon"
+		[name]="getIcon('name', '')"
+		[width]="getIcon('width', '18px')"
+		[height]="getIcon('height', '18px')"
+		[fill]="getIcon('fill', '#fff')"
+		[className]="getIcon('className', '')"
+		[type]="getIcon('type', 'regular')">
+	</gbm-icon>
+
+	<span *ngIf="!loading">
+		{{ title }}
+	</span>
+
+	<gbm-spinner *ngIf="loading" [color]="'#fff'" width="64px" height="64px"> </gbm-spinner>
+</button>

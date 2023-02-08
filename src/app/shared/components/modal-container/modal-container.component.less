@@ -1,0 +1,47 @@
+/**
+ * @author Oleh Kuznets
+ * Author GitHub: https://github.com/oleh-kuznets
+ * © 2022 Oleh Kuznets, Bank of Memories Ltd. All rights reserved.
+ */
+@import (reference) 'variables.less';
+
+::ng-deep {
+	.modal-content {
+		border: none;
+		border-radius: 16px;
+	}
+
+	.modal-dialog {
+		max-width: 700px;
+	}
+
+	.contact-dialog {
+		.modal-dialog {
+			max-width: 480px;
+		}
+	}
+}
+
+.modal-header {
+	border: none;
+	padding: 12px 24px;
+
+	@media @s {
+		border: none;
+		padding: 24px 48px;
+	}
+}
+
+.modal-body {
+	padding: 0;
+}
+
+.gbm-modal-body-btn-close {
+	position: absolute;
+	right: 24px;
+	top: 30px;
+
+	@media @s {
+		right: 44px;
+	}
+}

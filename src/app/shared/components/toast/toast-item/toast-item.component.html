@@ -1,0 +1,25 @@
+<div #toast class="alert-toast">
+	<div class="alert-toast-content">
+		<gbm-icon
+			class="alert-toast-content__cancel"
+			[width]="'16px'"
+			[height]="'16px'"
+			[name]="'close'"
+			[fill]="'--cool-gray-60_light'"
+			(click)="onRemoveAlert()"></gbm-icon>
+
+		<gbm-icon
+			[width]="styleMap.iconWidth"
+			[height]="styleMap.iconHeight"
+			[type]="'light'"
+			[name]="styleMap.iconName"
+			[fill]="styleMap.iconColor"></gbm-icon>
+
+		<div class="alert-toast-content__message">
+			<span class="alert-toast-content__message-header">{{ alertToast?.header }}</span>
+			<span class="alert-toast-content__message-body">{{ alertToast?.body }}</span>
+		</div>
+	</div>
+
+	<div #progressBar class="alert-toast-content__progress"></div>
+</div>

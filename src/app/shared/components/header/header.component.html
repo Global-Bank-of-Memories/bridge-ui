@@ -1,0 +1,26 @@
+<header class="header">
+	<div class="header-logo" (click)="onLogoClick()">
+		<gbm-icon [name]="'logo'" [width]="'80px'" [height]="'40px'" [className]="'logo'" [fill]="'--cool-gray-100_light'">
+		</gbm-icon>
+	</div>
+
+	<div class="header-content">
+		<!-- Navbar Links -->
+		<ul class="header-content__navigation">
+			<li class="header-content__navigation__item"></li>
+		</ul>
+		<!-- ------------ -->
+
+		<!-- Burger Icon: Mobile Only -->
+		<div class="header-content__burger" (click)="toggleMenu()">
+			<div class="header-content__burger-line" [class.burger-line--rotated-top]="showBurgerMenu"></div>
+			<div class="header-content__burger-mid-line" [class.burger-line--faded]="showBurgerMenu"></div>
+			<div class="header-content__burger-line" [class.burger-line--rotated-bottom]="showBurgerMenu"></div>
+		</div>
+		<!-- ----------------------- -->
+	</div>
+</header>
+
+<!-- ------------------------Mobile Burger Menu------------------------ -->
+<div class="burger-menu" role="menu" *ngIf="showBurgerMenu" [@toggleMenu]></div>
+<!-- ------------------------------------------------------------------ -->

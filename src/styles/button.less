@@ -1,0 +1,107 @@
+/**
+ * @author Oleh Kuznets
+ * Author GitHub: https://github.com/oleh-kuznets
+ * © 2022 Oleh Kuznets, Bank of Memories Ltd. All rights reserved.
+ */
+
+@import (reference) 'variables.less';
+
+// Mixins
+.gbm-btn-size (@pdTopBot, @pdRightLeft, @width) {
+	padding: @pdTopBot @pdRightLeft;
+	min-width: @width;
+}
+
+.gbm-btn-color (@bg, @color, @borderColor) {
+	color: @color;
+	background-color: @bg;
+	border-color: @borderColor;
+	transition: all 0.2s ease-in-out;
+}
+
+.gbm-btn-hover (@hoverBg, @hoverColor, @hoverBorder) {
+	&:hover {
+		color: @hoverColor;
+		background-color: @hoverBg;
+		border-color: @hoverBorder;
+		transition: all 0.2s ease-in-out;
+	}
+}
+
+.gbm-btn-active (@activeBg, @activeColor, @activeBorder) {
+	&:active {
+		color: @activeColor;
+		background-color: @activeBg;
+		border-color: @activeBorder;
+		transition: all 0.2s ease-in-out;
+	}
+}
+
+.gbm-btn-disabled (@disabledBg, @disabledColor, @disabledBorder) {
+	&:disabled {
+		color: @disabledColor;
+		background-color: @disabledBg;
+		border-color: @disabledBorder;
+		transition: all 0.2s ease-in-out;
+	}
+}
+
+// Styles
+.gbm-btn {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	outline: none;
+	border: 1px solid;
+	border-radius: 8px;
+	cursor: pointer;
+
+	&:disabled {
+		cursor: not-allowed;
+	}
+}
+
+.gbm-btn-full-width {
+	width: 100%;
+}
+
+.gbm-btn-rounded {
+	border-radius: 64px;
+}
+
+.gbm-hyperlink {
+	color: var(--blue-50);
+}
+
+.gbm-btn-sm {
+	.gbm-btn-size(8px, 16px, 125px);
+}
+
+.gbm-btn-md {
+	.gbm-btn-size(16px, 24px, 200px);
+}
+
+.gbm-btn-l {
+	.gbm-btn-size(24px, 32px, 200px);
+}
+
+.gbm-btn-primary {
+	.gbm-btn-color(var(--cool-gray-100), var(--cool-gray-00), transparent);
+	.gbm-btn-hover(transparent, var(--cool-gray-100), var(--cool-gray-100));
+	.gbm-btn-active(var(--cool-gray-90), var(--cool-gray-00), transparent);
+	.gbm-btn-disabled(var(--cool-gray-80), var(--cool-gray-00), transparent);
+}
+
+.gbm-btn-secondary {
+	.gbm-btn-color(var(--cool-gray-00), var(--cool-gray-100), transparent);
+	.gbm-btn-hover(transparent, var(--cool-gray-00), var(--cool-gray-00));
+	.gbm-btn-active(var(--cool-gray-10), var(--cool-gray-100), transparent);
+	.gbm-btn-disabled(var(--cool-gray-20), var(--cool-gray-100), transparent);
+}
+
+.gbm-btn-secondary-light {
+	.gbm-btn-color(var(--cool-gray-20), var(--cool-gray-100), transparent);
+	.gbm-btn-hover(var(--cool-gray-30), var(--cool-gray-100), transparent);
+	.gbm-btn-active(var(--cool-gray-30), var(--cool-gray-100), transparent);
+	.gbm-btn-disabled(var(--cool-gray-40), var(--cool-gray-40), transparent);
+}

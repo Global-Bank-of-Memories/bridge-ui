@@ -1,0 +1,7 @@
+<gbm-header *ngIf="showHeader"></gbm-header>
+
+<main class="content" [class.no-header]="showHeader" gbmConnectionState>
+	<gbm-toast></gbm-toast>
+
+	<router-outlet #outlet="outlet"></router-outlet>
+</main>

@@ -1,0 +1,67 @@
+@import (reference) 'variables.less';
+
+.alert-toast {
+	border-radius: 12px;
+	padding: 20px 35px 20px 25px;
+	box-shadow: 0 6px 20px -5px rgb(0 0 0 / 10%);
+	overflow: hidden;
+	transform: translateX(calc(calc(var(--transition-direction)) + calc(var(--transition-space))));
+	transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+	margin-top: 10px;
+	position: relative;
+	background-color: var(--static-white);
+
+	@media @xxxs {
+		max-width: 300px;
+	}
+
+	&.active {
+		transform: translateX(0%);
+	}
+
+	&-content {
+		display: flex;
+		align-items: center;
+
+		&__cancel {
+			position: absolute;
+			top: 10px;
+			right: 15px;
+			cursor: pointer;
+		}
+
+		&__message {
+			display: flex;
+			flex-direction: column;
+			margin: 0 20px;
+
+			&-header {
+				font-weight: 700;
+			}
+		}
+
+		&__progress {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			height: 3px;
+			width: 100%;
+
+			&:before {
+				content: '';
+				position: absolute;
+				bottom: 0;
+				right: 0;
+				height: 100%;
+				width: 100%;
+				background-color: var(--progress-color);
+				transform: translateX(calc(0%));
+				transition: all var(--transition-duration) ease-out;
+			}
+
+			&.active:before {
+				transform: translateX(calc(-100%));
+			}
+		}
+	}
+}
