@@ -10,6 +10,19 @@ export interface AccessTokenData {
 	username: string;
 }
 
+export interface ErrorResponse {
+	msg: string;
+	code: number;
+	param: string;
+}
+
+export interface LoginDataResponse {
+	token: string;
+	retry: string;
+}
+
 export interface LoginResponse {
-	access_token: string;
+	result: boolean;
+	error: ErrorResponse;
+	data: LoginDataResponse;
 }

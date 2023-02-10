@@ -5,9 +5,84 @@
 	flex-direction: column;
 	align-items: center;
 	padding: 24px;
-	width: 500px;
-	height: 550px;
+	padding-bottom: 40px;
+	width: 420px;
+	height: var(--height-form);
 	border-radius: 16px;
-	box-shadow: 0 6px 20px var(--blue-50);
+	box-shadow: 0 6px 20px #B8C6DB;
 	background-color: var(--cool-gray-00);
+	transition: 0.55s all ease-in-out;
+
+
+	& input {
+		padding: 14px 14px !important;
+
+		&::placeholder {
+			font-size: 17px;
+		}
+		
+	}
 }
+
+.login-otp {
+	height: 300px !important;
+	transition: 0.55s all ease-in-out;
+}
+
+.gbm-form-currency__notice {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 6px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	padding: 10px 12px;
+
+	&-icon {
+		margin: -2px 6px 0 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		opacity: 0.6;
+	}
+
+	&-text {
+		font-size: 15px;
+	}
+}
+
+
+.pay-form-input-wrapper {
+	position: relative;
+
+	&__icon {
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: absolute;
+		top: 0;
+		right: 15px;
+		z-index: 1;
+	}
+ }
+
+ .pay-form-valid-input {
+	border-color: var(--light-green-50);
+ }
+
+ .pay-form-invalid-input {
+	border-color: var(--red-60);
+ }
+
+ .pay-form-error-wrapper {
+	color: var(--red-60);
+ }
+
+ .second-label {
+	margin-bottom: 40px !important;
+ }
+
+ ng-otp-input {
+	display: block;
+ }

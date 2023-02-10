@@ -23,6 +23,7 @@ import { IconExclamationCircleModule } from './icon-exclamation-circle/icon-excl
 import { IconExternalLinkModule } from './icon-external-link/icon-external-link.module';
 import { IconFbModule } from './icon-fb/icon-fb.module';
 import { IconFingerprintModule } from './icon-fingerprint/icon-fingerprint.module';
+import { IconGbmModule } from './icon-gbm/icon-gbm.module';
 import { IconGeoPayModule } from './icon-geopay/icon-geopay.module';
 import { IconGiftModule } from './icon-gift/icon-gift.module';
 import { IconGithubModule } from './icon-github/icon-github.module';
@@ -111,7 +112,8 @@ export const List = [
 	IconZoomOutModule,
 	IconExternalLinkModule,
 	IconPlusModule,
-	IconSwitchModule
+	IconSwitchModule,
+	IconGbmModule
 ];
 
 export * from './icon-arrow-right/icon-arrow-right.module';
@@ -168,3 +170,4 @@ export * from './icon-zoom-out/icon-zoom-out.module';
 export * from './icon-external-link/icon-external-link.module';
 export * from './icon-plus/icon-plus.module';
 export * from './icon-switch/icon-switch.module';
+export * from './icon-gbm/icon-gbm.module';

@@ -8,6 +8,7 @@ import { NgModule } from '@angular/core';
 import { OtpModalComponent } from './components/otp-modal/otp-modal.component';
 import { GbmButtonModule } from '@shared/components/button/button.module';
 import { GbmHeadingModule } from '@shared/components/heading/heading.module';
+import { NgOtpInputModule } from 'ng-otp-input';
 
 @NgModule({
 	declarations: [AuthComponent, LoginComponent, OtpModalComponent],
@@ -19,7 +20,8 @@ import { GbmHeadingModule } from '@shared/components/heading/heading.module';
 		GbmIconModule,
 		GbmSpinnerModule,
 		GbmButtonModule,
-		GbmHeadingModule
+		GbmHeadingModule,
+		NgOtpInputModule
 	]
 })
 export class AuthModule {}

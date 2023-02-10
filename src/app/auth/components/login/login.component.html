@@ -1,27 +1,76 @@
-<section class="login">
+<section class="login" [ngClass]="{'login-otp': isPreliminaryValid}" #test [style.height]="test.offsetHeight">
 	<gbm-icon [name]="'logo'" [width]="'80px'" [height]="'40px'" [className]="'logo'" [fill]="'--cool-gray-100_light'">
 	</gbm-icon>
 
-	<form class="login-form">
+	<div class="gbm-form-currency__notice">
+		<gbm-icon class="gbm-form-currency__notice-icon" [fill]="'#000000'" [name]="'info'"> </gbm-icon>
+		<h5 class="gbm-body-3 gbm-form-currency__notice-text">Use your Bank of Memories app credentials</h5>
+	</div>
+
+	<form [@fade] class="login-form" [formGroup]="formGroup" *ngIf="!isPreliminaryValid">
 		<label class="gbm-input-label gbm-body-2">
-			Email
-			<input class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input" type="text" />
+			<span>Email</span>
+			<div class="pay-form-input-wrapper">
+				<input formControlName="email" class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input"
+					[placeholder]="'Provide your e-mail'"
+					[ngClass]="{'pay-form-valid-input': isShowValidCondition(email), 'pay-form-invalid-input': isShowErrorCondition(email)}"
+					type="text" />
+
+				<gbm-icon [@success] class="pay-form-container__promotion-pennant pay-form-input-wrapper__icon"
+					[width]="'25px'" [height]="'25px'" [fill]="'--light-green-50_light'" [name]="'checkCircle'"
+					*ngIf="isShowValidCondition(email)">
+				</gbm-icon>
+
+				<gbm-icon [@error] class="pay-form-container__promotion-pennant pay-form-input-wrapper__icon"
+					[width]="'25px'" [height]="'25px'" [fill]="'--red-60_light'" [name]="'timesCircle'"
+					*ngIf="isShowErrorCondition(email)">
+				</gbm-icon>
+			</div>
+			<div [@fade] *ngIf="isShowErrorCondition(email)" class="pay-form-error-wrapper">
+				<span [@error] *ngIf="email?.errors?.['required']">
+					{{ 'E-mail is missing'}}
+				</span>
+
+				<span [@error] *ngIf="email?.errors?.['pattern']">
+					{{ 'Provided email is not valid'}}
+				</span>
+			</div>
 		</label>
 
-		<label class="gbm-input-label gbm-body-2">
-			Password
-			<input class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input" type="password" />
+		<label class="gbm-input-label gbm-body-2 second-label">
+			<span>Password</span>
+			<div class="pay-form-input-wrapper">
+				<input formControlName="password" class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input"
+					[placeholder]="'Provide your password'"
+					[ngClass]="{'pay-form-valid-input': isShowValidCondition(password), 'pay-form-invalid-input': isShowErrorCondition(password)}"
+					type="password" />
+
+				<gbm-icon [@success] class="pay-form-container__promotion-pennant pay-form-input-wrapper__icon"
+					[width]="'25px'" [height]="'25px'" [fill]="'--light-green-50_light'" [name]="'checkCircle'"
+					*ngIf="isShowValidCondition(password)">
+				</gbm-icon>
+
+				<gbm-icon [@error] class="pay-form-container__promotion-pennant pay-form-input-wrapper__icon"
+					[width]="'25px'" [height]="'25px'" [fill]="'--red-60_light'" [name]="'timesCircle'"
+					*ngIf="isShowErrorCondition(password)">
+				</gbm-icon>
+			</div>
+			<div [@fade] *ngIf="isShowErrorCondition(password)" class="pay-form-error-wrapper">
+				<span [@error] *ngIf="password?.errors?.['required']">
+					{{ 'Password is missing'}}
+				</span>
+			</div>
 		</label>
 
-		<gbm-button
-			class="pay-form-container__submit"
-			(click)="onSubmit()"
-			[loading]="loading"
-			[title]="'Login'"
-			[disabled]="submissionDisabled"
-			[className]="
-				'gbm-btn gbm-btn-md gbm-btn-full-width gbm-btn-primary gbm-btn-rounded gbm-button-2 login-form__submit'
-			">
+		<gbm-button class="pay-form-container__submit" [loading]="loading" [title]="'Login'"
+			[disabled]="formGroup.invalid || submissionDisabled" (click)="onSubmit()"
+			[className]="'gbm-btn gbm-btn-md gbm-btn-full-width gbm-btn-primary gbm-btn-rounded gbm-button-2 login-form__submit'">
 		</gbm-button>
 	</form>
+
+
+	<div [@fadeIn] *ngIf="isPreliminaryValid">
+		<ng-otp-input (onInputChange)="onOtpChange($event)"  [config]="{length:4, allowNumbersOnly: true}"></ng-otp-input>
+	</div>
+
 </section>

@@ -7,8 +7,8 @@ import { HomeComponent } from '@home/home.component';
 const routes: Routes = [
 	{
 		path: '',
-		component: HomeComponent
-		// canActivate: [AuthGuardService]
+		component: HomeComponent,
+		canActivate: [AuthGuardService]
 	},
 	{
 		path: 'auth',
