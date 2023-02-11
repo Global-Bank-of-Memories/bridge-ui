@@ -1,32 +1,30 @@
-<section class="login" [ngClass]="{'login-otp': isPreliminaryValid}" #test [style.height]="test.offsetHeight">
+<section class="login" [ngClass]="{'login-otp': isPreliminaryValid}" #sectionLoading>
 	<gbm-icon [name]="'logo'" [width]="'80px'" [height]="'40px'" [className]="'logo'" [fill]="'--cool-gray-100_light'">
 	</gbm-icon>
 
-	<div class="gbm-form-currency__notice">
-		<gbm-icon class="gbm-form-currency__notice-icon" [fill]="'#000000'" [name]="'info'"> </gbm-icon>
-		<h5 class="gbm-body-3 gbm-form-currency__notice-text">Use your Bank of Memories app credentials</h5>
+	<div class="login__notice">
+		<gbm-icon class="login__notice-icon" [fill]="'#000000'" [name]="'info'"> </gbm-icon>
+		<h5 class="gbm-body-3 login__notice-text">{{ noticeMessage }}</h5>
 	</div>
 
-	<form [@fade] class="login-form" [formGroup]="formGroup" *ngIf="!isPreliminaryValid">
+	<form *ngIf="!isPreliminaryValid" class="login-form" [formGroup]="formGroup">
 		<label class="gbm-input-label gbm-body-2">
 			<span>Email</span>
-			<div class="pay-form-input-wrapper">
-				<input formControlName="email" class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input"
+			<div class="login-form-input-wrapper">
+				<input formControlName="email" class="gbm-input-rounded gbm-input-1 login__input gbm-input"
 					[placeholder]="'Provide your e-mail'"
-					[ngClass]="{'pay-form-valid-input': isShowValidCondition(email), 'pay-form-invalid-input': isShowErrorCondition(email)}"
+					[ngClass]="{'login-form-valid-input': isShowValidCondition(email), 'login-form-invalid-input': isShowErrorCondition(email)}"
 					type="text" />
 
-				<gbm-icon [@success] class="pay-form-container__promotion-pennant pay-form-input-wrapper__icon"
-					[width]="'25px'" [height]="'25px'" [fill]="'--light-green-50_light'" [name]="'checkCircle'"
-					*ngIf="isShowValidCondition(email)">
+				<gbm-icon [@success] class="login-form-input-wrapper__icon" [width]="'25px'" [height]="'25px'"
+					[fill]="'--light-green-50_light'" [name]="'checkCircle'" *ngIf="isShowValidCondition(email)">
 				</gbm-icon>
 
-				<gbm-icon [@error] class="pay-form-container__promotion-pennant pay-form-input-wrapper__icon"
-					[width]="'25px'" [height]="'25px'" [fill]="'--red-60_light'" [name]="'timesCircle'"
-					*ngIf="isShowErrorCondition(email)">
+				<gbm-icon [@error] class="login-form-input-wrapper__icon" [width]="'25px'" [height]="'25px'"
+					[fill]="'--red-60_light'" [name]="'timesCircle'" *ngIf="isShowErrorCondition(email)">
 				</gbm-icon>
 			</div>
-			<div [@fade] *ngIf="isShowErrorCondition(email)" class="pay-form-error-wrapper">
+			<div [@fade] *ngIf="isShowErrorCondition(email)" class="login-form-error-wrapper">
 				<span [@error] *ngIf="email?.errors?.['required']">
 					{{ 'E-mail is missing'}}
 				</span>
@@ -39,38 +37,49 @@
 
 		<label class="gbm-input-label gbm-body-2 second-label">
 			<span>Password</span>
-			<div class="pay-form-input-wrapper">
-				<input formControlName="password" class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input"
+			<div class="login-form-input-wrapper">
+				<input formControlName="password" class="gbm-input-rounded gbm-input-1 login__input gbm-input"
 					[placeholder]="'Provide your password'"
-					[ngClass]="{'pay-form-valid-input': isShowValidCondition(password), 'pay-form-invalid-input': isShowErrorCondition(password)}"
+					[ngClass]="{'login-form-valid-input': isShowValidCondition(password), 'login-form-invalid-input': isShowErrorCondition(password)}"
 					type="password" />
 
-				<gbm-icon [@success] class="pay-form-container__promotion-pennant pay-form-input-wrapper__icon"
-					[width]="'25px'" [height]="'25px'" [fill]="'--light-green-50_light'" [name]="'checkCircle'"
-					*ngIf="isShowValidCondition(password)">
+				<gbm-icon [@success] class="login-form-input-wrapper__icon" [width]="'25px'" [height]="'25px'"
+					[fill]="'--light-green-50_light'" [name]="'checkCircle'" *ngIf="isShowValidCondition(password)">
 				</gbm-icon>
 
-				<gbm-icon [@error] class="pay-form-container__promotion-pennant pay-form-input-wrapper__icon"
-					[width]="'25px'" [height]="'25px'" [fill]="'--red-60_light'" [name]="'timesCircle'"
-					*ngIf="isShowErrorCondition(password)">
+				<gbm-icon [@error] class="login-form-input-wrapper__icon" [width]="'25px'" [height]="'25px'"
+					[fill]="'--red-60_light'" [name]="'timesCircle'" *ngIf="isShowErrorCondition(password)">
 				</gbm-icon>
 			</div>
-			<div [@fade] *ngIf="isShowErrorCondition(password)" class="pay-form-error-wrapper">
+			<div [@fade] *ngIf="isShowErrorCondition(password)" class="login-form-error-wrapper">
 				<span [@error] *ngIf="password?.errors?.['required']">
 					{{ 'Password is missing'}}
 				</span>
 			</div>
 		</label>
 
+		<div [@fade] *ngIf="validationMessage" class="login-form-error-wrapper main-error-wrapper">
+			<gbm-icon class="login-form-container__validation-message-icon" [fill]="'--red-50_light'" [name]="'info'">
+			</gbm-icon>
+			<span> {{ validationMessage }} </span>
+		</div>
+
 		<gbm-button class="pay-form-container__submit" [loading]="loading" [title]="'Login'"
-			[disabled]="formGroup.invalid || submissionDisabled" (click)="onSubmit()"
+			[disabled]="formGroup.invalid || submissionDisabled || !!validationMessage" (click)="onSubmit()"
 			[className]="'gbm-btn gbm-btn-md gbm-btn-full-width gbm-btn-primary gbm-btn-rounded gbm-button-2 login-form__submit'">
 		</gbm-button>
 	</form>
 
+	<div [@fadeIn] *ngIf="isPreliminaryValid" class="otp-container">
+		<br-count-down [retryTimer]="retryTimer" (resendOTP)="onResendOTP()"></br-count-down>
+		<br-otp-modal [otpValidationMessage]="otpValidationMessage" (checkOTP)="onCheckOTP($event)"
+			(clearOTPValidation)="onClearOTPValidation()"></br-otp-modal>
 
-	<div [@fadeIn] *ngIf="isPreliminaryValid">
-		<ng-otp-input (onInputChange)="onOtpChange($event)"  [config]="{length:4, allowNumbersOnly: true}"></ng-otp-input>
+		<div [@fade] *ngIf="otpValidationMessage" class="login-form-error-wrapper main-error-wrapper"
+			style="padding-top: 20px">
+			<gbm-icon class="login-form-container__validation-message-icon" [fill]="'--red-50_light'" [name]="'info'">
+			</gbm-icon>
+			<span> {{ otpValidationMessage }} </span>
+		</div>
 	</div>
-
 </section>

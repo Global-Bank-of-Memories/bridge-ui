@@ -1,24 +1,16 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { Router } from '@angular/router';
-import { AccessTokenData, ACCESS_TOKEN_STORAGE_KEY, ErrorResponse, LoginResponse } from './auth.model';
-import sha1 from 'sha1';
-import { catchError, tap } from 'rxjs/operators';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { OtpModalComponent } from '@auth/components/otp-modal/otp-modal.component';
+import { AccessTokenData, ACCESS_TOKEN_STORAGE_KEY, LoginResponse } from './auth.model';
+import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
+import sha1 from 'sha1';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class AuthService {
-	constructor(
-		private router: Router,
-		private http: HttpClient,
-		private jwtHelper: JwtHelperService,
-		private modalService: NgbModal
-	) {}
+	constructor(private http: HttpClient, private jwtHelper: JwtHelperService) {}
 
 	public login(email: string, password: string): Observable<LoginResponse> {
 		return this.http
@@ -38,6 +30,12 @@ export class AuthService {
 	public checkOTP(code: string, token: string): Observable<any> {
 		return this.http
 			.post<any>('https://api.bankofmemories.org/bridge/otp-check', { code, token })
+			.pipe(catchError((err: HttpErrorResponse) => throwError(err)));
+	}
+
+	public retryOTP(token: string): Observable<any> {
+		return this.http
+			.post<any>('https://api.bankofmemories.org/bridge/otp-retry', { token })
 			.pipe(catchError((err: HttpErrorResponse) => throwError(err)));
 	}
 

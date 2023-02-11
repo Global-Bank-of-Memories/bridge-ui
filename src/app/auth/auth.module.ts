@@ -9,9 +9,10 @@ import { OtpModalComponent } from './components/otp-modal/otp-modal.component';
 import { GbmButtonModule } from '@shared/components/button/button.module';
 import { GbmHeadingModule } from '@shared/components/heading/heading.module';
 import { NgOtpInputModule } from 'ng-otp-input';
+import { CountDownComponent } from './components/count-down/count-down.component';
 
 @NgModule({
-	declarations: [AuthComponent, LoginComponent, OtpModalComponent],
+	declarations: [AuthComponent, LoginComponent, OtpModalComponent, CountDownComponent],
 	exports: [AuthComponent],
 	imports: [
 		CommonModule,

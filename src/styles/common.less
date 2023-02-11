@@ -120,6 +120,39 @@ a {
 	}
 }
 
+.ng-otp-input-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+ng-otp-input  {
+	.otp-input {
+		outline: none;
+	}
+	.otp-input.ng-dirty.ng-invalid {
+		outline: none;
+		animation: shake 400ms;
+
+		&:focus-visible {
+			border-color: var(--red-50) !important;        
+		}
+		border-color: var(--red-50) !important;
+	  }
+}
+
+@keyframes shake {
+	25% {
+		transform: translateX(6px);
+	}
+	50% {
+		transform: translateX(-6px);
+	}
+	75% {
+		transform: translateX(6px);
+	}
+}
+
 gbm-heading {
 	h1,
 	h2,

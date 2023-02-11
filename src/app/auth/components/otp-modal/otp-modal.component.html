@@ -1,1 +1,1 @@
-<ng-otp-input  (onInputChange)="onOtpChange($event)"  [config]="{length:4, allowNumbersOnly: true}"></ng-otp-input>
+<ng-otp-input #otpInput  [formCtrl]="otpFormControl"  [config]="{ length: 4, allowNumbersOnly: true }"></ng-otp-input>

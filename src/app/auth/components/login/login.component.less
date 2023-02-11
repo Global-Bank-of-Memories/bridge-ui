@@ -1,88 +1,115 @@
 @import (reference) 'variables.less';
 
-.login {
+.flex-builder(@justify, @align, @direction) {
 	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding: 24px;
-	padding-bottom: 40px;
-	width: 420px;
+	justify-content: @justify;
+	align-items: @align;
+	flex-direction: @direction;
+}
+
+.login {
+	.flex-builder(center, center, column);
+	padding: 24px 24px 40px 24px;
 	height: var(--height-form);
+	width: 420px;
 	border-radius: 16px;
-	box-shadow: 0 6px 20px #B8C6DB;
+	box-shadow: 0 6px 20px var(--cool-gray-20);
 	background-color: var(--cool-gray-00);
 	transition: 0.55s all ease-in-out;
 
-
-	& input {
+	&__input {
 		padding: 14px 14px !important;
 
 		&::placeholder {
 			font-size: 17px;
 		}
-		
+
+	}
+
+	@media @xxs {
+		width: 390px;
+	}
+
+	@media @xxxs {
+		width: 320px;
+	}
+
+	&-otp {
+		height: 300px;
+		transition: 0.55s all ease-in-out;
+	}
+
+	&__notice {
+		.flex-builder(center, center, row);
+		margin: 20px 0px 20px 0px;
+		border-radius: 6px;
+
+		&-icon {
+			.flex-builder(center, center, row);
+			margin: -2px 6px 0 0;
+			opacity: 0.6;
+		}
+
+		&-text {
+			font-size: 15px;
+
+			@media @xxxs {
+				font-size: 11px;
+			}
+		}
+	}
+
+	&-form {
+		&-input-wrapper {
+			position: relative;
+
+			&__icon {
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: absolute;
+				top: 0;
+				right: 15px;
+				z-index: 1;
+			}
+		}
+
+		&-valid-input {
+			border-color: var(--light-green-50);
+		}
+
+		&-invalid-input {
+			border-color: var(--red-60);
+		}
+
+		&-error-wrapper {
+			color: var(--red-60);
+		}
+
+		&-container__validation-message {
+			display: flex;
+			margin-bottom: 24px;
+			font-weight: 500;
+			background: var(--red-50);
+			color: var(--static-white);
+			border-radius: 16px;
+			padding: 16px;
+
+			&-icon {
+				margin: 2px 6px 0 0;
+			}
+		}
 	}
 }
 
-.login-otp {
-	height: 300px !important;
-	transition: 0.55s all ease-in-out;
+.second-label {
+	margin-bottom: 40px !important;
 }
 
-.gbm-form-currency__notice {
+.main-error-wrapper {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	border-radius: 6px;
-	margin-top: 20px;
-	margin-bottom: 20px;
-	padding: 10px 12px;
-
-	&-icon {
-		margin: -2px 6px 0 0;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		opacity: 0.6;
-	}
-
-	&-text {
-		font-size: 15px;
-	}
+	margin-bottom: 15px;
 }
-
-
-.pay-form-input-wrapper {
-	position: relative;
-
-	&__icon {
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: absolute;
-		top: 0;
-		right: 15px;
-		z-index: 1;
-	}
- }
-
- .pay-form-valid-input {
-	border-color: var(--light-green-50);
- }
-
- .pay-form-invalid-input {
-	border-color: var(--red-60);
- }
-
- .pay-form-error-wrapper {
-	color: var(--red-60);
- }
-
- .second-label {
-	margin-bottom: 40px !important;
- }
-
- ng-otp-input {
-	display: block;
- }

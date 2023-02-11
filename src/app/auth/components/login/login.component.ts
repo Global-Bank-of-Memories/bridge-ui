@@ -7,14 +7,16 @@ import { LoginDataResponse, LoginResponse } from '@auth/services/auth/auth.model
 import { AuthService } from '@auth/services/auth/auth.service';
 import { fadeInAnimation, FADE_ANIMATION } from '@shared/animations/fade.animation';
 import { GenericFormBaseComponent } from '@shared/components/generic-form-base/generic-form-base.component';
-import { bounceIn, wobble, fadeIn } from 'ng-animate';
-import { map, tap } from 'rxjs/operators';
+import { bounceIn, wobble } from 'ng-animate';
+import { timer } from 'rxjs';
+import { finalize, map, tap } from 'rxjs/operators';
 import {
 	BASIC_FORM_CONTROLS,
 	LoginBasicFormControls,
 	LoginFormControls,
 	LoginFormGroup,
-	LoginFormModel
+	LoginFormModel,
+	LoginMessagesEnum
 } from './login-model';
 
 @Component({
@@ -25,16 +27,19 @@ import {
 		FADE_ANIMATION,
 		fadeInAnimation('1000ms'),
 		trigger('success', [transition('void => *', useAnimation(bounceIn))]),
-		trigger('error', [transition('void => *', useAnimation(wobble))]),
-		trigger('testtest', [transition('void => *', useAnimation(fadeIn, { delay: '5s' }))])
+		trigger('error', [transition('void => *', useAnimation(wobble))])
 	]
 })
 export class LoginComponent extends GenericFormBaseComponent<LoginFormControls, LoginFormModel> implements OnInit {
-	@ViewChild('test') public testForm!: ElementRef;
+	@ViewChild('sectionLoading') public sectionLoading!: ElementRef;
+
 	public loading = false;
 	public submissionDisabled = false;
 	public isPreliminaryValid = false;
+	public isExpiredCounter = false;
 	public validationMessage = '';
+	public otpValidationMessage = '';
+	public retryTimer!: Date;
 	public token!: string;
 	public formGroup!: LoginFormGroup;
 
@@ -44,6 +49,14 @@ export class LoginComponent extends GenericFormBaseComponent<LoginFormControls, 
 
 	public get password(): FormControl {
 		return this.formGroup.controls.password;
+	}
+
+	public get noticeMessage(): string {
+		return this.isPreliminaryValid ? LoginMessagesEnum.OTP_NOTICE : LoginMessagesEnum.APP_CREDENTIALS;
+	}
+
+	public get otpNoticeMessage(): string {
+		return this.isExpiredCounter ? LoginMessagesEnum.EXPIRED_COUNTER : LoginMessagesEnum.NOT_EXPIRED_COUNTER;
 	}
 
 	constructor(
@@ -58,16 +71,65 @@ export class LoginComponent extends GenericFormBaseComponent<LoginFormControls, 
 	public ngOnInit(): void {
 		this.initForm();
 		this.setValidators();
+	}
 
-		setTimeout(() => {
-			this.renderer.setStyle(
-				this.testForm.nativeElement,
-				'--height-form',
-				`${this.testForm.nativeElement.offsetHeight}px`,
-				2
+	public onSubmit(): void {
+		if (this.formGroup.invalid || this.validationMessage) {
+			return;
+		}
+
+		const { email, password } = this.formGroup.value;
+		this.loading = true;
+		this.submissionDisabled = true;
+
+		this.authService
+			.login(email, password)
+			.pipe(
+				map((response: LoginResponse) => response.data),
+				tap((loginData: LoginDataResponse) => {
+					this.token = loginData.token;
+					this.changeModalsWithDelay(loginData.retry);
+				}),
+				finalize(() => {
+					this.loading = false;
+					this.submissionDisabled = false;
+				})
+			)
+			.subscribe(
+				() => {},
+				(err: HttpErrorResponse) => {
+					this.isPreliminaryValid = false;
+					this.validationMessage = err.error?.error?.msg;
+				}
 			);
-			console.log(this.testForm.nativeElement.offsetHeight);
-		}, 500);
+	}
+
+	public onResendOTP(): void {
+		this.authService
+			.retryOTP(this.token)
+			.pipe(tap(response => (this.retryTimer = response.data.retry)))
+			.subscribe(
+				() => {},
+				(err: HttpErrorResponse) => {
+					this.otpValidationMessage = err.error?.error?.msg;
+				}
+			);
+	}
+
+	public onCheckOTP(event: string): void {
+		this.authService.checkOTP(event, this.token).subscribe(
+			res => {
+				void this.router.navigate(['/']);
+			},
+			(err: HttpErrorResponse) => {
+				console.log(err);
+				this.otpValidationMessage = err.error?.error?.msg;
+			}
+		);
+	}
+
+	public onClearOTPValidation(): void {
+		this.otpValidationMessage = '';
 	}
 
 	private initForm(): void {
@@ -76,6 +138,10 @@ export class LoginComponent extends GenericFormBaseComponent<LoginFormControls, 
 		});
 
 		this.formGroup = this.getFormForModule();
+
+		this.formGroup.valueChanges.subscribe(() => {
+			this.validationMessage = '';
+		});
 	}
 
 	private setValidators(): void {
@@ -85,37 +151,17 @@ export class LoginComponent extends GenericFormBaseComponent<LoginFormControls, 
 		password.addValidators([Validators.required]);
 	}
 
-	public onSubmit(): void {
-		const { email, password } = this.formGroup.value;
+	private changeModalsWithDelay(retryTimer: string): void {
+		this.renderer.setStyle(
+			this.sectionLoading.nativeElement,
+			'--height-form',
+			`${this.sectionLoading.nativeElement.offsetHeight}px`,
+			2
+		);
 
-
-		this.authService
-			.login(email, password)
-			.pipe(
-				map((response: LoginResponse) => response.data),
-				tap((loginData: LoginDataResponse) => {
-					this.isPreliminaryValid = true;
-					this.token = loginData.token;
-				})
-			)
-			.subscribe(
-				res => {
-					console.log(res);
-				},
-				(err: HttpErrorResponse) => {
-					this.isPreliminaryValid = false;
-
-				},
-				() => {
-					this.loading = false;
-					this.submissionDisabled = false;
-				}
-			);
-	}
-
-	public onOtpChange(event: string): void {
-		if (event.length === 4) {
-			this.authService.checkOTP(event, this.token).subscribe(res => void this.router.navigate(['/']));
-		}
+		timer().subscribe(() => {
+			this.isPreliminaryValid = true;
+			this.retryTimer = new Date(retryTimer);
+		});
 	}
 }

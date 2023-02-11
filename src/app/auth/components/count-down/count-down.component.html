@@ -1,0 +1,7 @@
+<div class="count-down-container">
+    <span>{{ otpNoticeMessage }}: </span>
+    <span class="count-down" [ngClass]="{'count-down--warning': warningTimer}">
+        <span *ngIf="!isExpired">{{minutesToExpired}}:{{secondsToExpired}}</span>
+        <span *ngIf="isExpired"><a class="count-down__link" (click)="onResendOTP()">Resend</a></span>
+    </span>
+</div>
