@@ -5,4 +5,6 @@ import { Component } from '@angular/core';
 	templateUrl: './auth.component.html',
 	styleUrls: ['./auth.component.less']
 })
-export class AuthComponent {}
+export class AuthComponent {
+	public backgroundElements = new Array(15).fill(0);
+}

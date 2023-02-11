@@ -1,7 +1,9 @@
-import { Component, ElementRef, EventEmitter, Input, Output, Renderer2, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FADE_ANIMATION } from '@shared/animations/fade.animation';
 import { NgOtpInputComponent } from 'ng-otp-input';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil, tap } from 'rxjs/operators';
 
 @Component({
 	selector: 'br-otp-modal',
@@ -9,37 +11,53 @@ import { NgOtpInputComponent } from 'ng-otp-input';
 	styleUrls: ['./otp-modal.component.less'],
 	animations: [FADE_ANIMATION]
 })
-export class OtpModalComponent {
+export class OtpModalComponent implements OnInit, OnDestroy {
+	@ViewChild('otpInput') public otpInput!: NgOtpInputComponent;
+
+	private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+
 	@Input() public set otpValidationMessage(otpValidationMessage: string) {
-		console.log(otpValidationMessage);
 		if (otpValidationMessage && this.otpInput) {
-			Object.values(this.otpInput.otpForm.controls).forEach(control => {
-				control.setErrors({ invalid: true });
-			});
+			this.setControlErrorsState(true);
 		} else if (this.otpInput && !otpValidationMessage) {
-			Object.values(this.otpInput.otpForm.controls).forEach(control => {
-				control.setErrors(null);
-			});
+			this.setControlErrorsState(false);
 		}
 	}
 
 	@Output() public checkOTP = new EventEmitter<string>();
 	@Output() public clearOTPValidation = new EventEmitter<boolean>();
 
-	@ViewChild('otpInput') public otpInput!: NgOtpInputComponent;
-
 	public otpFormControl = new FormControl();
 
-	constructor() {
-		this.otpFormControl.valueChanges.subscribe(code => {
-			Object.values(this.otpInput.otpForm.controls).forEach(control => {
-				control.setErrors(null);
-				this.clearOTPValidation.emit(true);
-			});
+	constructor() {}
 
-			if (code.length === 4) {
-				this.checkOTP.emit(code);
-			}
-		});
+	public ngOnInit(): void {
+		this.listenForm();
+	}
+
+	private listenForm(): void {
+		this.otpFormControl.valueChanges
+			.pipe(
+				takeUntil(this.destroyed$),
+				tap(code => {
+					this.setControlErrorsState();
+					this.clearOTPValidation.emit(true);
+
+					if (code.length === 4) {
+						this.checkOTP.emit(code);
+					}
+				})
+			)
+			.subscribe();
+	}
+
+	private setControlErrorsState(isInvalid = false): void {
+		const { controls } = this.otpInput.otpForm;
+		Object.values(controls).forEach(control => control.setErrors(isInvalid ? { invalid: true } : null));
+	}
+
+	public ngOnDestroy(): void {
+		this.destroyed$.next(true);
+		this.destroyed$.complete();
 	}
 }

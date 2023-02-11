@@ -70,16 +70,20 @@
 		</gbm-button>
 	</form>
 
-	<div [@fadeIn] *ngIf="isPreliminaryValid" class="otp-container">
-		<br-count-down [retryTimer]="retryTimer" (resendOTP)="onResendOTP()"></br-count-down>
-		<br-otp-modal [otpValidationMessage]="otpValidationMessage" (checkOTP)="onCheckOTP($event)"
-			(clearOTPValidation)="onClearOTPValidation()"></br-otp-modal>
+	<div [@fadeIn] *ngIf="isPreliminaryValid">
+		<gbm-spinner *ngIf="loading" [color]="'#000000'" width="64px" height="64px"> </gbm-spinner>
 
-		<div [@fade] *ngIf="otpValidationMessage" class="login-form-error-wrapper main-error-wrapper"
-			style="padding-top: 20px">
-			<gbm-icon class="login-form-container__validation-message-icon" [fill]="'--red-50_light'" [name]="'info'">
-			</gbm-icon>
-			<span> {{ otpValidationMessage }} </span>
-		</div>
+		<ng-container *ngIf="!loading">
+			<br-count-down [retryTimer]="retryTimer" (resendOTP)="onResendOTP()"></br-count-down>
+			<br-otp-modal [otpValidationMessage]="otpValidationMessage" (checkOTP)="onCheckOTP($event)"
+				(clearOTPValidation)="onClearOTPValidation()"></br-otp-modal>
+	
+			<div [@fade] *ngIf="otpValidationMessage" class="login-form-error-wrapper main-error-wrapper"
+				style="padding-top: 20px">
+				<gbm-icon class="login-form-container__validation-message-icon" [fill]="'--red-50_light'" [name]="'info'">
+				</gbm-icon>
+				<span> {{ otpValidationMessage }} </span>
+			</div>
+		</ng-container>
 	</div>
 </section>

@@ -1,6 +1,6 @@
 <gbm-header *ngIf="showHeader"></gbm-header>
 
-<main class="content" [class.no-header]="!showHeader" gbmConnectionState>
+<main class="content" [class.no-header]="!showHeader" gbmConnectionState [@RouteAnimations]="prepareRoute(outlet)">
 	<gbm-toast></gbm-toast>
 
 	<router-outlet #outlet="outlet"></router-outlet>

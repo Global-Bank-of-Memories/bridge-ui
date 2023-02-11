@@ -1,15 +1,16 @@
+/* eslint-disable prettier/prettier */
 import { trigger, transition, useAnimation } from '@angular/animations';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoginDataResponse, LoginResponse } from '@auth/services/auth/auth.model';
+import { LoginDataResponse, LoginResponse, OTPRetryResponse } from '@auth/services/auth/auth.model';
 import { AuthService } from '@auth/services/auth/auth.service';
 import { fadeInAnimation, FADE_ANIMATION } from '@shared/animations/fade.animation';
 import { GenericFormBaseComponent } from '@shared/components/generic-form-base/generic-form-base.component';
 import { bounceIn, wobble } from 'ng-animate';
-import { timer } from 'rxjs';
-import { finalize, map, tap } from 'rxjs/operators';
+import { ReplaySubject, timer } from 'rxjs';
+import { finalize, map, takeUntil, tap } from 'rxjs/operators';
 import {
 	BASIC_FORM_CONTROLS,
 	LoginBasicFormControls,
@@ -30,16 +31,23 @@ import {
 		trigger('error', [transition('void => *', useAnimation(wobble))])
 	]
 })
-export class LoginComponent extends GenericFormBaseComponent<LoginFormControls, LoginFormModel> implements OnInit {
+export class LoginComponent
+	extends GenericFormBaseComponent<LoginFormControls, LoginFormModel>
+	implements OnInit, OnDestroy {
+
 	@ViewChild('sectionLoading') public sectionLoading!: ElementRef;
+
+	private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
 	public loading = false;
 	public submissionDisabled = false;
 	public isPreliminaryValid = false;
 	public isExpiredCounter = false;
+
 	public validationMessage = '';
 	public otpValidationMessage = '';
-	public retryTimer!: Date;
+
+	public retryTimer!: string;
 	public token!: string;
 	public formGroup!: LoginFormGroup;
 
@@ -53,10 +61,6 @@ export class LoginComponent extends GenericFormBaseComponent<LoginFormControls, 
 
 	public get noticeMessage(): string {
 		return this.isPreliminaryValid ? LoginMessagesEnum.OTP_NOTICE : LoginMessagesEnum.APP_CREDENTIALS;
-	}
-
-	public get otpNoticeMessage(): string {
-		return this.isExpiredCounter ? LoginMessagesEnum.EXPIRED_COUNTER : LoginMessagesEnum.NOT_EXPIRED_COUNTER;
 	}
 
 	constructor(
@@ -105,9 +109,14 @@ export class LoginComponent extends GenericFormBaseComponent<LoginFormControls, 
 	}
 
 	public onResendOTP(): void {
+		this.loading = true;
+
 		this.authService
 			.retryOTP(this.token)
-			.pipe(tap(response => (this.retryTimer = response.data.retry)))
+			.pipe(
+				tap((response: OTPRetryResponse) => (this.retryTimer = response.data.retry)),
+				finalize(() => (this.loading = false))
+			)
 			.subscribe(
 				() => {},
 				(err: HttpErrorResponse) => {
@@ -118,11 +127,11 @@ export class LoginComponent extends GenericFormBaseComponent<LoginFormControls, 
 
 	public onCheckOTP(event: string): void {
 		this.authService.checkOTP(event, this.token).subscribe(
-			res => {
+			otpResponse => {
+				this.authService.setAccessToken(otpResponse);
 				void this.router.navigate(['/']);
 			},
 			(err: HttpErrorResponse) => {
-				console.log(err);
 				this.otpValidationMessage = err.error?.error?.msg;
 			}
 		);
@@ -138,10 +147,16 @@ export class LoginComponent extends GenericFormBaseComponent<LoginFormControls, 
 		});
 
 		this.formGroup = this.getFormForModule();
+		this.initListeners();
+	}
 
-		this.formGroup.valueChanges.subscribe(() => {
-			this.validationMessage = '';
-		});
+	private initListeners(): void {
+		this.formGroup.valueChanges
+			.pipe(
+				takeUntil(this.destroyed$),
+				tap(() => (this.validationMessage = ''))
+			)
+			.subscribe();
 	}
 
 	private setValidators(): void {
@@ -161,7 +176,12 @@ export class LoginComponent extends GenericFormBaseComponent<LoginFormControls, 
 
 		timer().subscribe(() => {
 			this.isPreliminaryValid = true;
-			this.retryTimer = new Date(retryTimer);
+			this.retryTimer = retryTimer;
 		});
+	}
+
+	public ngOnDestroy(): void {
+		this.destroyed$.next(true);
+		this.destroyed$.complete();
 	}
 }

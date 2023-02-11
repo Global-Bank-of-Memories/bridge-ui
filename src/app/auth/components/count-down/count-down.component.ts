@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { LoginMessagesEnum } from '../login/login-model';
 
@@ -8,10 +8,9 @@ import { LoginMessagesEnum } from '../login/login-model';
 	styleUrls: ['./count-down.component.less']
 })
 export class CountDownComponent implements OnDestroy {
-	@Output() public expiredCounter = new EventEmitter<boolean>();
 	@Output() public resendOTP = new EventEmitter<boolean>();
 
-	@Input() public set retryTimer(retryTimer: Date) {
+	@Input() public set retryTimer(retryTimer: string) {
 		this._retryTimer = retryTimer;
 
 		this.subscription?.unsubscribe();
@@ -20,11 +19,12 @@ export class CountDownComponent implements OnDestroy {
 		this.warningTimer = false;
 		this.isExpired = false;
 	}
-	public get retryTimer(): Date {
+
+	public get retryTimer(): string {
 		return this._retryTimer;
 	}
-	private _retryTimer!: Date;
 
+	private _retryTimer!: string;
 	private subscription!: Subscription;
 	private twoDigitsZero = '0';
 
@@ -87,7 +87,6 @@ export class CountDownComponent implements OnDestroy {
 		this.isExpired = true;
 		this.warningTimer = false;
 
-		this.expiredCounter.emit(true);
 		this.subscription.unsubscribe();
 	}
 

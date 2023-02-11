@@ -26,3 +26,28 @@ export interface LoginResponse {
 	error: ErrorResponse;
 	data: LoginDataResponse;
 }
+
+export interface OTPDataRetryResponse {
+	retry: string;
+}
+
+export interface OTPRetryResponse {
+	result: boolean;
+	error: ErrorResponse;
+	data: OTPDataRetryResponse;
+}
+
+export interface OTPWalletResponse {
+	public_key: string;
+	balance: number;
+}
+export interface OTPResponse {
+	result: boolean;
+	error: ErrorResponse;
+	data: {
+		access_token: string;
+		refresh_token: string;
+		wallet: OTPWalletResponse;
+		keychain: string;
+	};
+}

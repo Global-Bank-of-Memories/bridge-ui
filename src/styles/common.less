@@ -132,24 +132,13 @@ ng-otp-input  {
 	}
 	.otp-input.ng-dirty.ng-invalid {
 		outline: none;
-		animation: shake 400ms;
+		border: 2px solid;
+		border-color: var(--red-50) !important;
+		animation: shakeOTPInput 400ms;
 
 		&:focus-visible {
 			border-color: var(--red-50) !important;        
 		}
-		border-color: var(--red-50) !important;
-	  }
-}
-
-@keyframes shake {
-	25% {
-		transform: translateX(6px);
-	}
-	50% {
-		transform: translateX(-6px);
-	}
-	75% {
-		transform: translateX(6px);
 	}
 }
 
@@ -199,3 +188,17 @@ gbm-button {
 		}
 	}
 }
+
+
+@keyframes shakeOTPInput {
+	25% {
+		transform: translateX(6px);
+	}
+	50% {
+		transform: translateX(-6px);
+	}
+	75% {
+		transform: translateX(6px);
+	}
+}
+
