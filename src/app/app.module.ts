@@ -14,12 +14,13 @@ import { GbmThemeModule } from '@shared/services/theme/theme.module';
 import { HandleErrorRequestInterceptor } from './core/interceptors/handle-error-request.interceptor';
 import { HandleProlongedRequestInterceptor } from './core/interceptors/handle-prolonged-request.interceptor';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { JwtInterceptor, JwtModule } from '@auth0/angular-jwt';
+import { JwtModule } from '@auth0/angular-jwt';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule } from 'ngx-google-analytics';
 import { ToastModule } from '@shared/components/toast/toast.module';
 import { HomeModule } from '@home/home.module';
 import { GbmConnectionStateModule } from '@shared/directives/connection-state/connection-state.module';
+import { JwtInterceptor } from '@auth/interceptors/auth.interceptor';
 
 @NgModule({
 	declarations: [AppComponent],

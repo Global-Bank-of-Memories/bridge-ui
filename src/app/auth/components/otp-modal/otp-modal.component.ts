@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { FADE_ANIMATION } from '@shared/animations/fade.animation';
 import { NgOtpInputComponent } from 'ng-otp-input';
 import { ReplaySubject } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, takeUntil, tap } from 'rxjs/operators';
 
 @Component({
 	selector: 'br-otp-modal',
@@ -39,6 +39,7 @@ export class OtpModalComponent implements OnInit, OnDestroy {
 		this.otpFormControl.valueChanges
 			.pipe(
 				takeUntil(this.destroyed$),
+				debounceTime(200),
 				tap(code => {
 					this.setControlErrorsState();
 					this.clearOTPValidation.emit(true);
