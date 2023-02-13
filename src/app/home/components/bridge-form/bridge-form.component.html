@@ -1,63 +1,88 @@
-<form class="bridge-form">
+<div class="bridge-form">
   <div class="bridge-form-heading">
-    <gbm-heading class="bridge-form-heading__title"
-                 [tag]="'h2'"
-                 [className]="'gbm-heading-4'"
-                 [title]="'GBM -> Polygon'">
-    </gbm-heading>
-
-    <gbm-button [title]="'Switch'"
-                [className]="'gbm-btn gbm-btn-sm gbm-btn-primary gbm-btn-rounded gbm-copyright'">
-      <gbm-icon [name]="'switch'"
-                [className]="'switch-icon'"
-                [width]="'14px'"
-                [height]="'14px'"
-                [fill]="'--cool-gray-00_light'">
+    <div class="bridge-form-heading__title">
+      <h4 class="gbm-subheading-2 bridge-form-heading__title-item">{{ walletsToExchange?.from?.title }}</h4>
+      <gbm-icon [name]="'chevronDown'"
+                [width]="'20px'"
+                [height]="'20px'">
       </gbm-icon>
+      <h4 class="gbm-subheading-2 bridge-form-heading__title-item">{{ walletsToExchange?.to?.title }}</h4>
+    </div>
+    <button class="gbm-btn gbm-btn-sm gbm-btn-rounded gbm-btn-primary"
+            (click)="onSwitch()">Switch</button>
+  </div>
+
+  <form [formGroup]="formGroup"
+        class="bridge-form-container">
+    <label class="gbm-input-label gbm-body-2 bridge-form-container__label">
+      <span class="gbm-label-1 bridge-form-container__label-title">Sending</span>
+      <div class="bridge-form-container__label-wrapper">
+        <input formControlName="from"
+               oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+               maxlength="9"
+               class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input bridge-form-container__label-wrapper-input"
+               [placeholder]="walletsToExchange?.from?.placeholder"
+               type="number" />
+
+        <div class="bridge-form-container__label-wrapper-pill">
+          <gbm-icon [name]="walletsToExchange?.from?.icon"
+                    [width]="'18px'"
+                    [height]="'18px'"
+                    [fill]="walletsToExchange?.from?.iconColor">
+          </gbm-icon>
+          <span class="bridge-form-container__label-wrapper-pill__title">{{ walletsToExchange?.from?.abbr }}</span>
+        </div>
+      </div>
+      <div class="bridge-form-container__label-info">
+        <span class="gbm-body-2 bridge-form-container__label-info__content">Wallet:
+          <strong>{{ walletsToExchange?.from?.walletId }}</strong></span>
+        <span class="gbm-body-2 bridge-form-container__label-info__content">Balance: <strong>{{
+            walletsToExchange?.from?.balance }}</strong></span>
+      </div>
+    </label>
+
+    <label class="gbm-input-label gbm-body-2 bridge-form-container__label">
+      <span class="gbm-label-1 bridge-form-container__label-title">Receive</span>
+      <div class="bridge-form-container__label-wrapper">
+        <input formControlName="to"
+               oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+               maxlength="9"
+               class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input bridge-form-container__label-wrapper-input"
+               [placeholder]="walletsToExchange?.to?.placeholder"
+               type="number" />
+
+        <div class="bridge-form-container__label-wrapper-pill">
+          <gbm-icon [name]="walletsToExchange?.to?.icon"
+                    [width]="'18px'"
+                    [height]="'18px'"
+                    [fill]="walletsToExchange?.to?.iconColor">
+          </gbm-icon>
+          <span class="bridge-form-container__label-wrapper-pill__title">{{ walletsToExchange?.to?.abbr }}</span>
+        </div>
+      </div>
+      <div class="bridge-form-container__label-info">
+        <span class="gbm-body-2 bridge-form-container__label-info__content">Wallet: <strong>{{
+            walletsToExchange?.to?.walletId }}</strong></span>
+        <span class="gbm-body-2 bridge-form-container__label-info__content">Balance: <strong>{{
+            walletsToExchange?.to?.balance }}</strong></span>
+      </div>
+    </label>
+
+    <div class="bridge-form-container__placeholder">
+      <span class="gbm-body-1"><strong>XDR:</strong></span>
+      AAAAAgAAAACpp/tVK5FVp+N7eRrGLxHTg+R8Dw5nvN4Zo
+      <gbm-icon ngxClipboard
+                [cbContent]="'AAAAAgAAAACpp/tVK5FVp+N7eRrGLxHTg+R8Dw5nvN4Zo'"
+                [name]="'copy'"
+                [width]="'22px'"
+                [height]="'22px'">
+      </gbm-icon>
+    </div>
+
+    <gbm-button class="bridge-form-container__submit"
+                [title]="'Send Transfer'"
+                (click)="sendTransfer()"
+                [className]="'gbm-btn gbm-btn-md gbm-btn-full-width gbm-btn-primary gbm-btn-rounded gbm-button-2'">
     </gbm-button>
-  </div>
-
-  <div class="bridge-form-input-container">
-    <div class="bridge-form-input-container__wallet">
-      <span class="bridge-form-input-container__wallet-title">To:</span>
-
-      <gbm-button [title]="'Connect GBM Wallet'"
-                  [className]="'gbm-btn gbm-btn-sm gbm-btn-secondary-light gbm-btn-rounded gbm-copyright'">
-      </gbm-button>
-    </div>
-
-    <label class="gbm-input-label gbm-body-2 bridge-form-input-container__label">
-      Sending
-      <input class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input"
-             type="number" />
-      <span class="bridge-form-input-container__label-currency">WGBM</span>
-    </label>
-  </div>
-
-  <div class="bridge-form-input-container">
-    <div class="bridge-form-input-container__wallet">
-      <span class="bridge-form-input-container__wallet-title">To:</span>
-
-      <gbm-button [title]="'Connect Polygon Wallet'"
-                  [className]="'gbm-btn gbm-btn-sm gbm-btn-secondary-light gbm-btn-rounded gbm-copyright'">
-      </gbm-button>
-    </div>
-
-    <label class="gbm-input-label gbm-body-2 bridge-form-input-container__label">
-      Receive
-      <input class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input"
-             type="number" />
-      <span class="bridge-form-input-container__label-currency">WGBM</span>
-    </label>
-  </div>
-
-  <gbm-button class="pay-form-container__submit"
-              (click)="onSubmit()"
-              [loading]="loading"
-              [title]="'Send Transfer'"
-              [disabled]="submissionDisabled"
-              [className]="
-				'gbm-btn gbm-btn-md gbm-btn-full-width gbm-btn-primary gbm-btn-rounded gbm-button-2 login-form__submit'
-			">
-  </gbm-button>
-</form>
+  </form>
+</div>

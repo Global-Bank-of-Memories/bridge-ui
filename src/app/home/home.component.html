@@ -1,15 +1,32 @@
 <section class="home">
-  <gbm-heading class="home-heading"
-               [tag]="'h1'"
-               [className]="'gbm-heading-5'"
-               [title]="'Fill in the fields to finish the transaction'">
-  </gbm-heading>
+  <gbm-icon class="home-logo"
+            [name]="'logo'"
+            [width]="'160px'"
+            [height]="'80px'"
+            [fill]="'--cool-gray-100_light'">
+  </gbm-icon>
 
-  <gbm-heading class="home-subheading"
-               [tag]="'h2'"
-               [className]="'gbm-body-1'"
-               [title]="'Transaction can be completed only for authenticated users'">
-  </gbm-heading>
+  <div class="home-form">
+    <br-bridge-wallet (walletsToExchange)="onWalletsToExchange($event)"></br-bridge-wallet>
+    <br-bridge-form [walletsToExchange]="walletsToExchange"></br-bridge-form>
 
-  <br-bridge-form></br-bridge-form>
+    <div class="home-form__footer">
+      <div class="home-form__footer-contacts">
+        <span class="gbm-body-1">Support</span>
+        <div class="home-form__footer-contacts__container">
+          <a class="gbm-body-1 gbm-link" href="mailto:info@bankofmemories.org">info@bankofmemories.org</a>
+        </div>
+      </div>
+
+      <div class="home-form__footer-user">
+        <div (click)="authService.logOut()" class="home-form__footer-user__container logout-clickout">
+          <span class="gbm-body-1">Logout</span>
+          <gbm-icon [name]="'logout'"
+                    [width]="'24px'"
+                    [height]="'24px'">
+          </gbm-icon>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

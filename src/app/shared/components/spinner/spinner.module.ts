@@ -7,10 +7,11 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { SpinnerComponent } from './spinner.component';
+import { GbmSpinnerContainerDirective } from './spinner.directive';
 
 @NgModule({
-	declarations: [SpinnerComponent],
+	declarations: [SpinnerComponent, GbmSpinnerContainerDirective],
 	imports: [CommonModule],
-	exports: [SpinnerComponent]
+	exports: [SpinnerComponent, GbmSpinnerContainerDirective]
 })
 export class GbmSpinnerModule {}

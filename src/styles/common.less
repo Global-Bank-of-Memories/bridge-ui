@@ -1,204 +1,265 @@
 @import (reference) 'variables.less';
 
 * {
-	font-family: Inter, sans-serif;
+  font-family: Inter, sans-serif;
 }
 
 body {
-	background: var(--static-white);
+  background: var(--static-white);
 }
 
 a {
-	transition: all 0.15s ease-in-out;
+  transition: all 0.15s ease-in-out;
 
-	&:hover {
-		transition: all 0.15s ease-in-out;
-		color: var(--blue-50) !important;
-	}
+  &:hover {
+    transition: all 0.15s ease-in-out;
+    color: var(--blue-50) !important;
+  }
 }
 
 ::-webkit-scrollbar {
-	background-color: var(--static-white);
-	width: 12px;
+  background-color: var(--static-white);
+  width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-	background-color: var(--static-white);
+  background-color: var(--static-white);
 }
 
 ::-webkit-scrollbar-thumb {
-	background-color: var(--cool-gray-40);
-	border: 2px solid var(--static-white);
-	border-radius: 16px;
+  background-color: var(--cool-gray-40);
+  border: 2px solid var(--static-white);
+  border-radius: 16px;
 }
 
 ::-webkit-scrollbar-button {
-	display: none;
+  display: none;
 }
 
 @media @xs {
-	.footer-logo {
-		width: 120px;
-		height: 60px;
-	}
+  .footer-logo {
+    width: 120px;
+    height: 60px;
+  }
 }
 
 @media @m {
-	.logo {
-		width: 96px;
-		height: 48px;
-	}
+  .logo {
+    width: 96px;
+    height: 48px;
+  }
 }
 
 @media @xl {
-	.footer-logo {
-		width: 160px;
-		height: 80px;
-	}
+  .footer-logo {
+    width: 160px;
+    height: 80px;
+  }
 }
 
 @media @xxl {
-	.header-logo gbm-icon {
-		svg {
-			width: 140px;
-			height: 70px;
-		}
-	}
+  .header-logo gbm-icon {
+    svg {
+      width: 140px;
+      height: 70px;
+    }
+  }
 
-	.header-content__lang-title gbm-icon {
-		svg {
-			height: 30px;
-			width: 30px;
-		}
-	}
+  .header-content__lang-title gbm-icon {
+    svg {
+      height: 30px;
+      width: 30px;
+    }
+  }
 
-	.footer-nav-logo gbm-icon {
-		svg {
-			width: 240px;
-			height: 120px;
-		}
-	}
+  .footer-nav-logo gbm-icon {
+    svg {
+      width: 240px;
+      height: 120px;
+    }
+  }
 
-	.footer-short-social__icon--link gbm-icon {
-		svg {
-			height: 35px;
-			width: 35px;
-		}
-	}
+  .footer-short-social__icon--link gbm-icon {
+    svg {
+      height: 35px;
+      width: 35px;
+    }
+  }
 
-	gbm-card gbm-icon {
-		svg {
-			width: 60px;
-			height: 60px;
-		}
-	}
+  gbm-card gbm-icon {
+    svg {
+      width: 60px;
+      height: 60px;
+    }
+  }
 }
 
 .ngx-slider {
-	.ngx-slider-bar {
-		background: var(--cool-gray-20) !important;
-	}
+  .ngx-slider-bar {
+    background: var(--cool-gray-20) !important;
+  }
 
-	.ngx-slider-pointer {
-		background-color: var(--static-black) !important;
+  .ngx-slider-pointer {
+    background-color: var(--static-black) !important;
 
-		&:after {
-			background-color: var(--static-black) !important;
-		}
-	}
+    &:after {
+      background-color: var(--static-black) !important;
+    }
+  }
 
-	.ngx-slider-bubble {
-		display: none;
-		font-weight: 700;
-		font-size: 20px !important;
-		line-height: 32px;
-		color: var(--blue-60) !important;
-	}
+  .ngx-slider-bubble {
+    display: none;
+    font-weight: 700;
+    font-size: 20px !important;
+    line-height: 32px;
+    color: var(--blue-60) !important;
+  }
 
-	.ngx-slider-bubble.ngx-slider-limit {
-		display: none;
-	}
+  .ngx-slider-bubble.ngx-slider-limit {
+    display: none;
+  }
 }
 
 .ng-otp-input-wrapper {
-	display: flex;
-	justify-content: center;
-	align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-ng-otp-input  {
-	.otp-input {
-		outline: none;
-	}
-	.otp-input.ng-dirty.ng-invalid {
-		outline: none;
-		border: 2px solid;
-		border-color: var(--red-50) !important;
-		animation: shakeOTPInput 400ms;
+ng-otp-input {
+  .otp-input {
+    outline: none;
+  }
 
-		&:focus-visible {
-			border-color: var(--red-50) !important;        
-		}
-	}
+  .otp-input.ng-dirty.ng-invalid {
+    outline: none;
+    border: 2px solid;
+    border-color: var(--red-50) !important;
+    animation: shakeOTPInput 400ms;
+
+    &:focus-visible {
+      border-color: var(--red-50) !important;
+    }
+  }
 }
 
 gbm-heading {
-	h1,
-	h2,
-	h3,
-	h4,
-	h5,
-	h6 {
-		a {
-			color: var(--blue-60);
-		}
-	}
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    a {
+      color: var(--blue-60);
+    }
+  }
 }
 
 .gbm-rounded-icon {
-	svg {
-		border-radius: 100%;
-	}
+  svg {
+    border-radius: 100%;
+  }
 }
 
 .modal,
 .modal-backdrop {
-	z-index: 10005;
+  z-index: 10005;
 }
 
 ngb-modal-backdrop {
-	z-index: 10002 !important;
+  z-index: 10002 !important;
 }
 
 .modal-body {
-	.btn-close:focus {
-		box-shadow: none !important;
-	}
+  .btn-close:focus {
+    box-shadow: none !important;
+  }
 }
 
 gbm-button {
-	svg {
-		margin-top: 0;
-	}
+  svg {
+    margin-top: 0;
+  }
 
-	&:hover {
-		.switch-icon {
-			fill: var(--static-black);
-			transition: all .3s ease-in-out;
-		}
-	}
+  &:hover {
+    .switch-icon {
+      fill: var(--static-black);
+      transition: all .3s ease-in-out;
+    }
+  }
 }
 
 
 @keyframes shakeOTPInput {
-	25% {
-		transform: translateX(6px);
-	}
-	50% {
-		transform: translateX(-6px);
-	}
-	75% {
-		transform: translateX(6px);
-	}
+  25% {
+    transform: translateX(6px);
+  }
+
+  50% {
+    transform: translateX(-6px);
+  }
+
+  75% {
+    transform: translateX(6px);
+  }
 }
 
+.wallets-item,
+.bridge-form-container__label-wrapper {
+  gbm-icon-gbm-coin {
+    svg {
+      margin-top: 0;
+      border-radius: 100%;
+    }
+  }
+}
+
+.bridge-form-container__label-wrapper {
+  gbm-icon-gbm-coin {
+    svg {
+      @media @m {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+}
+
+.modal-content {
+  border: none;
+  border-radius: 16px;
+}
+
+.modal-backdrop.show {
+  opacity: 0.8;
+}
+
+.bridge-wallets-modal {
+  width: 950px;
+  max-width: inherit;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -2000px 0;
+  }
+
+  100% {
+    background-position: 2000px 0;
+  }
+}
+
+.gbm-spinner-mask {
+  width: 100%;
+  height: 100% !important;
+  animation-duration: 3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: shimmer;
+  animation-timing-function: linear;
+  background: linear-gradient(to right, var(--cool-gray-00) 8%, var(--cool-gray-10) 41%, var(--cool-gray-00) 58%);
+  background-size: 2000px 100%;
+  box-shadow: 0 6px 20px var(--cool-gray-20);
+}

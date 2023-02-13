@@ -26,13 +26,13 @@ export class IconComponent implements OnChanges {
 	 * @description name of the icon used to lookup
 	 */
 	@Input()
-	public name!: string;
+	public name!: string | undefined;
 
 	/**
 	 * @description theme color or Hex value (#111111) used to fill the icon/SVG
 	 */
 	@Input()
-	public fill = '#000000';
+	public fill: string | undefined = '#000000';
 
 	/**
 	 * @description theme color or Hex value (#111111) used to fill the icon/SVG
@@ -92,7 +92,7 @@ export class IconComponent implements OnChanges {
 	 * @description call the IconService to fetch the icon and create a component from the response
 	 */
 	public updateIcon(): void {
-		if (this.setIcon(this.iconService.getIcon(this.name))) {
+		if (this.name && this.setIcon(this.iconService.getIcon(this.name))) {
 			this.setIconProperties(this.createComponent(this.icon as Type<unknown>) as IconConfig);
 		}
 	}
@@ -121,13 +121,17 @@ export class IconComponent implements OnChanges {
 		component.className = className ? `gbm-icon ${className}` : 'gbm-icon';
 		component.type = type;
 
-		const theme = fill.split('_');
-		if (isHexValue(fill)) {
-			component.fill = fill;
-		} else if (theme.length > 1) {
-			component.fill = getThemeColor(theme[0], theme[1]);
+		if (fill) {
+			const theme = fill.split('_');
+			if (isHexValue(fill)) {
+				component.fill = fill;
+			} else if (theme.length > 1) {
+				component.fill = getThemeColor(theme[0], theme[1]);
+			} else {
+				component.fill = fill;
+			}
 		} else {
-			component.fill = fill;
+			component.fill = '#000000';
 		}
 
 		const themeStroke = stroke.split('_');

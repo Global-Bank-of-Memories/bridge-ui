@@ -15,12 +15,17 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "resolveJsonModule": true,
-    "target": "es2017",
+    "skipLibCheck": true,
+    "target": "es2020",
     "module": "es2020",
     "lib": [
       "es2018",
       "dom"
     ],
+    "typeRoots": [
+      "../node_modules/@types"
+    ],
+    "types": ["node"],
     "esModuleInterop": true,
     "paths": {
       "@shared/*": [
@@ -40,6 +45,18 @@
       ],
       "@assets/*": [
         "src/assets/*"
+      ],
+      "stream": [
+        "./node_modules/stream-browserify"
+      ],
+      "https": [
+        "./node_modules/https-browserify"
+      ],
+      "http": [
+        "./node_modules/stream-http"
+      ],
+      "buffer": [
+        "./node_modules/buffer"
       ]
     }
   },

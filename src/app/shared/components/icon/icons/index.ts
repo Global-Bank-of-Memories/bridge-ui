@@ -15,6 +15,7 @@ import { IconChevronUpModule } from './icon-chevron-up/icon-chevron-up.module';
 import { IconChipModule } from './icon-chip/icon-chip.module';
 import { IconCircleTridentModule } from './icon-circle-trident/icon-circle-trident.module';
 import { IconCloseModule } from './icon-close/icon-close.module';
+import { IconCopyModule } from './icon-copy/icon-copy.module';
 import { IconDaiModule } from './icon-dai/icon-dai.module';
 import { IconDnaModule } from './icon-dna/icon-dna.module';
 import { IconEthModule } from './icon-eth/icon-eth.module';
@@ -23,6 +24,7 @@ import { IconExclamationCircleModule } from './icon-exclamation-circle/icon-excl
 import { IconExternalLinkModule } from './icon-external-link/icon-external-link.module';
 import { IconFbModule } from './icon-fb/icon-fb.module';
 import { IconFingerprintModule } from './icon-fingerprint/icon-fingerprint.module';
+import { IconGbmCoinModule } from './icon-gbm-coin/icon-gbm-coin.module';
 import { IconGbmModule } from './icon-gbm/icon-gbm.module';
 import { IconGeoPayModule } from './icon-geopay/icon-geopay.module';
 import { IconGiftModule } from './icon-gift/icon-gift.module';
@@ -38,6 +40,7 @@ import { IconLangModule } from './icon-lang/icon-lang.module';
 import { IconLinesModule } from './icon-lines/icon-lines.module';
 import { IconLinkedinModule } from './icon-linkedin/icon-linkedin.module';
 import { IconLogoModule } from './icon-logo/icon-logo.module';
+import { IconLogoutModule } from './icon-logout/icon-logout.module';
 import { IconMaticModule } from './icon-matic/icon-matic.module';
 import { IconMediumModule } from './icon-medium/icon-medium.module';
 import { IconOkModule } from './icon-ok/icon-ok.module';
@@ -113,7 +116,10 @@ export const List = [
 	IconExternalLinkModule,
 	IconPlusModule,
 	IconSwitchModule,
-	IconGbmModule
+	IconGbmModule,
+	IconLogoutModule,
+	IconCopyModule,
+	IconGbmCoinModule
 ];
 
 export * from './icon-arrow-right/icon-arrow-right.module';
@@ -171,3 +177,6 @@ export * from './icon-external-link/icon-external-link.module';
 export * from './icon-plus/icon-plus.module';
 export * from './icon-switch/icon-switch.module';
 export * from './icon-gbm/icon-gbm.module';
+export * from './icon-logout/icon-logout.module';
+export * from './icon-copy/icon-copy.module';
+export * from './icon-gbm-coin/icon-gbm-coin.module';
