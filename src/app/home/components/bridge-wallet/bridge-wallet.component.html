@@ -1,0 +1,17 @@
+<div class="wallets">
+  <ng-container *ngFor="let wallet of walletsState">
+    <button *ngIf="wallet.selected"
+            (click)="chooseWallet(wallet)"
+            class="wallets-item">
+      <gbm-icon [name]="wallet.icon"
+                [width]="'20px'"
+                [height]="'20px'"
+                [fill]="wallet.iconColor || ''">
+      </gbm-icon>
+      {{ wallet.title }} Wallet
+      <div class="wallets-item__state"
+           [class.state--online]="wallet.connected">
+      </div>
+    </button>
+  </ng-container>
+</div>

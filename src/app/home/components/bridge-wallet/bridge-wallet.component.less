@@ -1,0 +1,72 @@
+@import (reference) 'variables.less';
+
+@keyframes blink-animation {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.wallets {
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @media @xs {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  &-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 14px 16px;
+    border-radius: 16px;
+    gap: 8px;
+    background-color: transparent;
+    outline: none;
+    border: 1px solid var(--cool-gray-30);
+    position: relative;
+    transition: all .3s ease-in-out;
+
+    &:hover {
+      background-color: var(--cool-gray-00);
+      border-color: var(--cool-gray-40);
+      transition: all .3s ease-in-out;
+    }
+
+    @media @xs {
+      width: 100%;
+    }
+
+    gbm-icon {
+      border-radius: 100%;
+    }
+
+    &__state {
+      position: absolute;
+      right: 15px;
+      height: 14px;
+      width: 14px;
+      border-radius: 100%;
+      box-shadow: 0 6px 20px var(--cool-gray-40);
+      background-color: var(--red-60);
+      animation: blink-animation 2s infinite;
+    }
+
+    .state--online {
+      background-color: var(--light-green-50);
+      animation: none;
+    }
+  }
+}
