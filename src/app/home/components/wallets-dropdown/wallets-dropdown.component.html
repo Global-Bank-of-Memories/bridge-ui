@@ -1,0 +1,51 @@
+<div class="wallets-dropdown">
+  <button #dropdownInput
+          (click)="connectWallet(selectedWallet)"
+          class="wallets-dropdown-item">
+    <gbm-icon [name]="selectedWallet?.icon"
+              [width]="'20px'"
+              [height]="'20px'"
+              [fill]="selectedWallet?.iconColor || ''">
+    </gbm-icon>
+    <span class="wallets-dropdown-item__title"
+          [class.wallets-dropdown-item__title--connected]="selectedWallet.connected">
+      {{ selectedWallet?.title }}
+    </span>
+    <div [@fade]
+         *ngIf="selectedWallet.connected"
+         class="wallets-dropdown-item__state">
+      <span class="wallets-dropdown-item__state-title">Connected</span>
+    </div>
+    <div (click)="openDropdown($event)"
+         class="wallets-dropdown-item__select">
+      <gbm-icon [name]="'chevronDown'"
+                [width]="'20px'"
+                [height]="'20px'"
+                [fill]="'--cool-gray-50_light'">
+      </gbm-icon>
+    </div>
+  </button>
+
+  <ul [@fade]
+      *ngIf="show"
+      class="wallets-dropdown-list">
+    <li *ngFor="let item of data; let i = index"
+        class="wallets-dropdown-list__item wallets-dropdown-list__item-{{ i + 1 }}"
+        (click)="chooseWallet(item)">
+      <gbm-icon [name]="item.icon"
+                [width]="'20px'"
+                [height]="'20px'"
+                [fill]="item.iconColor || ''">
+      </gbm-icon>
+      <span class="wallets-dropdown-list__item-title"
+            [class.wallets-dropdown-list__item-title--connected]="item.connected">
+        {{ item?.title }}
+      </span>
+      <div [@fade]
+           *ngIf="item.connected"
+           class="wallets-dropdown-list__item-state">
+        <span class="wallets-dropdown-list__item-state__title">Connected</span>
+      </div>
+    </li>
+  </ul>
+</div>

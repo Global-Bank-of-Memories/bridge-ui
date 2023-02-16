@@ -1,11 +1,26 @@
 @import (reference) 'variables.less';
 
+@keyframes boxShadow {
+  0% {
+    box-shadow: 0 6px 20px var(--cool-gray-40);
+  }
+
+  50% {
+    box-shadow: 0 6px 20px var(--cool-gray-20);
+  }
+
+  100% {
+    box-shadow: 0 6px 20px var(--cool-gray-40);
+  }
+}
+
 .bridge-form {
   margin-top: 24px;
   padding: 24px 24px 40px 24px;
   border-radius: 16px;
   box-shadow: 0 6px 20px var(--cool-gray-20);
   background-color: var(--static-white);
+  animation: boxShadow 30s ease-in-out infinite;
 
   &-heading {
     display: flex;
@@ -43,6 +58,20 @@
       position: relative;
       margin-bottom: 108px;
 
+      &-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      &-switch {
+        position: absolute;
+        right: 0;
+        top: -19px;
+        border-radius: 64px;
+        padding: 8px 18px;
+      }
+
       &-wrapper {
         margin-top: 8px;
         position: relative;
@@ -50,6 +79,10 @@
         &-input {
           border-bottom-right-radius: 0;
           border-bottom-left-radius: 0;
+
+          &:read-only {
+            background-color: var(--cool-gray-10);
+          }
         }
 
         &-pill {
@@ -70,7 +103,7 @@
           &__title {
             font-size: 16px;
             font-weight: 600;
-            
+
             @media @m {
               font-size: 20px;
             }
@@ -87,7 +120,7 @@
         border: 1px solid;
         position: absolute;
         width: 100%;
-        padding: 24px 12px 12px 12px;
+        padding: 12px;
         background: var(--static-white);
         top: 96px;
         border-top: none;
@@ -103,10 +136,14 @@
           text-overflow: ellipsis;
         }
       }
+
+      .wallet-to-info {
+        background-color: var(--cool-gray-10);
+      }
     }
 
     &__placeholder {
-      margin-top: 12px;
+      margin: 12px 0;
       padding: 12px 48px 12px 12px;
       background-color: var(--cool-gray-10);
       border-radius: 16px;
@@ -115,11 +152,38 @@
       overflow: hidden;
       text-overflow: ellipsis;
       position: relative;
+      cursor: pointer;
 
       gbm-icon {
         position: absolute;
         top: 14px;
         right: 16px;
+        cursor: pointer;
+      }
+    }
+
+    &__pass {
+      margin-bottom: 32px;
+    }
+
+    &__logger {
+      position: relative;
+
+      &-container {
+        background-color: var(--cool-gray-20);
+        border-radius: 16px;
+        font-size: 14px;
+        padding: 8px;
+        height: 76px;
+        overflow-y: auto;
+        scroll-padding-bottom: 0;
+      }
+
+      gbm-icon {
+        position: absolute;
+        top: 14px;
+        right: 16px;
+        cursor: pointer;
       }
     }
 

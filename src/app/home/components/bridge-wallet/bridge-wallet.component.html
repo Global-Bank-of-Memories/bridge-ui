@@ -1,17 +1,20 @@
 <div class="wallets">
-  <ng-container *ngFor="let wallet of walletsState">
-    <button *ngIf="wallet.selected"
-            (click)="chooseWallet(wallet)"
-            class="wallets-item">
-      <gbm-icon [name]="wallet.icon"
-                [width]="'20px'"
-                [height]="'20px'"
-                [fill]="wallet.iconColor || ''">
-      </gbm-icon>
-      {{ wallet.title }} Wallet
-      <div class="wallets-item__state"
-           [class.state--online]="wallet.connected">
-      </div>
-    </button>
-  </ng-container>
+  <button class="wallets-item">
+    <gbm-icon [name]="gbmWallet?.icon"
+              [width]="'20px'"
+              [height]="'20px'"
+              [fill]="gbmWallet?.iconColor || ''">
+    </gbm-icon>
+    <span class="wallets-item__title"
+          [class.wallets-item__title--connected]="gbmWallet.connected">
+      {{ gbmWallet?.title }}
+    </span>
+    <div [@fade]
+         *ngIf="gbmWallet.connected"
+         class="wallets-item__state">
+      <span class="wallets-item__state-title">Connected</span>
+    </div>
+  </button>
+
+  <br-wallets-dropdown [data]="wallets"></br-wallets-dropdown>
 </div>

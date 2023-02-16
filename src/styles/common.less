@@ -263,3 +263,30 @@ gbm-button {
   background-size: 2000px 100%;
   box-shadow: 0 6px 20px var(--cool-gray-20);
 }
+
+.log-default {
+  color: var(--static-black);
+}
+
+.log-warning {
+  color: #a8980c;
+}
+
+.log-error {
+  color: var(--red-60);
+}
+
+.log-success {
+  color: var(--light-green-50);
+}
+
+.bridge-form-container__label-switch {
+  &:hover {
+    gbm-icon {
+      svg {
+        fill: var(--static-black);
+        transition: all .3s ease-in-out;
+      }
+    }
+  }
+}

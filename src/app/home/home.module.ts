@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { InjectionToken, NgModule } from '@angular/core';
 
 // Components
 import { HomeComponent } from './home.component';
@@ -13,12 +13,13 @@ import { BridgeFormComponent } from './components/bridge-form/bridge-form.compon
 import { BridgeWalletComponent } from './components/bridge-wallet/bridge-wallet.component';
 import { ClipboardModule } from 'ngx-clipboard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BridgeWalletsModalComponent } from './components/bridge-wallets-modal/bridge-wallets-modal.component';
-import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
+import { GbmAutoFocusModule } from '@shared/directives/autofocus/autofocus.module';
+import { WalletsDropdownComponent } from './components/wallets-dropdown/wallets-dropdown.component';
 
 @NgModule({
-	declarations: [HomeComponent, BridgeFormComponent, BridgeWalletComponent, BridgeWalletsModalComponent],
+	declarations: [HomeComponent, BridgeFormComponent, BridgeWalletComponent, WalletsDropdownComponent],
 	exports: [HomeComponent],
 	imports: [
 		CommonModule,
@@ -30,7 +31,9 @@ import { HttpClientModule } from '@angular/common/http';
 		NgbModalModule,
 		FormsModule,
 		ReactiveFormsModule,
-		HttpClientModule
+		HttpClientModule,
+		GbmAutoFocusModule,
+		NgbTooltipModule
 	]
 })
 export class HomeModule {}

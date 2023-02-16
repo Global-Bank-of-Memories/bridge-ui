@@ -15,7 +15,7 @@
 }
 
 .wallets {
-  margin-top: 48px;
+  margin-top: 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -33,40 +33,64 @@
     padding: 14px 16px;
     border-radius: 16px;
     gap: 8px;
-    background-color: transparent;
+    width: 100%;
+    background-color: var(--cool-gray-10);
     outline: none;
     border: 1px solid var(--cool-gray-30);
     position: relative;
     transition: all .3s ease-in-out;
 
+    &__title {
+      width: calc(100% - 70px);
+      overflow: hidden;
+      display: inline-block;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-align: left;
+    }
+
+    &__title--connected {
+      width: calc(100% - 134px);
+    }
+
+    &__state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 8px;
+      border-radius: 16px;
+      position: absolute;
+      right: 24px;
+      background-color: rgb(24 118 11);
+      color: var(--static-white);
+
+      &-title {
+        font-size: 8px;
+        text-transform: uppercase;
+        font-weight: 800;
+      }
+    }
+
     &:hover {
-      background-color: var(--cool-gray-00);
-      border-color: var(--cool-gray-40);
+      background-color: var(--cool-gray-20);
       transition: all .3s ease-in-out;
     }
 
     @media @xs {
-      width: 100%;
+      width: calc(50% - 8px);
     }
 
     gbm-icon {
       border-radius: 100%;
     }
+  }
 
-    &__state {
-      position: absolute;
-      right: 15px;
-      height: 14px;
-      width: 14px;
-      border-radius: 100%;
-      box-shadow: 0 6px 20px var(--cool-gray-40);
-      background-color: var(--red-60);
-      animation: blink-animation 2s infinite;
-    }
+  br-wallets-dropdown {
+    display: block;
+    width: 100%;
 
-    .state--online {
-      background-color: var(--light-green-50);
-      animation: none;
+    @media @xs {
+      width: calc(50% - 8px);
     }
   }
 }

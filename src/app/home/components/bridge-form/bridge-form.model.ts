@@ -28,8 +28,8 @@ export interface BridgeBasicFormControls {
 }
 
 export const BRIDGE_BASIC_FORM_CONTROLS: BridgeBasicFormControls = {
-	from: 1.0000001,
-	to: 1.0000001
+	from: 0.0000001,
+	to: 0.0000001
 };
 
 export type BridgeFormModel = BridgeBasicFormControls;

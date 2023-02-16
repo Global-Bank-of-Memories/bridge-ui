@@ -4,19 +4,17 @@ import { take } from 'rxjs/operators';
 import { IWalletExchange, IWalletState } from '../bridge-form/bridge-form.model';
 import { PolygonService } from '@home/services/polygon/polygon.service';
 import { GbmService } from '@home/services/gbm/gbm.service';
-import { WalletBaseService } from '@home/services/wallet-base';
+import { LOGGER_TYPES, WalletBaseService } from '@home/services/wallet-base';
+import { LoggerDictionary } from '../logger/logger.dictionary';
+import { FADE_ANIMATION } from '@shared/animations/fade.animation';
 
 @Component({
 	selector: 'br-bridge-wallet',
 	templateUrl: './bridge-wallet.component.html',
-	styleUrls: ['./bridge-wallet.component.less']
+	styleUrls: ['./bridge-wallet.component.less'],
+	animations: [FADE_ANIMATION]
 })
 export class BridgeWalletComponent implements OnInit {
-	@Output()
-	public walletsToExchange: EventEmitter<IWalletExchange> = new EventEmitter<IWalletExchange>();
-
-	public walletsState: IWalletState[] = [];
-
 	constructor(
 		private modalRef: NgbModal,
 		private gbmService: GbmService,
@@ -24,30 +22,17 @@ export class BridgeWalletComponent implements OnInit {
 		public walletBase: WalletBaseService
 	) {}
 
-	public ngOnInit(): void {
-		this.gbmService.getWalletData().subscribe(() => {
-			this.walletsState = WalletBaseService.state;
-			this.walletsToExchange.emit({
-				from: this.walletsState.find(item => item.from && item.selected) || null,
-				to: this.walletsState.find(item => !item.from && item.selected) || null
-			});
-		});
+	public get gbmWallet(): IWalletState | null {
+		return WalletBaseService.state.find(wallet => wallet.id === 'gbm') || null;
 	}
 
-	public async chooseWallet(crypto: IWalletState): Promise<void> {
-		if (crypto.isPrimary) {
-			return;
-		}
+	public get wallets(): IWalletState[] {
+		return WalletBaseService.state.filter(wallet => wallet.id !== 'gbm');
+	}
 
-		this.polygonService
-			.getWalletData()
-			.pipe(take(1))
-			.subscribe(() => {
-				this.walletsState = WalletBaseService.state;
-				this.walletsToExchange.emit({
-					from: this.walletsState.find(item => item.from && item.selected) || null,
-					to: this.walletsState.find(item => !item.from && item.selected) || null
-				});
-			});
+	public ngOnInit(): void {
+		this.gbmService.getWalletData().subscribe(() => {
+			WalletBaseService.logger(LoggerDictionary.WALLET_CONNECTED_SUCCESSFULLY, LOGGER_TYPES.SUCCESS);
+		});
 	}
 }

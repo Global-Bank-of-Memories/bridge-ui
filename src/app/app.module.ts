@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 import { ACCESS_TOKEN_STORAGE_KEY } from '@auth/services/auth/auth.model';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, InjectionToken, NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppService } from './app.service';
@@ -21,6 +21,7 @@ import { ToastModule } from '@shared/components/toast/toast.module';
 import { HomeModule } from '@home/home.module';
 import { GbmConnectionStateModule } from '@shared/directives/connection-state/connection-state.module';
 import { JwtInterceptor } from '@auth/interceptors/auth.interceptor';
+import { GbmService } from '@home/services/gbm/gbm.service';
 
 @NgModule({
 	declarations: [AppComponent],
