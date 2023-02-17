@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '@auth/services/auth/auth.service';
 import { FADE_ANIMATION } from '@shared/animations/fade.animation';
 import * as _ from 'lodash';
-import { IWalletExchange } from './components/bridge-form/bridge-form.model';
+import { WalletBaseService } from './services/wallet-base';
 
 @Component({
 	selector: 'br-home',
@@ -11,11 +11,9 @@ import { IWalletExchange } from './components/bridge-form/bridge-form.model';
 	animations: [FADE_ANIMATION]
 })
 export class HomeComponent {
-	public walletsToExchange!: IWalletExchange;
-
 	constructor(public authService: AuthService) {}
 
-	public onWalletsToExchange(wallets: IWalletExchange): void {
-		this.walletsToExchange = wallets;
+	public get emptyState(): boolean {
+		return WalletBaseService.emptyState;
 	}
 }

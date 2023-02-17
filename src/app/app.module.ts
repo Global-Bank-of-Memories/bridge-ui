@@ -21,7 +21,6 @@ import { ToastModule } from '@shared/components/toast/toast.module';
 import { HomeModule } from '@home/home.module';
 import { GbmConnectionStateModule } from '@shared/directives/connection-state/connection-state.module';
 import { JwtInterceptor } from '@auth/interceptors/auth.interceptor';
-import { GbmService } from '@home/services/gbm/gbm.service';
 
 @NgModule({
 	declarations: [AppComponent],

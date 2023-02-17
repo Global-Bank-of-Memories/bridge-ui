@@ -30,7 +30,14 @@
         <span class="gbm-body-2 bridge-form-container__label-info__content">Wallet:
           <strong>{{ walletFrom?.walletId }}</strong></span>
         <span class="gbm-body-2 bridge-form-container__label-info__content">Balance: <strong>{{
-            walletFrom?.balance }}</strong></span>
+            walletFrom?.balance }}</strong>
+          <button [@fade]
+                  *ngIf="walletFrom.showRequestAssets"
+                  class="gbm-btn gbm-btn-sm gbm-btn-rounded gbm-btn-primary bridge-form-container__label-info__content-assets"
+                  (click)="onRequestAssets(walletFrom)">
+            Assets
+          </button>
+        </span>
       </div>
     </label>
 
@@ -71,7 +78,15 @@
         <span class="gbm-body-2 bridge-form-container__label-info__content">Wallet: <strong>{{
             walletTo?.walletId }}</strong></span>
         <span class="gbm-body-2 bridge-form-container__label-info__content">Balance: <strong>{{
-            walletTo?.balance }}</strong></span>
+            walletTo?.balance }}</strong>
+
+          <button [@fade]
+                  *ngIf="walletTo.showRequestAssets"
+                  class="gbm-btn gbm-btn-sm gbm-btn-rounded gbm-btn-primary bridge-form-container__label-info__content-assets"
+                  (click)="onRequestAssets(walletTo)">
+            Assets
+          </button>
+        </span>
       </div>
     </label>
 

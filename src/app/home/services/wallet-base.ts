@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { ElementRef, Injectable } from '@angular/core';
-import { IWalletState, WalletsState } from '@home/components/bridge-form/bridge-form.model';
+import { IWalletState, WalletsState } from './wallet.model';
 import { ToastService } from '@shared/components/toast/toast.service';
 import { Observable } from 'rxjs';
 
@@ -25,6 +25,8 @@ export enum LOGGER_TYPES {
 export abstract class WalletBaseService {
 	public static state = WalletsState;
 	public static logs = '';
+	public static xdr = '';
+	public static emptyState = false;
 	public static loading = false;
 	public static submitState = SubmitState.SEND_TRANSFER;
 

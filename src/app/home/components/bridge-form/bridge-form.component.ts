@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable brace-style */
 import { Component, Injector, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
@@ -8,8 +7,7 @@ import {
 	BridgeFormControls,
 	BridgeFormGroup,
 	BridgeFormModel,
-	BRIDGE_BASIC_FORM_CONTROLS,
-	IWalletState
+	BRIDGE_BASIC_FORM_CONTROLS
 } from './bridge-form.model';
 import { PolygonService, validatorUrls } from '@home/services/polygon/polygon.service';
 import { BridgeService } from '@home/services/bridge/bridge.service';
@@ -18,6 +16,10 @@ import { GbmService } from '@home/services/gbm/gbm.service';
 import * as _ from 'lodash';
 import { LOGGER_TYPES, SubmitState, WalletBaseService } from '@home/services/wallet-base';
 import { LoggerDictionary } from '../logger/logger.dictionary';
+import { IWalletState } from '@home/services/wallet.model';
+import { catchError } from 'rxjs/operators';
+import { BigNumber } from '@ethersproject/bignumber';
+import { ConcordiumService } from '@home/services/concordium/concordium.service';
 
 @Component({
 	selector: 'br-bridge-form',
@@ -29,20 +31,22 @@ export class BridgeFormComponent
 	extends GenericFormBaseComponent<BridgeFormControls, BridgeFormModel>
 	implements OnInit, OnChanges
 {
-	public xdr = '';
 	public validationMessage = '';
 	public transactionHash = '';
 	public withdrawEthereumResponse!: any;
 	public formGroup!: BridgeFormGroup;
 	public switchDisabled = false;
 	public serviceForTransactions!: any;
+	public transferPgnToGbmRes!: any;
+	public transferCncToGbmRes!: any;
 
 	constructor(
 		formBuilder: FormBuilder,
 		private bridgeService: BridgeService,
 		private polygonService: PolygonService,
 		private gbmService: GbmService,
-		private injector: Injector
+		private injector: Injector,
+		private concordiumService: ConcordiumService
 	) {
 		super(formBuilder);
 	}
@@ -65,6 +69,10 @@ export class BridgeFormComponent
 
 	public get logs(): string {
 		return WalletBaseService.logs;
+	}
+
+	public get xdr(): string {
+		return WalletBaseService.xdr;
 	}
 
 	public get from(): FormControl {
@@ -138,7 +146,51 @@ export class BridgeFormComponent
 	}
 
 	public withdraw(): void {
-		this.gbmService.handleWithdraw(this.transactionHash, this.walletTo?.walletId || '');
+		if (this.walletTo?.id === 'pgn') {
+			void this.gbmService.handleWithdraw(this.transactionHash, this.walletTo?.walletId || '').then(() => {});
+
+			return;
+		}
+
+		if (this.walletTo?.id === 'cnc') {
+			void this.concordiumService.handleWithdraw(this.transactionHash, this.walletTo?.walletId || '').then(() => {});
+			return;
+		}
+
+		if (this.walletTo?.id === 'gbm') {
+			if (this.walletFrom?.id === 'pgn') {
+				void this.polygonService
+					.sendWithdraw(
+						this.transferPgnToGbmRes.transactionHash,
+						_.get(this.transferPgnToGbmRes, 'events.Deposit.logIndex', 0)
+					)
+					.then(() => {
+						WalletBaseService.logger(LoggerDictionary.TRANSFERING_COMPLETED);
+						WalletBaseService.loading = false;
+						WalletBaseService.submitState = SubmitState.SIGN;
+					})
+					.catch(() => {
+						WalletBaseService.loading = false;
+					});
+
+				return;
+			}
+
+			if (this.walletFrom?.id === 'cnc') {
+				void this.concordiumService
+					.sendWithdraw(this.transferCncToGbmRes, this.walletTo.walletId)
+					.then(() => {
+						WalletBaseService.logger(LoggerDictionary.TRANSFERING_COMPLETED);
+						WalletBaseService.loading = false;
+						WalletBaseService.submitState = SubmitState.SIGN;
+					})
+					.catch(() => {
+						WalletBaseService.loading = false;
+					});
+
+				return;
+			}
+		}
 	}
 
 	public sendTransfer(): void {
@@ -160,31 +212,204 @@ export class BridgeFormComponent
 
 		WalletBaseService.loading = true;
 		WalletBaseService.logger(`${LoggerDictionary.SENDING_TRANSFER_FROM} ${this.walletFrom?.title}`);
-		this.formGroup.addControl('password', new FormControl('', Validators.required));
-		this.gbmService.sendTransfer(from.value).subscribe(xdr => {
-			this.xdr = xdr;
-			WalletBaseService.logger(LoggerDictionary.TRANSFERING_COMPLETED);
-			WalletBaseService.logger(LoggerDictionary.RE_ENTER_PASSWORD, LOGGER_TYPES.WARNING);
-			WalletBaseService.loading = false;
-			WalletBaseService.submitState = SubmitState.SIGN;
-		});
+
+		if (this.walletTo?.id === 'cnc') {
+			this.gbmService.sendTransfer(from.value, true).subscribe(xdr => {
+				WalletBaseService.xdr = xdr;
+				WalletBaseService.logger(LoggerDictionary.TRANSFERING_COMPLETED);
+				WalletBaseService.logger(LoggerDictionary.RE_ENTER_PASSWORD, LOGGER_TYPES.WARNING);
+				WalletBaseService.loading = false;
+				WalletBaseService.submitState = SubmitState.SIGN;
+			});
+
+			return;
+		}
+
+		if (this.walletTo?.id === 'pgn') {
+			this.gbmService.sendTransfer(from.value).subscribe(xdr => {
+				WalletBaseService.xdr = xdr;
+				WalletBaseService.logger(LoggerDictionary.TRANSFERING_COMPLETED);
+				WalletBaseService.logger(LoggerDictionary.RE_ENTER_PASSWORD, LOGGER_TYPES.WARNING);
+				WalletBaseService.loading = false;
+				WalletBaseService.submitState = SubmitState.SIGN;
+			});
+
+			return;
+		}
+
+		if (this.walletTo?.id === 'gbm') {
+			if (this.walletFrom?.id === 'pgn') {
+				void this.polygonService
+					.sendTransfer(this.walletFrom.walletId, this.walletTo.walletId, from.value)
+					.then(res => {
+						this.transferPgnToGbmRes = res;
+						WalletBaseService.submitState = SubmitState.WITHDRAW;
+						WalletBaseService.loading = false;
+					})
+					.catch(() => {
+						WalletBaseService.loading = false;
+					});
+
+				return;
+			}
+
+			if (this.walletFrom?.id === 'cnc') {
+				void this.concordiumService
+					.deposit(this.walletTo.walletId, this.walletFrom.walletId, from.value)
+					.then(res => {
+						this.transferCncToGbmRes = res;
+
+						void this.concordiumService
+							.getDepositParams(this.transferCncToGbmRes)
+							.toPromise()
+							.then(() => {
+								this.concordiumService
+									.concordiumDeposit(this.transferCncToGbmRes, this.walletTo.walletId)
+									.toPromise()
+									.then(() => {
+										WalletBaseService.submitState = SubmitState.WITHDRAW;
+										WalletBaseService.loading = false;
+									})
+									.catch(() => {
+										WalletBaseService.logger('Error while withdraw', LOGGER_TYPES.ERROR);
+										WalletBaseService.loading = false;
+									});
+							})
+							.catch(() => {
+								WalletBaseService.loading = false;
+								WalletBaseService.logger('Error while checking deposit params', LOGGER_TYPES.ERROR);
+							});
+					})
+					.catch(() => {
+						WalletBaseService.logger('Error while withdraw', LOGGER_TYPES.ERROR);
+						WalletBaseService.loading = false;
+					});
+
+				return;
+			}
+		}
 	}
 
 	public sign(): void {
 		WalletBaseService.loading = true;
 		const pass = this.formGroup.get('password');
-		this.gbmService.sign(pass?.value).subscribe(
-			res => {
-				this.transactionHash = res;
-				this.xdr = '';
-				WalletBaseService.loading = false;
-				WalletBaseService.submitState = SubmitState.WITHDRAW;
-				WalletBaseService.logger(LoggerDictionary.TRANSACTION_SIGNED, LOGGER_TYPES.SUCCESS);
-			},
-			err => {
-				WalletBaseService.loading = false;
+
+		if (this.walletTo?.id === 'cnc') {
+			this.gbmService.sign(pass?.value).subscribe(
+				res => {
+					this.transactionHash = res;
+					WalletBaseService.xdr = '';
+					WalletBaseService.loading = false;
+					WalletBaseService.submitState = SubmitState.WITHDRAW;
+					WalletBaseService.logger(LoggerDictionary.TRANSACTION_SIGNED, LOGGER_TYPES.SUCCESS);
+				},
+				err => {
+					WalletBaseService.loading = false;
+				}
+			);
+
+			return;
+		}
+
+		if (this.walletTo?.id === 'pgn') {
+			this.gbmService.sign(pass?.value).subscribe(
+				res => {
+					this.transactionHash = res;
+					WalletBaseService.xdr = '';
+					WalletBaseService.loading = false;
+					WalletBaseService.submitState = SubmitState.WITHDRAW;
+					WalletBaseService.logger(LoggerDictionary.TRANSACTION_SIGNED, LOGGER_TYPES.SUCCESS);
+				},
+				err => {
+					WalletBaseService.loading = false;
+				}
+			);
+
+			return;
+		}
+
+		if (this.walletTo?.id === 'gbm') {
+			if (this.walletFrom?.id === 'pgn') {
+				this.polygonService.sign(pass?.value).subscribe(
+					res => {
+						this.transactionHash = res;
+						WalletBaseService.xdr = '';
+						WalletBaseService.loading = false;
+						WalletBaseService.submitState = SubmitState.SEND_TRANSFER;
+						WalletBaseService.logger(LoggerDictionary.TRANSACTION_SIGNED, LOGGER_TYPES.SUCCESS);
+					},
+					err => {
+						WalletBaseService.loading = false;
+					}
+				);
+
+				return;
 			}
-		);
+
+			if (this.walletFrom?.id === 'cnc') {
+				this.polygonService.sign(pass?.value).subscribe(
+					res => {
+						this.transactionHash = res;
+						WalletBaseService.xdr = '';
+						WalletBaseService.loading = false;
+						WalletBaseService.submitState = SubmitState.SEND_TRANSFER;
+						WalletBaseService.logger(LoggerDictionary.TRANSACTION_SIGNED, LOGGER_TYPES.SUCCESS);
+					},
+					err => {
+						WalletBaseService.loading = false;
+					}
+				);
+
+				return;
+			}
+		}
+	}
+
+	public onRequestAssets(wallet: IWalletState): void {
+		if (wallet.walletId.length < 3) {
+			WalletBaseService.logger(LoggerDictionary.MISSING_SECOND_WALLET, LOGGER_TYPES.WARNING);
+			return;
+		}
+
+		if (wallet.id === 'cnc') {
+			WalletBaseService.logger(`Requesting assets for ${wallet.title}...`);
+			this.concordiumService
+				.requestAssets(wallet.walletId)
+				.then(res => {
+					if (res && res.success && !_.isEmpty(res.result)) {
+						WalletBaseService.logger(`Assets request for ${wallet.title} succeeded`, LOGGER_TYPES.SUCCESS);
+					} else {
+						WalletBaseService.logger(`Requesting assets for ${wallet.title} failed`, LOGGER_TYPES.ERROR);
+					}
+
+					return;
+				})
+				.catch(() => {
+					WalletBaseService.logger(`Requesting assets for ${wallet.title} failed`, LOGGER_TYPES.ERROR);
+				});
+
+			return;
+		}
+
+		if (wallet.id === 'pgn') {
+			WalletBaseService.logger(`Requesting assets for ${wallet.title}...`);
+			this.polygonService
+				.requestAssets()
+				.then(res => {
+					if (res) {
+						WalletBaseService.logger(`Assets request for ${wallet.title} succeeded`, LOGGER_TYPES.SUCCESS);
+					} else {
+						WalletBaseService.logger(`Requesting assets for ${wallet.title} failed`, LOGGER_TYPES.ERROR);
+					}
+
+					return;
+				})
+				.catch(() => {
+					WalletBaseService.logger(`Requesting assets for ${wallet.title} failed`, LOGGER_TYPES.ERROR);
+				});
+
+			return;
+		}
 	}
 
 	private setValidators(): void {

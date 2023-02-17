@@ -1,8 +1,14 @@
 import * as _ from 'lodash';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, from, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { map, switchMap } from 'rxjs/operators';
-import { WalletBaseService } from '../wallet-base';
+import { catchError, filter, map, switchMap } from 'rxjs/operators';
+import { LOGGER_TYPES, SubmitState, WalletBaseService } from '../wallet-base';
+import { detectConcordiumProvider } from '@concordium/browser-wallet-api-helpers';
+import { AccountTransactionType } from '@concordium/common-sdk/lib/types';
+import { CcdAmount } from '@concordium/common-sdk/lib/types/ccdAmount';
+import { toBuffer, serializeUpdateContractParameters } from '@concordium/web-sdk';
+import { environment } from '@environments/environment';
+import { BRIDGE_CONTRACT_RAW_SCHEMA } from './concordium.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -12,7 +18,7 @@ export class ConcordiumService extends WalletBaseService {
 
 	public getWalletData(): Observable<any> {
 		return this.getWallet().pipe(
-			switchMap(walletId => forkJoin([of(walletId), this.getBalance(of(walletId))])),
+			switchMap(walletId => forkJoin([of(walletId), this.getBalance(walletId)])),
 			map(([walletId, balance]) => {
 				const wallet = { walletId, balance };
 				WalletBaseService.updateWalletState('cnc', wallet);
@@ -21,61 +27,202 @@ export class ConcordiumService extends WalletBaseService {
 		);
 	}
 
+	protected getBalance(walletId: string): Observable<any> {
+		return this.httpClient
+			.post(`${environment.concordiumService}/invokeContract/getBalanceOf`, {
+				parameters: [
+					{
+						address: {
+							Account: [walletId]
+						},
+						token_id: ''
+					}
+				]
+			})
+			.pipe(
+				filter(Boolean),
+				map(balance => Number(balance) / 10 ** 7)
+			);
+	}
+
+	public getDepositParams(transactionHash: string): Observable<any> {
+		return this.httpClient
+			.post(`${environment.concordiumService}/invokeContract/getDepositParams`, { hash: transactionHash })
+			.pipe(filter(Boolean));
+	}
+
 	protected getWallet(): Observable<any> {
-		return of('--');
+		return from(detectConcordiumProvider()).pipe(switchMap(provider => from(provider.connect())));
 	}
 
-	protected getBalance(targetWallet: any): Observable<any> {
-		return of('0');
+	public withdraw(transactionHash: string, walletTo: string): Observable<any> {
+		const formData: FormData = new FormData();
+		formData.append('transaction_hash', transactionHash);
+		formData.append('destination', walletTo);
+
+		return this.httpClient.post(`${environment.bridge}/stellar/withdraw/concordium`, formData).pipe(filter(Boolean));
 	}
 
-	// TBC
-	private async handleConcordium(): Promise<void> {
-		// const provider = await detectConcordiumProvider();
-		// const accountAddress = await provider.connect();
-		// const gRPCProvider = new HttpProvider('http://167.86.71.92:10001');
-		// const rpcClient = new JsonRpcClient(gRPCProvider);
-		// const param = serializeUpdateContractParameters(
-		// 	'gbm_Bridge',
-		// 	'balanceOf',
-		// 	[
-		// 		{
-		// 			address: {
-		// 				Account: [accountAddress]
-		// 			},
-		// 			token_id: ''
-		// 		}
-		// 	],
-		// 	toBuffer(BRIDGE_CONTRACT_RAW_SCHEMA, 'base64')
-		// );
-		// const res = await rpcClient.invokeContract({
-		// 	method: 'gbm_Bridge.balanceOf',
-		// 	contract: {
-		// 		index: BigInt(2928),
-		// 		subindex: BigInt(0)
-		// 	},
-		// 	parameter: param
-		// });
-		// console.log(res);
-		// this.walletState = this.walletState.map(i => {
-		// 	if (i.title === 'Concordium') {
-		// 		return {
-		// 			...i,
-		// 			walletId: accountAddress || ''
-		// 		};
-		// 	}
-		// 	return i;
-		// });
-		// console.log(
-		// 	'🚀 ~ file: bridge-wallet.component.ts:34 ~ BridgeWalletComponent ~ chooseWallet ~ accountAddress',
-		// 	accountAddress
-		// );
-		// if (accountAddress != null) {
-		// 	setEthereumAccount(accountAddress);
-		// }
-		// const modalRef = this.modalRef.open(BridgeWalletsModalComponent, {
-		// 	centered: true,
-		// 	modalDialogClass: 'bridge-wallets-modal'
-		// });
+	public concordiumDeposit(transactionHash: string, walletTo: string): Observable<any> {
+		const formData: FormData = new FormData();
+		formData.append('hash', transactionHash);
+		formData.append('stellar_address', walletTo);
+
+		return this.httpClient
+			.post(`${environment.bridge}/concordium/deposit`, formData, { responseType: 'text' })
+			.pipe(filter(Boolean));
+	}
+
+	public async handleWithdraw(transactionHash: string, walletTo: string): Promise<void> {
+		WalletBaseService.loading = true;
+		WalletBaseService.logger('Starting withdraw...');
+		const interval = setInterval(() => {
+			this.withdraw(transactionHash, walletTo)
+				.pipe(
+					catchError(err => {
+						clearInterval(interval);
+						WalletBaseService.logger('Error while withdraw', LOGGER_TYPES.ERROR);
+						WalletBaseService.loading = false;
+						return err;
+					})
+				)
+				.subscribe(res => {
+					if (res) {
+						const withdrawConcordiumResponse = res;
+						clearInterval(interval);
+
+						void detectConcordiumProvider()
+							.then(provider => {
+								if (provider) {
+									const CONTRACT_NAME = 'gbm_Bridge';
+									const TOKEN_CONTRACT_INDEX = 2945n;
+									const CONTRACT_SUB_INDEX = 0n;
+									const method = 'withdraw';
+									const parameters = {
+										amount: Number(withdrawConcordiumResponse.amount),
+										expiration: withdrawConcordiumResponse.expiration * 1000,
+										id: Buffer.from(withdrawConcordiumResponse.deposit_id, 'hex').toJSON().data,
+										indexes: [0],
+										signatures: [Buffer.from(withdrawConcordiumResponse.signature, 'hex').toJSON().data],
+										to: {
+											Account: [withdrawConcordiumResponse.address]
+										}
+									};
+									console.log(parameters);
+									void provider
+										.sendTransaction(
+											walletTo,
+											AccountTransactionType.Update,
+											{
+												amount: new CcdAmount(0n),
+												address: {
+													index: TOKEN_CONTRACT_INDEX,
+													subindex: CONTRACT_SUB_INDEX
+												},
+												receiveName: `${CONTRACT_NAME}.${method}`,
+												maxContractExecutionEnergy: 100000n
+											},
+											parameters,
+											BRIDGE_CONTRACT_RAW_SCHEMA,
+											0
+										)
+										.then(txHash => {
+											void this.getDepositParams(txHash)
+												.toPromise()
+												.then(() => {
+													WalletBaseService.loading = false;
+													WalletBaseService.submitState = SubmitState.SEND_TRANSFER;
+													WalletBaseService.logger('Withdraw completed successfully', LOGGER_TYPES.SUCCESS);
+												})
+												.catch(() => {
+													WalletBaseService.loading = false;
+													WalletBaseService.logger('Error while checking deposit params', LOGGER_TYPES.ERROR);
+												});
+										})
+										.catch(() => {
+											WalletBaseService.loading = false;
+											WalletBaseService.logger('Error while sending transaction', LOGGER_TYPES.ERROR);
+										});
+								}
+							})
+							.catch(() => {
+								WalletBaseService.loading = false;
+								WalletBaseService.logger('Error while getting Concordium provider', LOGGER_TYPES.ERROR);
+							});
+					}
+				});
+		}, 1000);
+	}
+
+	public withdrawConcordium(transactionHash: string, walletTo: string): Observable<any> {
+		const formData: FormData = new FormData();
+		formData.append('transaction_hash', transactionHash);
+		formData.append('destination', walletTo);
+
+		return this.httpClient
+			.post(`${environment.bridge}/concordium/withdraw/stellar`, formData, { responseType: 'text' })
+			.pipe(filter(Boolean));
+	}
+
+	public async sendWithdraw(transactionHash: string, walletTo: string): Promise<any> {
+		WalletBaseService.loading = true;
+		WalletBaseService.logger('Starting withdraw...');
+		const interval = setInterval(() => {
+			void this.withdrawConcordium(transactionHash, walletTo)
+				.toPromise()
+				.then(res => {
+					if (res) {
+						clearInterval(interval);
+						WalletBaseService.xdr = res;
+					}
+				})
+				.catch(err => {
+					console.log(err);
+					clearInterval(interval);
+					WalletBaseService.logger('Error while withdraw', LOGGER_TYPES.ERROR);
+					WalletBaseService.loading = false;
+				});
+		}, 1000);
+	}
+
+	public async deposit(gbmWallet: string, concordiumWallet: string, value: string): Promise<string> {
+		const provider = await detectConcordiumProvider();
+		const ccdValue = Number(value) * 10 * 10 * 10 * 10 * 10 * 10 * 10;
+		const CONTRACT_NAME = 'gbm_Bridge';
+		const TOKEN_CONTRACT_INDEX = 2945n;
+		const CONTRACT_SUB_INDEX = 0n;
+		const method = 'deposit';
+		const byteArrayAccount = Buffer.from(gbmWallet).toJSON().data;
+		const byteArray256Account = Array(256 - byteArrayAccount.length).fill(0);
+		Array.prototype.push.apply(byteArray256Account, byteArrayAccount);
+
+		const parameters = {
+			amount: ccdValue,
+			destination: byteArray256Account
+		};
+
+		const txHash = provider.sendTransaction(
+			concordiumWallet,
+			AccountTransactionType.Update,
+			{
+				amount: new CcdAmount(0n),
+				address: {
+					index: TOKEN_CONTRACT_INDEX,
+					subindex: CONTRACT_SUB_INDEX
+				},
+				receiveName: `${CONTRACT_NAME}.${method}`,
+				maxContractExecutionEnergy: 100000n
+			},
+			parameters,
+			BRIDGE_CONTRACT_RAW_SCHEMA,
+			0
+		);
+
+		return txHash;
+	}
+
+	public async requestAssets(walletId: string): Promise<any> {
+		const provider = await detectConcordiumProvider();
+		return provider.addCIS2Tokens(walletId, [''], 2928n, 0n);
 	}
 }

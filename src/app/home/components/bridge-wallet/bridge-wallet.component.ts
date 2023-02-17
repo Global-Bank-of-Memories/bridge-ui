@@ -1,12 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { take } from 'rxjs/operators';
-import { IWalletExchange, IWalletState } from '../bridge-form/bridge-form.model';
 import { PolygonService } from '@home/services/polygon/polygon.service';
 import { GbmService } from '@home/services/gbm/gbm.service';
 import { LOGGER_TYPES, WalletBaseService } from '@home/services/wallet-base';
 import { LoggerDictionary } from '../logger/logger.dictionary';
 import { FADE_ANIMATION } from '@shared/animations/fade.animation';
+import { IWalletState } from '@home/services/wallet.model';
 
 @Component({
 	selector: 'br-bridge-wallet',
@@ -15,12 +14,7 @@ import { FADE_ANIMATION } from '@shared/animations/fade.animation';
 	animations: [FADE_ANIMATION]
 })
 export class BridgeWalletComponent implements OnInit {
-	constructor(
-		private modalRef: NgbModal,
-		private gbmService: GbmService,
-		private polygonService: PolygonService,
-		public walletBase: WalletBaseService
-	) {}
+	constructor(private gbmService: GbmService, public walletBase: WalletBaseService) {}
 
 	public get gbmWallet(): IWalletState | null {
 		return WalletBaseService.state.find(wallet => wallet.id === 'gbm') || null;

@@ -11,10 +11,11 @@
           [class.wallets-dropdown-item__title--connected]="selectedWallet.connected">
       {{ selectedWallet?.title }}
     </span>
-    <div [@fade]
-         *ngIf="selectedWallet.connected"
-         class="wallets-dropdown-item__state">
-      <span class="wallets-dropdown-item__state-title">Connected</span>
+    <div [class.not-connected]="!selectedWallet.connected"
+         class="wallets-dropdown-item__state ">
+      <span class="wallets-dropdown-item__state-title">
+        {{selectedWallet.connected ? 'Connected' : 'Not Connected'}}
+      </span>
     </div>
     <div (click)="openDropdown($event)"
          class="wallets-dropdown-item__select">

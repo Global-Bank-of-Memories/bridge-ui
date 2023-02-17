@@ -1,33 +1,20 @@
-/* eslint-disable @typescript-eslint/adjacent-overload-signatures */
 import _ from 'lodash';
+import CryptoJS from 'crypto-js';
 import StellarHDWallet from 'stellar-hd-wallet';
 import StellarSdk, { Asset, Keypair, Operation, Server, TransactionBuilder } from 'stellar-sdk';
 import { arrayify, zeroPad } from '@ethersproject/bytes';
+import { BigNumber } from '@ethersproject/bignumber';
 import { Buffer } from 'buffer';
-import {
-	catchError,
-	delay,
-	filter,
-	map,
-	repeatWhen,
-	retry,
-	share,
-	switchMap,
-	takeUntil,
-	tap,
-	withLatestFrom
-} from 'rxjs/operators';
+import { catchError, delay, filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { forkJoin, from, Observable, of, Subject, throwError } from 'rxjs';
 import { environment } from '@environments/environment';
-import { defer, forkJoin, from, Observable, of, Subject, throwError, timer } from 'rxjs';
 import { GBM_DESTINATION_PUBLIC_WALLET_ID, GBM_NETWORK_PASSPHRASE } from './gbm.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ToastService } from '@shared/components/toast/toast.service';
 import { LOGGER_TYPES, SubmitState, WalletBaseService } from '../wallet-base';
-import CryptoJS from 'crypto-js';
-import { PolygonService, validatorUrls } from '../polygon/polygon.service';
-import { BigNumber } from '@ethersproject/bignumber';
 import { LoggerDictionary } from '@home/components/logger/logger.dictionary';
+import { PolygonService, validatorUrls } from '../polygon/polygon.service';
+import { ToastService } from '@shared/components/toast/toast.service';
 
 window.Buffer = Buffer;
 
@@ -63,6 +50,10 @@ export class GbmService extends WalletBaseService {
 				};
 				WalletBaseService.updateWalletState('gbm', wallet);
 				return wallet;
+			}),
+			catchError(err => {
+				WalletBaseService.emptyState = true;
+				return err;
 			})
 		);
 	}
@@ -94,12 +85,43 @@ export class GbmService extends WalletBaseService {
 		return this.httpClient.post(`${environment.gbmApiUrl}/bridge/stellar/transaction`, { transaction_xdr: xdr });
 	}
 
-	public sendTransfer(fromValue: string): Observable<string> {
+	public sendTransfer(fromValue: string, isConcordium = false): Observable<string> {
 		const server = new Server(environment.stellar);
 		const fromWallet = WalletBaseService.state.find(wallet => wallet.from && wallet.selected);
 		const toWallet = WalletBaseService.state.find(wallet => !wallet.from && wallet.selected);
 		const sourceKeypair = Keypair.fromPublicKey(fromWallet?.walletId || '');
 		const sourcePublicKey = sourceKeypair.publicKey();
+
+		if (isConcordium) {
+			return forkJoin([from(server.loadAccount(sourcePublicKey)), from(server.fetchBaseFee())]).pipe(
+				map(([acc, baseFee]): string => {
+					this.transaction = new TransactionBuilder(acc, {
+						fee: String(baseFee),
+						networkPassphrase: GBM_NETWORK_PASSPHRASE
+					})
+						.addOperation(
+							Operation.payment({
+								destination: GBM_DESTINATION_PUBLIC_WALLET_ID,
+								asset: Asset.native(),
+								amount: fromValue.toString()
+							})
+						)
+						.setTimeout(0)
+						.build();
+
+					return this.transaction.toEnvelope().toXDR('base64');
+				}),
+				catchError((error): string => {
+					this.toastService.addAlertDanger({
+						header: 'GBM Bridge Gateway',
+						body: _.get(error, 'message', 'Unknown gbm bridge error')
+					});
+
+					return error;
+				})
+			);
+		}
+
 		const keyArray = zeroPad(arrayify(toWallet?.walletId || ''), 32);
 
 		return forkJoin([from(server.loadAccount(sourcePublicKey)), from(server.fetchBaseFee())]).pipe(
@@ -149,66 +171,87 @@ export class GbmService extends WalletBaseService {
 		const formData: FormData = new FormData();
 		formData.append('transaction_hash', transactionHash);
 
-		return this.httpClient.post(`${environment.bridge}/stellar/withdraw`, formData).pipe(filter(Boolean));
+		return this.httpClient.post(`${environment.bridge}/stellar/withdraw/ethereum`, formData).pipe(filter(Boolean));
 	}
 
-	public handleWithdraw(transactionHash: string, walletsToExchange: string): void {
+	public async handleWithdraw(transactionHash: string, walletTo: string): Promise<void> {
 		WalletBaseService.loading = true;
-		WalletBaseService.logger(LoggerDictionary.STARTING_WITHDRAW);
+		WalletBaseService.logger('Starting withdraw...');
 		const interval = setInterval(() => {
 			this.withdraw(transactionHash)
 				.pipe(
-					switchMap((res): any => {
-						clearInterval(interval);
-						const withdrawEthereumResponse = res;
-
-						if (_.isEmpty(withdrawEthereumResponse)) {
-							WalletBaseService.logger(LoggerDictionary.ETHEREUM_RESPONSE_ERROR, LOGGER_TYPES.ERROR);
-							throw throwError(withdrawEthereumResponse);
-						}
-
-						return of({
-							id: `0x${withdrawEthereumResponse.deposit_id}`,
-							expiration: BigNumber.from(withdrawEthereumResponse.expiration),
-							recipient: walletsToExchange || '',
-							amount: withdrawEthereumResponse.amount,
-							token: withdrawEthereumResponse.token
-						});
-					}),
-					withLatestFrom(this.polygonService.getBridgeAbi()),
-					switchMap(([ethResponse, abiRes]) => {
-						const withdrawEthereumResponse = ethResponse as any;
-						WalletBaseService.logger(LoggerDictionary.GETTING_BRIDGE_ABI);
-						const bridgeContract = this.polygonService.getContract(
-							abiRes.abi,
-							'0x18b11A6E4213e5b9B94c97c2A165F889faa3D7C4'
-						);
-
-						const indexesSignatures = this.getIndexesAndSignatures(bridgeContract, withdrawEthereumResponse);
-
-						WalletBaseService.logger(LoggerDictionary.CONFIRM_METAMASK, LOGGER_TYPES.WARNING);
-
-						return this.sendTransactionByBridgeContract(
-							bridgeContract,
-							withdrawEthereumResponse,
-							indexesSignatures.signatures,
-							indexesSignatures.indexes,
-							walletsToExchange
-						);
-					}),
-					filter(Boolean),
 					catchError(err => {
 						clearInterval(interval);
-						WalletBaseService.logger(LoggerDictionary.WITHDRAW_REJECTED, LOGGER_TYPES.ERROR);
-						WalletBaseService.logger(LoggerDictionary.SUPPORT, LOGGER_TYPES.WARNING);
+						WalletBaseService.logger('Error while withdraw', LOGGER_TYPES.ERROR);
 						WalletBaseService.loading = false;
 						return err;
 					})
 				)
-				.subscribe(() => {
-					WalletBaseService.loading = false;
-					WalletBaseService.submitState = SubmitState.SEND_TRANSFER;
-					WalletBaseService.logger(LoggerDictionary.WITHDRAW_COMPLETED, LOGGER_TYPES.SUCCESS);
+				.subscribe(res => {
+					if (res) {
+						const withdrawEthereumResponse = res;
+						clearInterval(interval);
+
+						let withdrawERC20Request = null as any;
+
+						if (withdrawEthereumResponse) {
+							withdrawERC20Request = {
+								id: `0x${withdrawEthereumResponse.deposit_id}`,
+								expiration: BigNumber.from(withdrawEthereumResponse.expiration),
+								recipient: walletTo || '',
+								amount: withdrawEthereumResponse.amount,
+								token: withdrawEthereumResponse.token
+							};
+						}
+
+						void this.polygonService
+							.getBridgeAbi()
+							.toPromise()
+							.then(async abiRes => {
+								WalletBaseService.logger('Getting bridge abi...');
+								const bridgeContract = this.polygonService.getContract(
+									abiRes.abi,
+									'0x18b11A6E4213e5b9B94c97c2A165F889faa3D7C4'
+								);
+
+								const indexes: number[] = [];
+								const signatures: Buffer[] = [];
+
+								for (let i = 0; i < validatorUrls.length; i++) {
+									const addressSigner = await bridgeContract.methods.signers(i).call();
+									indexes.push(i);
+									signatures.push(
+										Buffer.from(
+											addressSigner === withdrawEthereumResponse['address']
+												? withdrawEthereumResponse['signature']
+												: '',
+											'hex'
+										)
+									);
+								}
+
+								WalletBaseService.logger('Please confirm the transaction in metamask', LOGGER_TYPES.WARNING);
+
+								const rs = bridgeContract.methods
+									.withdrawERC20(withdrawERC20Request, signatures, indexes)
+									.send({ from: walletTo || '' })
+									.then(() => {
+										WalletBaseService.loading = false;
+										WalletBaseService.submitState = SubmitState.SEND_TRANSFER;
+										WalletBaseService.logger('Withdraw completed successfully', LOGGER_TYPES.SUCCESS);
+									})
+									.catch(() => {
+										WalletBaseService.loading = false;
+										WalletBaseService.logger('User refused transaction or something went wrong', LOGGER_TYPES.ERROR);
+									});
+
+								return rs;
+							})
+							.catch(() => {
+								WalletBaseService.loading = false;
+								WalletBaseService.logger('Getting abi failed or contract refused it', LOGGER_TYPES.ERROR);
+							});
+					}
 				});
 		}, 1000);
 	}
@@ -218,9 +261,9 @@ export class GbmService extends WalletBaseService {
 		ethResponse: any,
 		signatures: any,
 		indexes: any,
-		walletId: string
+		walletTo: string
 	): Observable<any> {
-		return from(contract.methods.withdrawERC20(ethResponse, signatures, indexes).send({ from: walletId })).pipe(
+		return from(contract.methods.withdrawERC20(ethResponse, signatures, indexes).send({ from: walletTo })).pipe(
 			catchError(err => {
 				WalletBaseService.logger(LoggerDictionary.USER_REJECT_OR_FUNDS, LOGGER_TYPES.ERROR);
 				WalletBaseService.loading = false;

@@ -10,12 +10,13 @@ import {
 	OnInit,
 	HostListener
 } from '@angular/core';
+import { ConcordiumService } from '@home/services/concordium/concordium.service';
 import { PolygonService } from '@home/services/polygon/polygon.service';
 import { WalletBaseService } from '@home/services/wallet-base';
+import { IWalletState } from '@home/services/wallet.model';
 import { FADE_ANIMATION } from '@shared/animations/fade.animation';
 import * as _ from 'lodash';
 import { take } from 'rxjs/operators';
-import { IWalletState } from '../bridge-form/bridge-form.model';
 
 @Component({
 	selector: 'br-wallets-dropdown',
@@ -37,7 +38,7 @@ export class WalletsDropdownComponent {
 	public show = false;
 	public disabled = false;
 
-	constructor(private polygonService: PolygonService) {}
+	constructor(private polygonService: PolygonService, private concordium: ConcordiumService) {}
 
 	public get selectedWallet(): IWalletState | null {
 		return WalletBaseService.state.find(wallet => wallet.id !== 'gbm' && wallet.selected) || null;
@@ -61,6 +62,27 @@ export class WalletsDropdownComponent {
 
 	public async connectWallet(walletItem: IWalletState): Promise<void> {
 		if (walletItem.isPrimary) {
+			return;
+		}
+
+		if (walletItem.id === 'cnc') {
+			this.concordium
+				.getWalletData()
+				.pipe(take(1))
+				.subscribe(() => {
+					console.log(WalletBaseService.state);
+					WalletBaseService.state = WalletBaseService.state.map(wallet => {
+						if (wallet.id === walletItem.id) {
+							return {
+								...wallet,
+								connected: true
+							};
+						}
+
+						return wallet;
+					});
+				});
+
 			return;
 		}
 
