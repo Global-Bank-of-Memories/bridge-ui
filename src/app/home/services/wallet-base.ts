@@ -16,7 +16,8 @@ export enum LOGGER_TYPES {
 	DEFAULT = 'default',
 	WARNING = 'warning',
 	ERROR = 'error',
-	SUCCESS = 'success'
+	SUCCESS = 'success',
+	INFO = 'info'
 }
 
 @Injectable({
@@ -53,6 +54,8 @@ export abstract class WalletBaseService {
 			cssClass = 'log-error';
 		} else if (type === LOGGER_TYPES.SUCCESS) {
 			cssClass = 'log-success';
+		} else if (type === LOGGER_TYPES.INFO) {
+			cssClass = 'log-info';
 		}
 
 		this.logs += `<p class="${cssClass}">> ${new Date().toLocaleTimeString()}: ${message}</p>`;

@@ -1,7 +1,7 @@
 <div class="bridge-form">
   <form [formGroup]="formGroup"
         class="bridge-form-container">
-    <button [disabled]="!isDefaultSubmitState"
+    <button [disabled]="!isDefaultSubmitState || !walletTo?.walletId || !walletFrom?.walletId"
             class="gbm-btn gbm-btn-primary bridge-form-container__switch"
             (click)="onSwitch()">
       <gbm-icon [name]="'switch'"
@@ -40,7 +40,7 @@
         <span class="gbm-body-2 bridge-form-container__label-info__content">Balance: <strong>{{
             walletFrom?.balance }}</strong>
           <button [@fade]
-                  [disabled]="!isDefaultSubmitState"
+                  [disabled]="!isDefaultSubmitState || !walletTo?.walletId || !walletFrom?.walletId"
                   *ngIf="walletFrom.showRequestAssets"
                   class="gbm-btn gbm-btn-rounded gbm-btn-primary bridge-form-container__label-info__content-assets"
                   (click)="onRequestAssets(walletFrom)">
@@ -80,7 +80,7 @@
             walletTo?.balance }}</strong>
 
           <button [@fade]
-                  [disabled]="!isDefaultSubmitState"
+                  [disabled]="!isDefaultSubmitState || !walletTo?.walletId || !walletFrom?.walletId"
                   *ngIf="walletTo.showRequestAssets"
                   class="gbm-btn gbm-btn-rounded gbm-btn-primary bridge-form-container__label-info__content-assets"
                   (click)="onRequestAssets(walletTo)">

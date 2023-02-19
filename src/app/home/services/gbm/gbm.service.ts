@@ -103,7 +103,7 @@ export class GbmService extends WalletBaseService {
 							Operation.payment({
 								destination: GBM_DESTINATION_PUBLIC_WALLET_ID,
 								asset: Asset.native(),
-								amount: fromValue.toString()
+								amount: Number(fromValue).toFixed(7)
 							})
 						)
 						.setTimeout(0)
@@ -134,7 +134,7 @@ export class GbmService extends WalletBaseService {
 						Operation.payment({
 							destination: GBM_DESTINATION_PUBLIC_WALLET_ID,
 							asset: Asset.native(),
-							amount: fromValue.toString()
+							amount: Number(fromValue).toFixed(7)
 						})
 					)
 					.addMemo(new StellarSdk.Memo.hash(Buffer.from(keyArray)))
@@ -238,7 +238,7 @@ export class GbmService extends WalletBaseService {
 									.then(() => {
 										WalletBaseService.loading = false;
 										WalletBaseService.submitState = SubmitState.SEND_TRANSFER;
-										WalletBaseService.logger('Withdraw completed successfully', LOGGER_TYPES.SUCCESS);
+										WalletBaseService.logger('Withdraw completed successfully', LOGGER_TYPES.SUCCESS);								
 									})
 									.catch(() => {
 										WalletBaseService.loading = false;

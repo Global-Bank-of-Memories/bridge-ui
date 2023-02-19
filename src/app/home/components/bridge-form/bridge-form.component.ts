@@ -130,6 +130,35 @@ export class BridgeFormComponent
 	}
 
 	public onSubmit(): void {
+		const { from, to } = this.formGroup.controls;
+
+		if (parseFloat(_.get(this.walletFrom, 'balance', 0).toString()) <= 0) {
+			WalletBaseService.logger(LoggerDictionary.NOT_ENOUGH_BALANCE, LOGGER_TYPES.ERROR);
+			return;
+		}
+
+		if (this.walletTo && this.walletTo?.walletId.length < 3) {
+			WalletBaseService.logger(LoggerDictionary.MISSING_SECOND_WALLET, LOGGER_TYPES.WARNING);
+			return;
+		}
+
+		if ((!from.value && !to.value) || (from.value <= 0 && to.value <= 0)) {
+			WalletBaseService.logger('Invalid form values. It should be positive float', LOGGER_TYPES.ERROR);
+			return;
+		}
+
+		if (Number(this.walletFrom.balance) < from.value) {
+			WalletBaseService.logger('Not enough balance', LOGGER_TYPES.ERROR);
+			return;
+		}
+
+		const hasIncorrectMantissaFrom = Number(from.value.toString().split('e-')[1]) > 7;
+		const hasIncorrectMantissaTo = Number(to.value.toString().split('e-')[1]) > 7;
+		if (hasIncorrectMantissaFrom || hasIncorrectMantissaTo) {
+			WalletBaseService.logger('Maximum values after decimal point should be <= 7', LOGGER_TYPES.ERROR);
+			return;
+		}
+
 		if (this.walletFrom.walletId && this.walletTo.walletId) {
 			if (WalletBaseService.submitState === SubmitState.SEND_TRANSFER) {
 				this.sendTransfer();
@@ -150,13 +179,17 @@ export class BridgeFormComponent
 
 	public withdraw(): void {
 		if (this.walletTo?.id === 'pgn') {
-			void this.gbmService.handleWithdraw(this.transactionHash, this.walletTo?.walletId || '').then(() => {});
+			void this.gbmService.handleWithdraw(this.transactionHash, this.walletTo?.walletId || '').then(() => {
+				void this.polygonService.getWalletData().toPromise().then(() => {});
+			});
 
 			return;
 		}
 
 		if (this.walletTo?.id === 'cnc') {
-			void this.concordiumService.handleWithdraw(this.transactionHash, this.walletTo?.walletId || '').then(() => {});
+			void this.concordiumService.handleWithdraw(this.transactionHash, this.walletTo?.walletId || '').then(() => {
+				void this.polygonService.getWalletData().toPromise().then(() => {});
+			});
 			return;
 		}
 
@@ -198,20 +231,6 @@ export class BridgeFormComponent
 
 	public sendTransfer(): void {
 		const { from, to } = this.formGroup.controls;
-		if (from.value <= 0) {
-			WalletBaseService.logger(LoggerDictionary.INVALID_INPUT_VALUE, LOGGER_TYPES.ERROR);
-			return;
-		}
-
-		if (parseFloat(_.get(this.walletFrom, 'balance', 0).toString()) <= 0) {
-			WalletBaseService.logger(LoggerDictionary.NOT_ENOUGH_BALANCE, LOGGER_TYPES.ERROR);
-			return;
-		}
-
-		if (this.walletTo && this.walletTo?.walletId.length < 3) {
-			WalletBaseService.logger(LoggerDictionary.MISSING_SECOND_WALLET, LOGGER_TYPES.WARNING);
-			return;
-		}
 
 		WalletBaseService.loading = true;
 		WalletBaseService.logger(`${LoggerDictionary.SENDING_TRANSFER_FROM} ${this.walletFrom?.title}`);
@@ -248,6 +267,11 @@ export class BridgeFormComponent
 						this.transferPgnToGbmRes = res;
 						WalletBaseService.submitState = SubmitState.WITHDRAW;
 						WalletBaseService.loading = false;
+
+						void this.polygonService.getWalletData().toPromise().then(() => {});
+						this.gbmService.getWalletData().subscribe(() => {
+							WalletBaseService.logger('Balance for GBM has been updated', LOGGER_TYPES.INFO);
+						});
 					})
 					.catch(() => {
 						WalletBaseService.loading = false;
@@ -272,6 +296,11 @@ export class BridgeFormComponent
 									.then(() => {
 										WalletBaseService.submitState = SubmitState.WITHDRAW;
 										WalletBaseService.loading = false;
+
+										void this.polygonService.getWalletData().toPromise().then(() => {});
+										this.gbmService.getWalletData().subscribe(() => {
+											WalletBaseService.logger('Balance for GBM has been updated', LOGGER_TYPES.INFO);
+										});
 									})
 									.catch(() => {
 										WalletBaseService.logger('Error while withdraw', LOGGER_TYPES.ERROR);
@@ -306,6 +335,9 @@ export class BridgeFormComponent
 					WalletBaseService.submitState = SubmitState.WITHDRAW;
 					WalletBaseService.logger(LoggerDictionary.TRANSACTION_SIGNED, LOGGER_TYPES.SUCCESS);
 					this.formGroup.controls.password.setValue('');
+					this.gbmService.getWalletData().subscribe(() => {
+						WalletBaseService.logger('Balance for GBM has been updated', LOGGER_TYPES.INFO);
+					});
 				},
 				err => {
 					WalletBaseService.loading = false;
@@ -324,6 +356,9 @@ export class BridgeFormComponent
 					WalletBaseService.submitState = SubmitState.WITHDRAW;
 					WalletBaseService.logger(LoggerDictionary.TRANSACTION_SIGNED, LOGGER_TYPES.SUCCESS);
 					this.formGroup.controls.password.setValue('');
+					this.gbmService.getWalletData().subscribe(() => {
+						WalletBaseService.logger('Balance for GBM has been updated', LOGGER_TYPES.INFO);
+					});
 				},
 				err => {
 					WalletBaseService.loading = false;
@@ -434,12 +469,23 @@ export class BridgeFormComponent
 		this.formGroup = this.getFormForModule();
 		const { from, to } = this.formGroup.controls;
 		from.valueChanges.subscribe(value => {
-			to.patchValue(Number(this.transformValue(value)).toFixed(7).toString(), { emitEvent: false });
+			if (value < 0) {
+				from.patchValue(0, { emitEvent: false });
+				to.patchValue(0, { emitEvent: false });
+			} else {
+				to.patchValue(Number(this.transformValue(value)).toFixed(7).toString(), { emitEvent: false });
+			}
+
 			to.markAsTouched();
 		});
 
 		to.valueChanges.subscribe(value => {
-			from.patchValue(Number(this.transformValue(value)).toFixed(7).toString(), { emitEvent: false });
+			if (value < 0) {
+				from.patchValue(0, { emitEvent: false });
+				to.patchValue(0, { emitEvent: false });
+			} else {
+				from.patchValue(Number(this.transformValue(value)).toFixed(7).toString(), { emitEvent: false });
+			}
 			from.markAsTouched();
 		});
 	}

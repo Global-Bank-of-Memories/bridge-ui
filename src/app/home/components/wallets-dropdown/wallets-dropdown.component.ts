@@ -73,7 +73,6 @@ export class WalletsDropdownComponent {
 					.getWalletData()
 					.pipe(take(1))
 					.subscribe(() => {
-						console.log(WalletBaseService.state);
 						WalletBaseService.state = WalletBaseService.state.map(wallet => {
 							if (wallet.id === walletItem.id) {
 								return {
@@ -129,7 +128,6 @@ export class WalletsDropdownComponent {
 
 				return wallet;
 			});
-			console.log(WalletBaseService.state);
 			this.show = !this.show;
 		}
 	}

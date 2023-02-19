@@ -106,7 +106,7 @@ export class PolygonService extends WalletBaseService {
 		const bomValue = Number(amount) * 10 ** 7;
 
 		return bridgeContract.methods
-			.depositERC20(WGBM_MATIC_TOKEN_ADDRESS, BigNumber.from(stellarAccountDecoded), BigNumber.from(bomValue))
+			.depositERC20(WGBM_MATIC_TOKEN_ADDRESS, BigNumber.from(stellarAccountDecoded), BigNumber.from(Number(bomValue.toFixed(7))))
 			.send({
 				from: walletFrom
 			});

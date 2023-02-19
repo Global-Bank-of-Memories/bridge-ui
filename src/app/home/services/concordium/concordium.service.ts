@@ -108,7 +108,6 @@ export class ConcordiumService extends WalletBaseService {
 											Account: [withdrawConcordiumResponse.address]
 										}
 									};
-									console.log(parameters);
 									void provider
 										.sendTransaction(
 											walletTo,
@@ -189,7 +188,7 @@ export class ConcordiumService extends WalletBaseService {
 
 	public async deposit(gbmWallet: string, concordiumWallet: string, value: string): Promise<string> {
 		const provider = await detectConcordiumProvider();
-		const ccdValue = Number(value) * 10 * 10 * 10 * 10 * 10 * 10 * 10;
+		const ccdValue = Number(value) * 10 ** 7;
 		const CONTRACT_NAME = 'gbm_Bridge';
 		const TOKEN_CONTRACT_INDEX = 2945n;
 		const CONTRACT_SUB_INDEX = 0n;
@@ -199,7 +198,7 @@ export class ConcordiumService extends WalletBaseService {
 		Array.prototype.push.apply(byteArray256Account, byteArrayAccount);
 
 		const parameters = {
-			amount: ccdValue,
+			amount: Number(ccdValue.toFixed(7)),
 			destination: byteArray256Account
 		};
 
