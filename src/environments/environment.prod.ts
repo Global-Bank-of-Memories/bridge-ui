@@ -1,5 +1,6 @@
 export const environment = {
 	production: true,
+	apiUrl: 'http://localhost:3000',
 	gbmApiUrl: 'https://api.bankofmemories.org',
 	stellar: 'https://bankofmemories.org:8000',
 	bridge: 'https://api.bridge.bankofmemories.org',
