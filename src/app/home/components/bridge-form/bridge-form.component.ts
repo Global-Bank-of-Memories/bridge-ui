@@ -305,6 +305,7 @@ export class BridgeFormComponent
 					WalletBaseService.loading = false;
 					WalletBaseService.submitState = SubmitState.WITHDRAW;
 					WalletBaseService.logger(LoggerDictionary.TRANSACTION_SIGNED, LOGGER_TYPES.SUCCESS);
+					this.formGroup.controls.password.setValue('');
 				},
 				err => {
 					WalletBaseService.loading = false;
@@ -322,6 +323,7 @@ export class BridgeFormComponent
 					WalletBaseService.loading = false;
 					WalletBaseService.submitState = SubmitState.WITHDRAW;
 					WalletBaseService.logger(LoggerDictionary.TRANSACTION_SIGNED, LOGGER_TYPES.SUCCESS);
+					this.formGroup.controls.password.setValue('');
 				},
 				err => {
 					WalletBaseService.loading = false;
@@ -340,6 +342,7 @@ export class BridgeFormComponent
 						WalletBaseService.loading = false;
 						WalletBaseService.submitState = SubmitState.SEND_TRANSFER;
 						WalletBaseService.logger(LoggerDictionary.TRANSACTION_SIGNED, LOGGER_TYPES.SUCCESS);
+						this.formGroup.controls.password.setValue('');
 					},
 					err => {
 						WalletBaseService.loading = false;
@@ -357,6 +360,7 @@ export class BridgeFormComponent
 						WalletBaseService.loading = false;
 						WalletBaseService.submitState = SubmitState.SEND_TRANSFER;
 						WalletBaseService.logger(LoggerDictionary.TRANSACTION_SIGNED, LOGGER_TYPES.SUCCESS);
+						this.formGroup.controls.password.setValue('');
 					},
 					err => {
 						WalletBaseService.loading = false;

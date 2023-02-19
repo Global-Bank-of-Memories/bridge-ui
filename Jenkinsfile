@@ -24,7 +24,7 @@ pipeline {
 
       environment {
         TAG = 'latest'
-        CONTAINER_NAME = 'prod-gbm-bridge'
+        CONTAINER_NAME = 'prod-gbm-bridge-ui'
       }
 
       steps {
