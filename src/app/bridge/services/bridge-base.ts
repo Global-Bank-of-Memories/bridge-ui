@@ -88,7 +88,8 @@ export abstract class BridgeBase {
 			});
 
 			const descryptedData = plainText.toString(CryptoJS.enc.Utf8).split(',');
-			const mnemonic = !_.isEmpty(descryptedData) ? descryptedData[0].split(':') : '';
+			const mnemonicItem = !_.isEmpty(descryptedData) ? descryptedData.find(item => item.includes('mnemonic')) : null;
+			const mnemonic = !_.isEmpty(mnemonicItem) ? mnemonicItem.split(':') : '';
 
 			return !_.isEmpty(mnemonic) ? mnemonic[1] : '';
 		} catch (err) {
