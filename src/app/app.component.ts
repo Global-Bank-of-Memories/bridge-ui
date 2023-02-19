@@ -1,26 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { Data, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { FADE_ANIMATION } from '@shared/animations/fade.animation';
 import { RouterTransition } from '@shared/animations/router-transition.animation';
 import { ThemeService } from '@shared/services/theme/theme.service';
 import * as variables from '@utils/misc';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
 	selector: 'br-root',
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.less'],
-	animations: [RouterTransition]
+	animations: [RouterTransition, FADE_ANIMATION]
 })
 export class AppComponent implements OnInit {
 	/**
 	 * @description handle header view
 	 */
 	public showHeader = false;
+	public isMobile = false;
 
-	constructor(private themeService: ThemeService, private router: Router) {}
+	constructor(private themeService: ThemeService, private router: Router, private deviceService: DeviceDetectorService) {}
 
 	public ngOnInit(): void {
 		this.themeService.initTheme();
 		this.routerListener();
+		this.isMobile = this.deviceService.isMobile() || this.deviceService.isTablet();
 	}
 
 	/**

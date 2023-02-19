@@ -29,7 +29,6 @@
         "prettier"
       ],
       "rules": {
-        "prettier/prettier": "error",
         "@angular-eslint/component-class-suffix": "error",
         "@angular-eslint/component-selector": [
           "off",

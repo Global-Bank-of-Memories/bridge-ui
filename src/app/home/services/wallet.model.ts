@@ -31,8 +31,8 @@ export const WalletsState: IWalletState[] = [
 		selected: true,
 		isPrimary: true,
 		from: true,
-		balance: '--',
-		walletId: '--',
+		balance: '',
+		walletId: '',
 		placeholder: '--'
 	},
 	{
@@ -44,8 +44,8 @@ export const WalletsState: IWalletState[] = [
 		connected: false,
 		selected: false,
 		from: false,
-		balance: '--',
-		walletId: '--',
+		balance: '',
+		walletId: '',
 		placeholder: '--',
 		showRequestAssets: true
 	},
@@ -53,13 +53,13 @@ export const WalletsState: IWalletState[] = [
 		id: 'cnc',
 		title: 'Concordium',
 		abbr: 'WGBM',
-		icon: 'eth',
+		icon: 'concordium',
 		iconColor: '',
 		connected: false,
 		selected: true,
 		from: false,
-		balance: '--',
-		walletId: '--',
+		balance: '',
+		walletId: '',
 		placeholder: '--',
 		showRequestAssets: true
 	}

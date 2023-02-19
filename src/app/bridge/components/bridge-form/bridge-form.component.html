@@ -1,0 +1,103 @@
+<section [@fade]
+         *ngIf="primaryAccount"
+         class="bridge-form">
+  <form [formGroup]="formGroup"
+        class="bridge-form-container">
+    <label class="gbm-input-label gbm-body-2 bridge-form-container__label">
+      <div class="gbm-label-1 bridge-form-container__label-title">Sending
+        <div class="bridge-form-container__label-title__pill">
+          {{ primaryAccount.title }}
+        </div>
+      </div>
+      <div class="bridge-form-container__label-wrapper">
+        <input formControlName="from"
+               class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input bridge-form-container__label-wrapper-input"
+               type="text"
+               [readOnly]="disabled"
+               [placeholder]="primaryAccount.placeholder" />
+
+        <div class="bridge-form-container__label-wrapper-pill">
+          <gbm-icon [name]="primaryAccount.icon.name"
+                    [width]="'18px'"
+                    [height]="'18px'"
+                    [fill]="primaryAccount.icon.fill">
+          </gbm-icon>
+          <span class="bridge-form-container__label-wrapper-pill__title">{{ primaryAccount.alias }}</span>
+        </div>
+      </div>
+      <div class="bridge-form-container__label-info"
+           [class.wallet-to-info]="disabled">
+        <span class="bridge-form-container__label-info__content">
+          Wallet: <strong>{{ primaryAccount.walletId }}</strong></span>
+        <span class="bridge-form-container__label-info__content">
+          Balance: <strong>{{ primaryAccount.balance }}</strong>
+          <button [@fade]
+                  *ngIf="primaryAccount.showRequestAssets"
+                  class="gbm-btn gbm-btn-sm gbm-btn-rounded gbm-btn-primary bridge-form-container__label-info__content-assets"
+                  (click)="onRequestAssets()">
+            Assets
+          </button>
+        </span>
+      </div>
+    </label>
+
+    <button [disabled]="disabled"
+            class="gbm-btn gbm-btn-primary bridge-form-container__switch"
+            (click)="onSwitch()">
+      <gbm-icon [name]="'switch'"
+                [fill]="'--static-white_light'"
+                [width]="'22px'"
+                [height]="'22px'">
+      </gbm-icon>
+    </button>
+
+    <label class="gbm-input-label gbm-body-2 bridge-form-container__label">
+      <div class="gbm-label-1 bridge-form-container__label-title">Receive
+        <div class="bridge-form-container__label-title__pill">
+          {{ selectedAccount.title }}
+        </div>
+      </div>
+      <div class="bridge-form-container__label-wrapper">
+        <input formControlName="to"
+               class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input bridge-form-container__label-wrapper-input"
+               type="text"
+               [readOnly]="disabled"
+               [placeholder]="selectedAccount.placeholder" />
+
+        <div class="bridge-form-container__label-wrapper-pill">
+          <gbm-icon [name]="selectedAccount.icon.name"
+                    [width]="'18px'"
+                    [height]="'18px'"
+                    [fill]="selectedAccount.icon.fill">
+          </gbm-icon>
+          <span class="bridge-form-container__label-wrapper-pill__title">{{ selectedAccount.alias }}</span>
+        </div>
+      </div>
+      <div class="bridge-form-container__label-info wallet-to-info">
+        <span class="bridge-form-container__label-info__content">
+          Wallet: <strong>{{ selectedAccount.walletId }}</strong>
+        </span>
+        <span class="bridge-form-container__label-info__content">
+          Balance: <strong>{{ selectedAccount.balance }}</strong>
+          <button [@fade]
+                  *ngIf="selectedAccount.showRequestAssets"
+                  class="gbm-btn gbm-btn-rounded gbm-btn-primary bridge-form-container__label-info__content-assets"
+                  (click)="onRequestAssets()">
+            Assets
+          </button>
+        </span>
+      </div>
+    </label>
+
+    <br-bridge-sign [password]="password" (passwordChange)="onPasswordChange($event)"></br-bridge-sign>
+
+    <gbm-button [loading]="submitState.loading"
+                [title]="submitState.title"
+                (click)="onSubmit()"
+                [className]="'gbm-btn gbm-btn-md gbm-btn-full-width gbm-btn-primary gbm-btn-rounded gbm-button-2'">
+    </gbm-button>
+  </form>
+  <br-bridge-logger (update)="updateLog.emit($event)"
+                    [log]="log">
+  </br-bridge-logger>
+</section>

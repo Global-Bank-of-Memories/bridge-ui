@@ -165,15 +165,17 @@ export class ConcordiumService extends WalletBaseService {
 	}
 
 	public async sendWithdraw(transactionHash: string, walletTo: string): Promise<any> {
-		WalletBaseService.loading = true;
+		setTimeout(() => (WalletBaseService.loading = true));
 		WalletBaseService.logger('Starting withdraw...');
 		const interval = setInterval(() => {
+			WalletBaseService.loading = true;
 			void this.withdrawConcordium(transactionHash, walletTo)
 				.toPromise()
 				.then(res => {
 					if (res) {
 						clearInterval(interval);
 						WalletBaseService.xdr = res;
+						WalletBaseService.loading = false;
 					}
 				})
 				.catch(err => {

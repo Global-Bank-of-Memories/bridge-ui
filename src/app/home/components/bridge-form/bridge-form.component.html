@@ -1,17 +1,25 @@
 <div class="bridge-form">
   <form [formGroup]="formGroup"
         class="bridge-form-container">
+    <button [disabled]="!isDefaultSubmitState"
+            class="gbm-btn gbm-btn-primary bridge-form-container__switch"
+            (click)="onSwitch()">
+      <gbm-icon [name]="'switch'"
+                [fill]="'--static-white_light'"
+                [width]="'22px'"
+                [height]="'22px'">
+      </gbm-icon>
+    </button>
+
     <label class="gbm-input-label gbm-body-2 bridge-form-container__label">
       <div class="gbm-label-1 bridge-form-container__label-title">Sending
-        <h4 class="gbm-subheading-2 bridge-form-heading__title-item">({{ walletFrom?.title }})</h4>
+        <div class="bridge-form-container__label-title__pill">
+          {{ walletFrom?.title }}
+        </div>
       </div>
       <div class="bridge-form-container__label-wrapper">
         <input formControlName="from"
-               maxlength="11"
-               [readOnly]="switchDisabled"
-               oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-               [value]="formGroup.controls.from.value | number:'1.0-7'"
-               pattern="^[1-9][0-9]*$"
+               [readOnly]="!isDefaultSubmitState"
                class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input bridge-form-container__label-wrapper-input"
                [placeholder]="walletFrom?.placeholder"
                type="number" />
@@ -26,14 +34,15 @@
         </div>
       </div>
       <div class="bridge-form-container__label-info"
-           [class.wallet-to-info]="switchDisabled">
+           [class.wallet-to-info]="!isDefaultSubmitState">
         <span class="gbm-body-2 bridge-form-container__label-info__content">Wallet:
           <strong>{{ walletFrom?.walletId }}</strong></span>
         <span class="gbm-body-2 bridge-form-container__label-info__content">Balance: <strong>{{
             walletFrom?.balance }}</strong>
           <button [@fade]
+                  [disabled]="!isDefaultSubmitState"
                   *ngIf="walletFrom.showRequestAssets"
-                  class="gbm-btn gbm-btn-sm gbm-btn-rounded gbm-btn-primary bridge-form-container__label-info__content-assets"
+                  class="gbm-btn gbm-btn-rounded gbm-btn-primary bridge-form-container__label-info__content-assets"
                   (click)="onRequestAssets(walletFrom)">
             Assets
           </button>
@@ -42,25 +51,14 @@
     </label>
 
     <label class="gbm-input-label gbm-body-2 bridge-form-container__label">
-      <button [disabled]="switchDisabled"
-              class="gbm-btn gbm-btn-primary bridge-form-container__label-switch"
-              (click)="onSwitch()">
-        <gbm-icon [name]="'switch'"
-                  [fill]="'--static-white_light'"
-                  [width]="'22px'"
-                  [height]="'22px'">
-        </gbm-icon>
-      </button>
       <div class="gbm-label-1 bridge-form-container__label-title">Receive
-        <h4 class="gbm-subheading-2 bridge-form-heading__title-item">({{ walletTo?.title }})</h4>
+        <div class="bridge-form-container__label-title__pill">
+          {{ walletTo?.title }}
+        </div>
       </div>
       <div class="bridge-form-container__label-wrapper">
         <input formControlName="to"
-               oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-               maxlength="11"
-               [readOnly]="true"
-               [value]="formGroup.controls.to.value | number:'1.0-7'"
-               pattern="^[1-9][0-9]*$"
+               [readOnly]="!isDefaultSubmitState"
                class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input bridge-form-container__label-wrapper-input"
                [placeholder]="walletTo?.placeholder"
                type="number" />
@@ -74,15 +72,17 @@
           <span class="bridge-form-container__label-wrapper-pill__title">{{ walletTo?.abbr }}</span>
         </div>
       </div>
-      <div class="bridge-form-container__label-info wallet-to-info">
+      <div class="bridge-form-container__label-info"
+           [class.wallet-to-info]="!isDefaultSubmitState">
         <span class="gbm-body-2 bridge-form-container__label-info__content">Wallet: <strong>{{
             walletTo?.walletId }}</strong></span>
         <span class="gbm-body-2 bridge-form-container__label-info__content">Balance: <strong>{{
             walletTo?.balance }}</strong>
 
           <button [@fade]
+                  [disabled]="!isDefaultSubmitState"
                   *ngIf="walletTo.showRequestAssets"
-                  class="gbm-btn gbm-btn-sm gbm-btn-rounded gbm-btn-primary bridge-form-container__label-info__content-assets"
+                  class="gbm-btn gbm-btn-rounded gbm-btn-primary bridge-form-container__label-info__content-assets"
                   (click)="onRequestAssets(walletTo)">
             Assets
           </button>
@@ -109,24 +109,11 @@
          *ngIf="xdr"
          class="bridge-form-container__pass">
       <input gbmAutoFocus
+             [disabled]="loading"
              formControlName="password"
              class="gbm-input-rounded gbm-input-1 login__input gbm-input"
              [placeholder]="'Re-enter password'"
              type="password" />
-    </div>
-
-    <div class="bridge-form-container__logger">
-      <div id="logger-container"
-           class="bridge-form-container__logger-container"
-           [innerHTML]="logs"></div>
-      <gbm-icon placement="top"
-                ngbTooltip="Copy logs (You can send them to the support team if something went wrong)"
-                ngxClipboard
-                [cbContent]="logs"
-                [name]="'copy'"
-                [width]="'22px'"
-                [height]="'22px'">
-      </gbm-icon>
     </div>
 
     <gbm-button class="bridge-form-container__submit"
@@ -136,4 +123,19 @@
                 [className]="'gbm-btn gbm-btn-md gbm-btn-full-width gbm-btn-primary gbm-btn-rounded gbm-button-2'">
     </gbm-button>
   </form>
+
+  <div class="bridge-form__logger">
+    <div id="logger-container"
+         class="bridge-form__logger-container"
+         [innerHTML]="logs"></div>
+    <section class="bridge-form__logger-container--wrapper"></section>
+    <gbm-icon placement="top"
+              ngbTooltip="Copy logs (You can send them to the support team if something went wrong)"
+              ngxClipboard
+              [cbContent]="logs"
+              [name]="'copy'"
+              [width]="'22px'"
+              [height]="'22px'">
+    </gbm-icon>
+  </div>
 </div>

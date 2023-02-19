@@ -10,12 +10,14 @@ import { GbmButtonModule } from '@shared/components/button/button.module';
 import { GbmHeadingModule } from '@shared/components/heading/heading.module';
 import { NgOtpInputModule } from 'ng-otp-input';
 import { CountDownComponent } from './components/count-down/count-down.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
 	declarations: [AuthComponent, LoginComponent, OtpModalComponent, CountDownComponent],
 	exports: [AuthComponent],
 	imports: [
 		CommonModule,
+		RouterModule,
 		FormsModule,
 		ReactiveFormsModule,
 		GbmIconModule,

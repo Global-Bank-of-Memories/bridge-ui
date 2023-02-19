@@ -14,24 +14,20 @@
   }
 }
 
-.home-wrapper {
-  background: linear-gradient(-45deg, var(--cool-gray-00), var(--cool-gray-10), var(--cool-gray-20), var(--cool-gray-10));
-  background-size: 400% 400%;
-  animation: gradient 30s ease-in-out infinite;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  z-index: -1;
-}
+
 
 .home {
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+  padding-top: 135px;
+  background: linear-gradient(-45deg, var(--cool-gray-10), var(--cool-gray-20), var(--cool-gray-10), var(--cool-gray-00));
+  background-size: 400% 400%;
 
-  &-logo {
-    margin-top: 48px;
+  gbm-spinner {
+    position: relative;
+    top: 50px;
   }
 
   &-empty-state {

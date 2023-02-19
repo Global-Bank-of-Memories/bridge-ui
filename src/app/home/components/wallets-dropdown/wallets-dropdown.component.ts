@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { ConcordiumService } from '@home/services/concordium/concordium.service';
 import { PolygonService } from '@home/services/polygon/polygon.service';
-import { WalletBaseService } from '@home/services/wallet-base';
+import { SubmitState, WalletBaseService } from '@home/services/wallet-base';
 import { IWalletState } from '@home/services/wallet.model';
 import { FADE_ANIMATION } from '@shared/animations/fade.animation';
 import * as _ from 'lodash';
@@ -40,6 +40,10 @@ export class WalletsDropdownComponent {
 
 	constructor(private polygonService: PolygonService, private concordium: ConcordiumService) {}
 
+	public get isDefaultSubmitState(): boolean {
+		return WalletBaseService.submitState === SubmitState.SEND_TRANSFER && !WalletBaseService.loading;
+	}
+
 	public get selectedWallet(): IWalletState | null {
 		return WalletBaseService.state.find(wallet => wallet.id !== 'gbm' && wallet.selected) || null;
 	}
@@ -57,20 +61,38 @@ export class WalletsDropdownComponent {
 		event.preventDefault();
 		event.stopPropagation();
 
-		this.show = !this.show;
+		if (this.isDefaultSubmitState) {
+			this.show = !this.show;
+		}
 	}
 
 	public async connectWallet(walletItem: IWalletState): Promise<void> {
-		if (walletItem.isPrimary) {
-			return;
-		}
+		if (!walletItem.isPrimary && this.isDefaultSubmitState) {
+			if (walletItem.id === 'cnc') {
+				this.concordium
+					.getWalletData()
+					.pipe(take(1))
+					.subscribe(() => {
+						console.log(WalletBaseService.state);
+						WalletBaseService.state = WalletBaseService.state.map(wallet => {
+							if (wallet.id === walletItem.id) {
+								return {
+									...wallet,
+									connected: true
+								};
+							}
 
-		if (walletItem.id === 'cnc') {
-			this.concordium
+							return wallet;
+						});
+					});
+
+				return;
+			}
+
+			this.polygonService
 				.getWalletData()
 				.pipe(take(1))
 				.subscribe(() => {
-					console.log(WalletBaseService.state);
 					WalletBaseService.state = WalletBaseService.state.map(wallet => {
 						if (wallet.id === walletItem.id) {
 							return {
@@ -82,46 +104,33 @@ export class WalletsDropdownComponent {
 						return wallet;
 					});
 				});
-
-			return;
 		}
-
-		this.polygonService
-			.getWalletData()
-			.pipe(take(1))
-			.subscribe(() => {
-				WalletBaseService.state = WalletBaseService.state.map(wallet => {
-					if (wallet.id === walletItem.id) {
-						return {
-							...wallet,
-							connected: true
-						};
-					}
-
-					return wallet;
-				});
-			});
 	}
 
 	public chooseWallet(selectedWallet: any): void {
-		WalletBaseService.state = WalletBaseService.state.map(wallet => {
-			if (selectedWallet.id !== wallet.id && wallet.selected && !wallet.isPrimary) {
-				return {
-					...wallet,
-					selected: false
-				};
-			}
+		if (this.isDefaultSubmitState) {
+			const gbmAcc = WalletBaseService.state.find(item => item.id === 'gbm');
+			WalletBaseService.state = WalletBaseService.state.map(wallet => {
+				if (selectedWallet.id !== wallet.id && wallet.selected && !wallet.isPrimary) {
+					return {
+						...wallet,
+						selected: false,
+						from: !gbmAcc.from ? true : false
+					};
+				}
 
-			if (selectedWallet.id === wallet.id) {
-				return {
-					...wallet,
-					selected: true
-				};
-			}
+				if (selectedWallet.id === wallet.id) {
+					return {
+						...wallet,
+						selected: true,
+						from: !gbmAcc.from ? true : false
+					};
+				}
 
-			return wallet;
-		});
-		console.log(WalletBaseService.state);
-		this.show = !this.show;
+				return wallet;
+			});
+			console.log(WalletBaseService.state);
+			this.show = !this.show;
+		}
 	}
 }

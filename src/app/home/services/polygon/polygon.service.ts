@@ -70,15 +70,17 @@ export class PolygonService extends WalletBaseService {
 	}
 
 	public async sendWithdraw(transactionHash: string, logIndex: string): Promise<any> {
-		WalletBaseService.loading = true;
+		setTimeout(() => (WalletBaseService.loading = true));
 		WalletBaseService.logger('Starting withdraw...');
 		const interval = setInterval(() => {
+			WalletBaseService.loading = true;
 			void this.withdraw(transactionHash, logIndex)
 				.toPromise()
 				.then(res => {
 					if (res) {
 						clearInterval(interval);
 						WalletBaseService.xdr = res;
+						WalletBaseService.loading = false;
 					}
 				})
 				.catch(err => {
@@ -186,7 +188,8 @@ export class PolygonService extends WalletBaseService {
 			});
 
 			const descryptedData = plainText.toString(CryptoJS.enc.Utf8).split(',');
-			const mnemonic = !_.isEmpty(descryptedData) ? descryptedData[0].split(':') : '';
+			const mnemonicItem = !_.isEmpty(descryptedData) ? descryptedData.find(item => item.includes('mnemonic')) : null;
+			const mnemonic = !_.isEmpty(mnemonicItem) ? mnemonicItem.split(':') : '';
 
 			return !_.isEmpty(mnemonic) ? mnemonic[1] : '';
 		} catch (err) {

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { InjectionToken, NgModule } from '@angular/core';
 
 // Components
@@ -17,12 +17,14 @@ import { NgbModalModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { GbmAutoFocusModule } from '@shared/directives/autofocus/autofocus.module';
 import { WalletsDropdownComponent } from './components/wallets-dropdown/wallets-dropdown.component';
+import { HomeRoutingModule } from './home-routing.module';
 
 @NgModule({
 	declarations: [HomeComponent, BridgeFormComponent, BridgeWalletComponent, WalletsDropdownComponent],
 	exports: [HomeComponent],
 	imports: [
 		CommonModule,
+		HomeRoutingModule,
 		GbmButtonModule,
 		GbmHeadingModule,
 		GbmIconModule,
@@ -34,6 +36,7 @@ import { WalletsDropdownComponent } from './components/wallets-dropdown/wallets-
 		HttpClientModule,
 		GbmAutoFocusModule,
 		NgbTooltipModule
-	]
+	],
+	providers: [DecimalPipe]
 })
 export class HomeModule {}

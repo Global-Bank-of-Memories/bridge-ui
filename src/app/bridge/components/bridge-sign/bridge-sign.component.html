@@ -1,0 +1,25 @@
+<section class="bridge-sign">
+  <div [@fade]
+       *ngIf="bridgeDataService.xdr$ | async"
+       class="bridge-sign-placeholder">
+    <span class="gbm-body-1"><strong>XDR:</strong></span>
+    {{ bridgeDataService.xdr$ | async }}
+    <gbm-icon ngxClipboard
+              [cbContent]="bridgeDataService.xdr$ | async"
+              [name]="'copy'"
+              [width]="'22px'"
+              [height]="'22px'">
+    </gbm-icon>
+  </div>
+
+  <div [@fade]
+       *ngIf="bridgeDataService.xdr$ | async"
+       class="bridge-sign-pass">
+    <input gbmAutoFocus
+           [(ngModel)]="password"
+           (ngModelChange)="passwordChange.emit(password)"
+           [placeholder]="'Re-enter password'"
+           class="gbm-input-rounded gbm-input-1 login__input gbm-input"
+           type="password" />
+  </div>
+</section>

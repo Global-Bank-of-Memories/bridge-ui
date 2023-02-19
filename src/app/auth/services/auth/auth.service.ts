@@ -2,15 +2,16 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { AccessTokenData, ACCESS_TOKEN_STORAGE_KEY, LoginResponse, OTPResponse, OTPRetryResponse } from './auth.model';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import sha1 from 'sha1';
+import { Router } from '@angular/router';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class AuthService {
-	constructor(private http: HttpClient, private jwtHelper: JwtHelperService) {}
+	constructor(private http: HttpClient, private jwtHelper: JwtHelperService, private router: Router) {}
 
 	public login(email: string, password: string): Observable<LoginResponse> {
 		return this.http
@@ -19,9 +20,13 @@ export class AuthService {
 	}
 
 	public logOut(): Observable<any> {
-		return this.http
-			.post<any>('https://api.bankofmemories.org/bridge/logout', null)
-			.pipe(catchError((err: HttpErrorResponse) => throwError(err)));
+		return this.http.post<any>('https://api.bankofmemories.org/bridge/logout', null).pipe(
+			tap(() => {
+				localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, '');
+				void this.router.navigate(['/auth']);
+			}),
+			catchError((err: HttpErrorResponse) => throwError(err))
+		);
 	}
 
 	public checkOTP(code: string, token: string): Observable<OTPResponse> {

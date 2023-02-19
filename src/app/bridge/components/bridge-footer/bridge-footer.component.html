@@ -1,0 +1,19 @@
+<section class="bridge-footer">
+  <div class="bridge-footer-contacts">
+    <span class="gbm-body-1">Support</span>
+    <div class="bridge-footer-contacts__container">
+      <a #supportLink class="gbm-body-1 gbm-link" (click)="mailTo(supportLink)">info@bankofmemories.org</a>
+    </div>
+  </div>
+
+  <div class="bridge-footer-user">
+    <div (click)="logOut()"
+         class="bridge-footer-user__container logout-clickout">
+      <span class="gbm-body-1">Logout</span>
+      <gbm-icon [name]="'logout'"
+                [width]="'24px'"
+                [height]="'24px'">
+      </gbm-icon>
+    </div>
+  </div>
+</section>

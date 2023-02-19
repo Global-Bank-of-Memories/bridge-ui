@@ -1,0 +1,25 @@
+@import (reference) 'variables.less';
+
+.bridge-footer {
+  margin-top: 48px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  &-contacts,
+  &-user {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &__container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .logout-clickout {
+      cursor: pointer;
+    }
+  }
+}

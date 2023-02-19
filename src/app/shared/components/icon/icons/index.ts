@@ -15,6 +15,7 @@ import { IconChevronUpModule } from './icon-chevron-up/icon-chevron-up.module';
 import { IconChipModule } from './icon-chip/icon-chip.module';
 import { IconCircleTridentModule } from './icon-circle-trident/icon-circle-trident.module';
 import { IconCloseModule } from './icon-close/icon-close.module';
+import { IconConcordiumModule } from './icon-concordium/icon-concordium.module';
 import { IconCopyModule } from './icon-copy/icon-copy.module';
 import { IconDaiModule } from './icon-dai/icon-dai.module';
 import { IconDnaModule } from './icon-dna/icon-dna.module';
@@ -119,7 +120,8 @@ export const List = [
 	IconGbmModule,
 	IconLogoutModule,
 	IconCopyModule,
-	IconGbmCoinModule
+	IconGbmCoinModule,
+	IconConcordiumModule
 ];
 
 export * from './icon-arrow-right/icon-arrow-right.module';
@@ -180,3 +182,4 @@ export * from './icon-gbm/icon-gbm.module';
 export * from './icon-logout/icon-logout.module';
 export * from './icon-copy/icon-copy.module';
 export * from './icon-gbm-coin/icon-gbm-coin.module';
+export * from './icon-concordium/icon-concordium.module';

@@ -1,0 +1,145 @@
+@import (reference) 'variables.less';
+
+@keyframes boxShadow {
+  0% {
+    box-shadow: 0 6px 20px var(--cool-gray-40);
+  }
+
+  50% {
+    box-shadow: 0 6px 20px var(--cool-gray-20);
+  }
+
+  100% {
+    box-shadow: 0 6px 20px var(--cool-gray-40);
+  }
+}
+
+.bridge-form {
+  margin-top: 24px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px var(--cool-gray-30);
+  background-color: var(--static-white);
+  animation: boxShadow 30s ease-in-out infinite;
+
+  &-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 24px 24px 40px 24px;
+
+    &__label {
+      margin-top: 16px;
+      position: relative;
+      margin-bottom: 98px;
+
+      &-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &__pill {
+          display: flex;
+          align-items: center;
+          background-color: var(--cool-gray-30);
+          padding: 4px 8px;
+          border-radius: 16px;
+          font-size: 14px;
+          line-height: 14px;
+          font-weight: 800;
+        }
+      }
+
+      &-wrapper {
+        margin-top: 8px;
+        position: relative;
+
+        &-input {
+          border-bottom-right-radius: 0;
+          border-bottom-left-radius: 0;
+
+          &:read-only {
+            background-color: var(--cool-gray-10);
+          }
+        }
+
+        &-pill {
+          display: flex;
+          position: absolute;
+          right: 16px;
+          top: 14px;
+          align-items: center;
+          background-color: var(--cool-gray-20);
+          padding: 4px 8px;
+          border-radius: 16px;
+          gap: 4px;
+
+          @media @m {
+            gap: 8px;
+          }
+
+          &__title {
+            font-size: 12px;
+            font-weight: 600;
+
+            @media @m {
+              font-size: 14px;
+            }
+          }
+        }
+      }
+
+      &-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border-bottom-left-radius: 16px;
+        border-bottom-right-radius: 16px;
+        border: 1px solid;
+        position: absolute;
+        width: 100%;
+        padding: 12px;
+        background: var(--static-white);
+        top: 96px;
+        border-top: none;
+
+        @media @l {
+          top: 112px;
+        }
+
+        &__content {
+          display: block;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 12px;
+          line-height: 24px;
+
+          &-assets {
+            position: absolute;
+            top: 31px;
+            right: 12px;
+            padding: 4px 8px;
+          }
+        }
+      }
+    }
+
+    &__switch {
+      position: absolute;
+      right: 24px;
+      top: 228px;
+      border-radius: 64px;
+      padding: 8px 24px;
+      z-index: 12;
+      cursor: pointer;
+
+      @media @l {
+        top: 249px;
+      }
+    }
+
+    &__submit {
+      display: block;
+    }
+  }
+}

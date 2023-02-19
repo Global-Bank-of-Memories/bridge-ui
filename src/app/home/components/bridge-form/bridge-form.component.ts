@@ -20,6 +20,7 @@ import { IWalletState } from '@home/services/wallet.model';
 import { catchError } from 'rxjs/operators';
 import { BigNumber } from '@ethersproject/bignumber';
 import { ConcordiumService } from '@home/services/concordium/concordium.service';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
 	selector: 'br-bridge-form',
@@ -35,18 +36,17 @@ export class BridgeFormComponent
 	public transactionHash = '';
 	public withdrawEthereumResponse!: any;
 	public formGroup!: BridgeFormGroup;
-	public switchDisabled = false;
 	public serviceForTransactions!: any;
 	public transferPgnToGbmRes!: any;
 	public transferCncToGbmRes!: any;
 
 	constructor(
 		formBuilder: FormBuilder,
-		private bridgeService: BridgeService,
 		private polygonService: PolygonService,
 		private gbmService: GbmService,
 		private injector: Injector,
-		private concordiumService: ConcordiumService
+		private concordiumService: ConcordiumService,
+		private decimalPipe: DecimalPipe
 	) {
 		super(formBuilder);
 	}
@@ -61,6 +61,10 @@ export class BridgeFormComponent
 
 	public get submitState(): SubmitState {
 		return WalletBaseService.submitState;
+	}
+
+	public get isDefaultSubmitState(): boolean {
+		return WalletBaseService.submitState === SubmitState.SEND_TRANSFER && !WalletBaseService.loading;
 	}
 
 	public get loading(): boolean {
@@ -126,22 +130,21 @@ export class BridgeFormComponent
 	}
 
 	public onSubmit(): void {
-		if (WalletBaseService.submitState === SubmitState.SEND_TRANSFER) {
-			this.switchDisabled = true;
-			this.sendTransfer();
-			return;
-		}
+		if (this.walletFrom.walletId && this.walletTo.walletId) {
+			if (WalletBaseService.submitState === SubmitState.SEND_TRANSFER) {
+				this.sendTransfer();
+				return;
+			}
 
-		if (WalletBaseService.submitState === SubmitState.SIGN) {
-			this.switchDisabled = true;
-			this.sign();
-			return;
-		}
+			if (WalletBaseService.submitState === SubmitState.SIGN) {
+				this.sign();
+				return;
+			}
 
-		if (WalletBaseService.submitState === SubmitState.WITHDRAW) {
-			this.switchDisabled = false;
-			this.withdraw();
-			return;
+			if (WalletBaseService.submitState === SubmitState.WITHDRAW) {
+				this.withdraw();
+				return;
+			}
 		}
 	}
 
@@ -427,9 +430,17 @@ export class BridgeFormComponent
 		this.formGroup = this.getFormForModule();
 		const { from, to } = this.formGroup.controls;
 		from.valueChanges.subscribe(value => {
-			to.patchValue(value);
+			to.patchValue(Number(this.transformValue(value)).toFixed(7).toString(), { emitEvent: false });
 			to.markAsTouched();
-			this.validationMessage = '';
 		});
+
+		to.valueChanges.subscribe(value => {
+			from.patchValue(Number(this.transformValue(value)).toFixed(7).toString(), { emitEvent: false });
+			from.markAsTouched();
+		});
+	}
+
+	private transformValue(value: number): number {
+		return value ? Number(this.decimalPipe.transform(value, '1.0-7').toString().split(',').join('')) : 0;
 	}
 }

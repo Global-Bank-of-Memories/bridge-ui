@@ -2,14 +2,14 @@ import { FormControl } from '@angular/forms';
 import { GenericFormGroup } from '@shared/components/generic-form-base/generic-form-base-model';
 
 export interface BridgeBasicFormControls {
-	from: number;
-	to: number;
+	from: string;
+	to: string;
 	password: string;
 }
 
 export const BRIDGE_BASIC_FORM_CONTROLS: BridgeBasicFormControls = {
-	from: 0.0000001,
-	to: 0.0000001,
+	from: '0.0000001',
+	to: '0.0000001',
 	password: ''
 };
 

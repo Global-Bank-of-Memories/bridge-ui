@@ -1,0 +1,44 @@
+@import (reference) 'variables.less';
+
+.bridge {
+  padding-top: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(-45deg, var(--cool-gray-10), var(--cool-gray-20), var(--cool-gray-10), var(--cool-gray-00));
+  background-size: 400% 400%;
+  animation: fadeGradient 20s ease-in-out infinite;
+
+  &-container {
+    width: 100%;
+
+    @media @s {
+      width: 720px;
+    }
+
+    &__header,
+    &__form,
+    &__footer {
+      padding: 24px;
+
+      @media @s {
+        padding: 0;
+      }
+    }
+  }
+}
+
+@keyframes fadeGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}

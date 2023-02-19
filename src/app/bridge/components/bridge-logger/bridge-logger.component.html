@@ -1,0 +1,17 @@
+<section [@fade]
+         *ngIf="bridgeDataService.log$ | async"
+         class="logger">
+     <div id="logger-container"
+          class="logger-container"
+          [innerHTML]="(bridgeDataService.log$ | async).data">
+     </div>
+     <section class="logger-container--wrapper"></section>
+     <gbm-icon placement="top"
+               ngbTooltip="Copy logs (You can send them to the support team if something went wrong)"
+               ngxClipboard
+               [cbContent]="(bridgeDataService.log$ | async).data"
+               [name]="'copy'"
+               [width]="'22px'"
+               [height]="'22px'">
+     </gbm-icon>
+</section>

@@ -7,7 +7,7 @@ import { HomeComponent } from '@home/home.component';
 const routes: Routes = [
 	{
 		path: '',
-		component: HomeComponent,
+		loadChildren: async (): Promise<unknown> => import('./home/home.module').then(module => module.HomeModule),
 		canActivate: [AuthGuardService]
 	},
 	{

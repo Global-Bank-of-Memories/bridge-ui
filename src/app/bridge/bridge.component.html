@@ -1,0 +1,17 @@
+<div class="bridge">
+  <div class="bridge-container">
+    <div class="bridge-container__header">
+      <br-bridge-accounts (selectAccount)="onSelectAccount($event)"
+                          (accountConnection)="onAccountConnection($event)">
+      </br-bridge-accounts>
+    </div>
+
+    <div class="bridge-container__form">
+      <br-bridge-form (updateLog)="onUpdateLog($event)"></br-bridge-form>
+    </div>
+
+    <div class="bridge-container__footer">
+      <br-bridge-footer [log]="log"></br-bridge-footer>
+    </div>
+  </div>
+</div>

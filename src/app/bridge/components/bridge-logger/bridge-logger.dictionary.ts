@@ -1,0 +1,15 @@
+export enum LoggerDictionary {
+	GBM_ACC_CONNECTING = 'Connecting GBM Account...',
+	GBM_ACC_CONNECTED = 'GBM Account successfully connected',
+	GBM_ACC_FAILED = 'GBM Account connection failed',
+	GBM_DEPOSIT_STARTING = 'Starting deposit for the %FLOW%',
+	GBM_DEPOSIT_SUCCESS = 'Deposit successfully finished for the %FLOW%',
+	GBM_DEPOSIT_XDR_SUCCESS = 'XDR successfully received for the %FLOW%',
+	GBM_DEPOSIT_NOTE = 'If you want to sign transaction, you need to re-enter your GBM password',
+	GBM_DEPOSIT_FAILED = 'Deposit failed for the %FLOW%',
+	GBM_DEPOSIT_XDR_FAILED= 'Failed to receive XDR for the %FLOW%',
+	INIT_ACC_NOTE = 'To perform with Bridge you need to connect the second account from dropdown',
+	POLYGON_ACC_CONNECTING = 'Connecting Polygon Account...',
+	POLYGON_ACC_CONNECTED = 'Polygon Account successfully connected',
+	POLYGON_ACC_FAILED = 'Polygon Account connection failed',
+}

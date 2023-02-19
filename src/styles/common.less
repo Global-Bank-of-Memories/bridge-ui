@@ -206,13 +206,10 @@ gbm-button {
   }
 }
 
-.wallets-item,
-.bridge-form-container__label-wrapper {
-  gbm-icon-gbm-coin {
-    svg {
-      margin-top: 0;
-      border-radius: 100%;
-    }
+gbm-icon-gbm-coin {
+  svg {
+    margin-top: 0;
+    border-radius: 100%;
   }
 }
 
@@ -268,6 +265,10 @@ gbm-button {
   color: var(--static-black);
 }
 
+.log-info {
+  color: var(--blue-50);
+}
+
 .log-warning {
   color: #a8980c;
 }
@@ -277,16 +278,40 @@ gbm-button {
 }
 
 .log-success {
-  color: var(--light-green-50);
+  color: rgb(5, 125, 2);
 }
 
-.bridge-form-container__label-switch {
-  &:hover {
-    gbm-icon {
-      svg {
-        fill: var(--static-black);
-        transition: all .3s ease-in-out;
+.bridge-form {
+  .bridge-form-container__switch {
+    &:hover {
+      gbm-icon-switch {
+        svg {
+          fill: var(--static-black);
+          transition: all .3s ease-in-out;
+        }
       }
     }
+  }
+}
+
+.logger,
+.bridge-form__logger {
+  ::-webkit-scrollbar {
+    background-color: var(--cool-gray-30);
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: var(--cool-gray-30);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--cool-gray-00);
+    border: 2px solid var(--cool-gray-30);
+    border-radius: 16px;
+  }
+
+  ::-webkit-scrollbar-button {
+    display: none;
   }
 }

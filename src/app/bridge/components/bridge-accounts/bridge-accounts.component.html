@@ -1,0 +1,85 @@
+<section class="accounts">
+  <button [@fade]
+          *ngIf="primaryAccount"
+          class="accounts-item">
+    <gbm-icon [name]="primaryAccount.icon.name"
+              [width]="'20px'"
+              [height]="'20px'"
+              [fill]="primaryAccount.icon.fill || ''">
+    </gbm-icon>
+    <span class="accounts-item__title"
+          [class.accounts-item__title--connected]="primaryAccount.connected">
+      {{ primaryAccount.title }}
+    </span>
+    <div class="state-badge-0 accounts-item__state"
+         [class.state-badge-1]="primaryAccount.connected">
+      <span class="accounts-item__state-title">{{ primaryAccount.connected ? 'Connected' : 'Not Connected' }}</span>
+    </div>
+  </button>
+
+  <div [@fade]
+       *ngIf="selectedAccount"
+       class="accounts-dropdown">
+    <button #accountsDropdown
+            (click)="onAccountConnection(selectedAccount)"
+            class="accounts-dropdown__item">
+      <gbm-icon [name]="selectedAccount.icon.name"
+                [width]="'20px'"
+                [height]="'20px'"
+                [fill]="selectedAccount.icon.fill">
+      </gbm-icon>
+      <span class="accounts-dropdown__item__title"
+            [class.accounts-dropdown__title--connected]="selectedAccount.connected">
+        {{ selectedAccount.title }}
+      </span>
+      <gbm-spinner [@fade]
+                   *ngIf="bridgeDataService.accountConnectionLoading$ | async"
+                   [color]="'--static-white_light'"
+                   width="50px"
+                   height="50px">
+      </gbm-spinner>
+
+      <div [@fade]
+           *ngIf="!(bridgeDataService.accountConnectionLoading$ | async)"
+           class="state-badge-0 accounts-dropdown__item__state"
+           [class.state-badge-1]="selectedAccount.connected">
+        <span class="accounts-dropdown__item__state-title">
+          {{ selectedAccount.connected ? 'Connected' : 'Not Connected' }}</span>
+      </div>
+      <div [@fade]
+           *ngIf="!(bridgeDataService.accountConnectionLoading$ | async)"
+           (click)="toggleDropdown($event)"
+           class="accounts-dropdown__item__select">
+        <gbm-icon [name]="'chevronDown'"
+                  [width]="'20px'"
+                  [height]="'20px'"
+                  [fill]="'--cool-gray-50_light'">
+        </gbm-icon>
+      </div>
+    </button>
+
+    <ul [@fade]
+        *ngIf="show"
+        class="accounts-dropdown__list">
+      <li *ngFor="let account of bridgeDataService.secondaryAccounts$ | async; let i = index"
+          class="accounts-dropdown__list-item accounts-dropdown__list-item-{{ i + 1 }}"
+          (click)="onSelectAccount(account)">
+        <gbm-icon [name]="account.icon.name"
+                  [width]="'20px'"
+                  [height]="'20px'"
+                  [fill]="account.icon.fill">
+        </gbm-icon>
+        <span class="accounts-dropdown__list-item__title"
+              [class.accounts-dropdown__list-item__title--connected]="account.connected">
+          {{ account.title }}
+        </span>
+        <div class="state-badge-0 accounts-dropdown__list-item__state"
+             [class.state-badge-1]="account.connected">
+          <span class="accounts-dropdown__list-item__state-title">
+            {{ account.connected ? 'Connected' : 'Not Connected' }}
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>

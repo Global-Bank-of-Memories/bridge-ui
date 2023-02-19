@@ -21,6 +21,9 @@ import { ToastModule } from '@shared/components/toast/toast.module';
 import { HomeModule } from '@home/home.module';
 import { GbmConnectionStateModule } from '@shared/directives/connection-state/connection-state.module';
 import { JwtInterceptor } from '@auth/interceptors/auth.interceptor';
+import { GbmIconModule } from '@shared/components/icon/icon.module';
+import { NgrxModule } from './ngrx.module';
+import { GbmHeadingModule } from '@shared/components/heading/heading.module';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -31,6 +34,7 @@ import { JwtInterceptor } from '@auth/interceptors/auth.interceptor';
 		ToastModule,
 		AuthModule,
 		HomeModule,
+		NgrxModule,
 		HttpClientModule,
 		NgxGoogleAnalyticsModule.forRoot(environment.googleAnalyticsKey),
 		JwtModule.forRoot({
@@ -40,6 +44,8 @@ import { JwtInterceptor } from '@auth/interceptors/auth.interceptor';
 		}),
 		NgxGoogleAnalyticsRouterModule,
 		NgbModule,
+		GbmIconModule,
+		GbmHeadingModule,
 		GbmHeaderModule,
 		GbmThemeModule,
 		GbmConnectionStateModule
@@ -58,11 +64,6 @@ import { JwtInterceptor } from '@auth/interceptors/auth.interceptor';
 		{
 			provide: HTTP_INTERCEPTORS,
 			useClass: GbmCancelPendingRequestInterceptor,
-			multi: true
-		},
-		{
-			provide: HTTP_INTERCEPTORS,
-			useClass: HandleProlongedRequestInterceptor,
 			multi: true
 		},
 		{
