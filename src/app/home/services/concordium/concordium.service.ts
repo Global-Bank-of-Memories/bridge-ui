@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import { forkJoin, from, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { catchError, filter, map, switchMap } from 'rxjs/operators';
@@ -9,12 +8,20 @@ import { CcdAmount } from '@concordium/common-sdk/lib/types/ccdAmount';
 import { toBuffer, serializeUpdateContractParameters } from '@concordium/web-sdk';
 import { environment } from '@environments/environment';
 import { BRIDGE_CONTRACT_RAW_SCHEMA } from './concordium.model';
+import { WalletApi } from '@concordium/browser-wallet-api-helpers/lib/wallet-api-types';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class ConcordiumService extends WalletBaseService {
+	provider: WalletApi;
+
 	public ethereum = (window as any).ethereum;
+
+	public async getConcordiumProvider(): Promise<void> {
+		this.provider = await detectConcordiumProvider();
+    console.log('this.provider', this.provider);
+	}
 
 	public getWalletData(): Observable<any> {
 		return this.getWallet().pipe(
@@ -223,7 +230,6 @@ export class ConcordiumService extends WalletBaseService {
 	}
 
 	public async requestAssets(walletId: string): Promise<any> {
-		const provider = await detectConcordiumProvider();
-		return provider.addCIS2Tokens(walletId, [''], 2928n, 0n);
+		return this.provider.addCIS2Tokens(walletId, [''], 2928n, 0n);
 	}
 }
