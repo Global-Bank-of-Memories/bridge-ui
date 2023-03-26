@@ -62,6 +62,7 @@ import { IconUsdcModule } from './icon-usdc/icon-usdc.module';
 import { IconYoutubeModule } from './icon-youtube/icon-youtube.module';
 import { IconZoomInModule } from './icon-zoom-in/icon-zoom-in.module';
 import { IconZoomOutModule } from './icon-zoom-out/icon-zoom-out.module';
+import { IconOkcModule } from './icon-okc/icon-okc.module';
 
 export const List = [
 	IconArrowRightModule,
@@ -121,7 +122,8 @@ export const List = [
 	IconLogoutModule,
 	IconCopyModule,
 	IconGbmCoinModule,
-	IconConcordiumModule
+	IconConcordiumModule,
+	IconOkcModule
 ];
 
 export * from './icon-arrow-right/icon-arrow-right.module';

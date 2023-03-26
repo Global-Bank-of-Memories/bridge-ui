@@ -17,6 +17,7 @@ import { IWalletState } from '@home/services/wallet.model';
 import { FADE_ANIMATION } from '@shared/animations/fade.animation';
 import * as _ from 'lodash';
 import { take } from 'rxjs/operators';
+import {OkcService} from '@home/services/okc/okc.service';
 
 @Component({
 	selector: 'br-wallets-dropdown',
@@ -38,7 +39,11 @@ export class WalletsDropdownComponent {
 	public show = false;
 	public disabled = false;
 
-	constructor(private polygonService: PolygonService, private concordium: ConcordiumService) {}
+	constructor(
+		private polygonService: PolygonService,
+		private concordium: ConcordiumService,
+		private okcService: OkcService,
+	) {}
 
 	public get isDefaultSubmitState(): boolean {
 		return WalletBaseService.submitState === SubmitState.SEND_TRANSFER && !WalletBaseService.loading;
@@ -87,19 +92,35 @@ export class WalletsDropdownComponent {
 
 				return;
 			}
+			if (walletItem.id === 'okc') {
+				this.okcService.getWalletData()
+					.pipe(take(1))
+					.subscribe(() => {
+						WalletBaseService.state = WalletBaseService.state.map(wallet => {
+							console.log(wallet);
+							if (wallet.id === walletItem.id) {
+								return {
+									...wallet,
+									connected: true
+								};
+							}
+							return wallet;
+						});
+					});
+			}
 
 			this.polygonService
 				.getWalletData()
 				.pipe(take(1))
 				.subscribe(() => {
 					WalletBaseService.state = WalletBaseService.state.map(wallet => {
+						console.log(wallet);
 						if (wallet.id === walletItem.id) {
 							return {
 								...wallet,
 								connected: true
 							};
 						}
-
 						return wallet;
 					});
 				});

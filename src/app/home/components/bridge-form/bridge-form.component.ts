@@ -21,6 +21,7 @@ import { catchError } from 'rxjs/operators';
 import { BigNumber } from '@ethersproject/bignumber';
 import { ConcordiumService } from '@home/services/concordium/concordium.service';
 import { DecimalPipe } from '@angular/common';
+import {OkcService} from "@home/services/okc/okc.service";
 
 @Component({
 	selector: 'br-bridge-form',
@@ -46,6 +47,7 @@ export class BridgeFormComponent
 		private gbmService: GbmService,
 		private injector: Injector,
 		private concordiumService: ConcordiumService,
+    private okcService: OkcService,
 		private decimalPipe: DecimalPipe
 	) {
 		super(formBuilder);
@@ -452,6 +454,26 @@ export class BridgeFormComponent
 
 			return;
 		}
+
+    if (wallet.id === 'okc') {
+      WalletBaseService.logger(`Requesting assets for ${wallet.title}...`);
+      this.okcService
+        .requestAssets()
+        .then(res => {
+          if (res) {
+            WalletBaseService.logger(`Assets request for ${wallet.title} succeeded`, LOGGER_TYPES.SUCCESS);
+          } else {
+            WalletBaseService.logger(`Requesting assets for ${wallet.title} failed`, LOGGER_TYPES.ERROR);
+          }
+
+          return;
+        })
+        .catch(() => {
+          WalletBaseService.logger(`Requesting assets for ${wallet.title} failed`, LOGGER_TYPES.ERROR);
+        });
+
+      return;
+    }
 	}
 
 	private setValidators(): void {

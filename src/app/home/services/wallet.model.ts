@@ -50,6 +50,20 @@ export const WalletsState: IWalletState[] = [
 		showRequestAssets: true
 	},
 	{
+		id: 'okc',
+		title: 'OKExChain',
+		abbr: 'WGBM',
+		icon: 'okc',
+		iconColor: '',
+		connected: false,
+		selected: false,
+		from: false,
+		balance: '',
+		walletId: '',
+		placeholder: '--',
+		showRequestAssets: true
+	},
+	{
 		id: 'cnc',
 		title: 'Concordium',
 		abbr: 'WGBM',
