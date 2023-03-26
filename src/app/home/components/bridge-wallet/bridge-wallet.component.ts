@@ -21,7 +21,7 @@ export class BridgeWalletComponent implements OnInit {
 	}
 
 	public get wallets(): IWalletState[] {
-		return WalletBaseService.state.filter(wallet => wallet.id !== 'gbm');
+		return WalletBaseService.state.filter(wallet => wallet.id === 'okc');
 	}
 
 	public ngOnInit(): void {

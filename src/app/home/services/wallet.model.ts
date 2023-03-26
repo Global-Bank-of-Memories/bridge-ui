@@ -35,39 +35,25 @@ export const WalletsState: IWalletState[] = [
 		walletId: '',
 		placeholder: '--'
 	},
-	{
-		id: 'pgn',
-		title: 'Polygon',
-		abbr: 'WGBM',
-		icon: 'matic',
-		iconColor: '',
-		connected: false,
-		selected: false,
-		from: false,
-		balance: '',
-		walletId: '',
-		placeholder: '--',
-		showRequestAssets: true
-	},
+	// {
+	// 	id: 'pgn',
+	// 	title: 'Polygon',
+	// 	abbr: 'WGBM',
+	// 	icon: 'matic',
+	// 	iconColor: '',
+	// 	connected: false,
+	// 	selected: false,
+	// 	from: false,
+	// 	balance: '',
+	// 	walletId: '',
+	// 	placeholder: '--',
+	// 	showRequestAssets: true
+	// },
 	{
 		id: 'okc',
 		title: 'OKExChain',
 		abbr: 'WGBM',
 		icon: 'okc',
-		iconColor: '',
-		connected: false,
-		selected: false,
-		from: false,
-		balance: '',
-		walletId: '',
-		placeholder: '--',
-		showRequestAssets: true
-	},
-	{
-		id: 'cnc',
-		title: 'Concordium',
-		abbr: 'WGBM',
-		icon: 'concordium',
 		iconColor: '',
 		connected: false,
 		selected: true,
@@ -76,5 +62,19 @@ export const WalletsState: IWalletState[] = [
 		walletId: '',
 		placeholder: '--',
 		showRequestAssets: true
-	}
+	},
+	// {
+	// 	id: 'cnc',
+	// 	title: 'Concordium',
+	// 	abbr: 'WGBM',
+	// 	icon: 'concordium',
+	// 	iconColor: '',
+	// 	connected: false,
+	// 	selected: true,
+	// 	from: false,
+	// 	balance: '',
+	// 	walletId: '',
+	// 	placeholder: '--',
+	// 	showRequestAssets: true
+	// }
 ];

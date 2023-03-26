@@ -15,6 +15,7 @@ import { LOGGER_TYPES, SubmitState, WalletBaseService } from '../wallet-base';
 import { LoggerDictionary } from '@home/components/logger/logger.dictionary';
 import { PolygonService, validatorUrls } from '../polygon/polygon.service';
 import { ToastService } from '@shared/components/toast/toast.service';
+import {OkcService} from '@home/services/okc/okc.service';
 
 window.Buffer = Buffer;
 
@@ -33,7 +34,8 @@ export class GbmService extends WalletBaseService {
 	constructor(
 		protected toastService: ToastService,
 		protected httpClient: HttpClient,
-		private polygonService: PolygonService
+		private polygonService: PolygonService,
+		private okcService: OkcService
 	) {
 		super(toastService, httpClient);
 	}
@@ -205,6 +207,88 @@ export class GbmService extends WalletBaseService {
 						}
 
 						void this.polygonService
+							.getBridgeAbi()
+							.toPromise()
+							.then(async abiRes => {
+								WalletBaseService.logger('Getting bridge abi...');
+								const bridgeContract = this.polygonService.getContract(
+									abiRes.abi,
+									'0x18b11A6E4213e5b9B94c97c2A165F889faa3D7C4'
+								);
+
+								const indexes: number[] = [];
+								const signatures: Buffer[] = [];
+
+								for (let i = 0; i < validatorUrls.length; i++) {
+									const addressSigner = await bridgeContract.methods.signers(i).call();
+									indexes.push(i);
+									signatures.push(
+										Buffer.from(
+											addressSigner === withdrawEthereumResponse['address']
+												? withdrawEthereumResponse['signature']
+												: '',
+											'hex'
+										)
+									);
+								}
+
+								WalletBaseService.logger('Please confirm the transaction in metamask', LOGGER_TYPES.WARNING);
+
+								const rs = bridgeContract.methods
+									.withdrawERC20(withdrawERC20Request, signatures, indexes)
+									.send({ from: walletTo || '' })
+									.then(() => {
+										WalletBaseService.loading = false;
+										WalletBaseService.submitState = SubmitState.SEND_TRANSFER;
+										WalletBaseService.logger('Withdraw completed successfully', LOGGER_TYPES.SUCCESS);
+									})
+									.catch(() => {
+										WalletBaseService.loading = false;
+										WalletBaseService.logger('User refused transaction or something went wrong', LOGGER_TYPES.ERROR);
+									});
+
+								return rs;
+							})
+							.catch(() => {
+								WalletBaseService.loading = false;
+								WalletBaseService.logger('Getting abi failed or contract refused it', LOGGER_TYPES.ERROR);
+							});
+					}
+				});
+		}, 1000);
+	}
+
+	public async handleWithdrawOkc(transactionHash: string, walletTo: string): Promise<void> {
+		WalletBaseService.loading = true;
+		WalletBaseService.logger('Starting withdraw...');
+		const interval = setInterval(() => {
+			this.withdraw(transactionHash)
+				.pipe(
+					catchError(err => {
+						clearInterval(interval);
+						WalletBaseService.logger('Error while withdraw', LOGGER_TYPES.ERROR);
+						WalletBaseService.loading = false;
+						return err;
+					})
+				)
+				.subscribe(res => {
+					if (res) {
+						const withdrawEthereumResponse = res;
+						clearInterval(interval);
+
+						let withdrawERC20Request = null as any;
+
+						if (withdrawEthereumResponse) {
+							withdrawERC20Request = {
+								id: `0x${withdrawEthereumResponse.deposit_id}`,
+								expiration: BigNumber.from(withdrawEthereumResponse.expiration),
+								recipient: walletTo || '',
+								amount: withdrawEthereumResponse.amount,
+								token: withdrawEthereumResponse.token
+							};
+						}
+
+						void this.okcService
 							.getBridgeAbi()
 							.toPromise()
 							.then(async abiRes => {

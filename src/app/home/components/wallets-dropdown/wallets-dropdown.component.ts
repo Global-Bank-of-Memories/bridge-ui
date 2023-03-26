@@ -97,7 +97,6 @@ export class WalletsDropdownComponent {
 					.pipe(take(1))
 					.subscribe(() => {
 						WalletBaseService.state = WalletBaseService.state.map(wallet => {
-							console.log(wallet);
 							if (wallet.id === walletItem.id) {
 								return {
 									...wallet,
@@ -109,21 +108,22 @@ export class WalletsDropdownComponent {
 					});
 			}
 
-			this.polygonService
-				.getWalletData()
-				.pipe(take(1))
-				.subscribe(() => {
-					WalletBaseService.state = WalletBaseService.state.map(wallet => {
-						console.log(wallet);
-						if (wallet.id === walletItem.id) {
-							return {
-								...wallet,
-								connected: true
-							};
-						}
-						return wallet;
+			if (walletItem.id === 'pgn') {
+				this.polygonService
+					.getWalletData()
+					.pipe(take(1))
+					.subscribe(() => {
+						WalletBaseService.state = WalletBaseService.state.map(wallet => {
+							if (wallet.id === walletItem.id) {
+								return {
+									...wallet,
+									connected: true
+								};
+							}
+							return wallet;
+						});
 					});
-				});
+			}
 		}
 	}
 

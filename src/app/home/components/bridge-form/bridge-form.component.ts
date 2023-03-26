@@ -21,7 +21,7 @@ import { catchError } from 'rxjs/operators';
 import { BigNumber } from '@ethersproject/bignumber';
 import { ConcordiumService } from '@home/services/concordium/concordium.service';
 import { DecimalPipe } from '@angular/common';
-import {OkcService} from "@home/services/okc/okc.service";
+import {OkcService} from '@home/services/okc/okc.service';
 
 @Component({
 	selector: 'br-bridge-form',
@@ -47,7 +47,7 @@ export class BridgeFormComponent
 		private gbmService: GbmService,
 		private injector: Injector,
 		private concordiumService: ConcordiumService,
-    private okcService: OkcService,
+		private okcService: OkcService,
 		private decimalPipe: DecimalPipe
 	) {
 		super(formBuilder);
@@ -195,6 +195,12 @@ export class BridgeFormComponent
 			return;
 		}
 
+		if (this.walletTo?.id === 'okc') {
+			void this.gbmService.handleWithdrawOkc(this.transactionHash, this.walletTo?.walletId || '').then(() => {
+				void this.okcService.getWalletData().toPromise().then(() => {});
+			});
+		}
+
 		if (this.walletTo?.id === 'gbm') {
 			if (this.walletFrom?.id === 'pgn') {
 				void this.polygonService
@@ -213,7 +219,23 @@ export class BridgeFormComponent
 
 				return;
 			}
+			if (this.walletFrom?.id === 'okc') {
+				void this.okcService
+					.sendWithdraw(
+						this.transferPgnToGbmRes.transactionHash,
+						_.get(this.transferPgnToGbmRes, 'events.Deposit.logIndex', 0)
+					)
+					.then(() => {
+						WalletBaseService.logger(LoggerDictionary.TRANSFERING_COMPLETED);
+						WalletBaseService.loading = false;
+						WalletBaseService.submitState = SubmitState.SIGN;
+					})
+					.catch(() => {
+						WalletBaseService.loading = false;
+					});
 
+				return;
+			}
 			if (this.walletFrom?.id === 'cnc') {
 				void this.concordiumService
 					.sendWithdraw(this.transferCncToGbmRes, this.walletTo.walletId)
@@ -229,6 +251,7 @@ export class BridgeFormComponent
 				return;
 			}
 		}
+
 	}
 
 	public sendTransfer(): void {
@@ -249,7 +272,7 @@ export class BridgeFormComponent
 			return;
 		}
 
-		if (this.walletTo?.id === 'pgn') {
+		if (this.walletTo?.id === 'pgn' || this.walletTo?.id === 'okc') {
 			this.gbmService.sendTransfer(from.value).subscribe(xdr => {
 				WalletBaseService.xdr = xdr;
 				WalletBaseService.logger(LoggerDictionary.TRANSFERING_COMPLETED);
@@ -271,6 +294,26 @@ export class BridgeFormComponent
 						WalletBaseService.loading = false;
 
 						void this.polygonService.getWalletData().toPromise().then(() => {});
+						this.gbmService.getWalletData().subscribe(() => {
+							WalletBaseService.logger('Balance for GBM has been updated', LOGGER_TYPES.INFO);
+						});
+					})
+					.catch(() => {
+						WalletBaseService.loading = false;
+					});
+
+				return;
+			}
+
+			if (this.walletFrom?.id === 'okc') {
+				void this.okcService
+					.sendTransfer(this.walletFrom.walletId, this.walletTo.walletId, from.value)
+					.then(res => {
+						this.transferPgnToGbmRes = res;
+						WalletBaseService.submitState = SubmitState.WITHDRAW;
+						WalletBaseService.loading = false;
+
+						void this.okcService.getWalletData().toPromise().then(() => {});
 						this.gbmService.getWalletData().subscribe(() => {
 							WalletBaseService.logger('Balance for GBM has been updated', LOGGER_TYPES.INFO);
 						});
@@ -349,7 +392,7 @@ export class BridgeFormComponent
 			return;
 		}
 
-		if (this.walletTo?.id === 'pgn') {
+		if (this.walletTo?.id === 'pgn' || this.walletTo?.id === 'okc') {
 			this.gbmService.sign(pass?.value).subscribe(
 				res => {
 					this.transactionHash = res;
@@ -388,6 +431,23 @@ export class BridgeFormComponent
 
 				return;
 			}
+      if (this.walletFrom?.id === 'okc') {
+        this.okcService.sign(pass?.value).subscribe(
+          res => {
+            this.transactionHash = res;
+            WalletBaseService.xdr = '';
+            WalletBaseService.loading = false;
+            WalletBaseService.submitState = SubmitState.SEND_TRANSFER;
+            WalletBaseService.logger(LoggerDictionary.TRANSACTION_SIGNED, LOGGER_TYPES.SUCCESS);
+            this.formGroup.controls.password.setValue('');
+          },
+          err => {
+            WalletBaseService.loading = false;
+          }
+        );
+
+        return;
+      }
 
 			if (this.walletFrom?.id === 'cnc') {
 				this.polygonService.sign(pass?.value).subscribe(
@@ -455,25 +515,25 @@ export class BridgeFormComponent
 			return;
 		}
 
-    if (wallet.id === 'okc') {
-      WalletBaseService.logger(`Requesting assets for ${wallet.title}...`);
-      this.okcService
-        .requestAssets()
-        .then(res => {
-          if (res) {
-            WalletBaseService.logger(`Assets request for ${wallet.title} succeeded`, LOGGER_TYPES.SUCCESS);
-          } else {
-            WalletBaseService.logger(`Requesting assets for ${wallet.title} failed`, LOGGER_TYPES.ERROR);
-          }
+		if (wallet.id === 'okc') {
+			WalletBaseService.logger(`Requesting assets for ${wallet.title}...`);
+			this.okcService
+				.requestAssets()
+				.then(res => {
+					if (res) {
+						WalletBaseService.logger(`Assets request for ${wallet.title} succeeded`, LOGGER_TYPES.SUCCESS);
+					} else {
+						WalletBaseService.logger(`Requesting assets for ${wallet.title} failed`, LOGGER_TYPES.ERROR);
+					}
 
-          return;
-        })
-        .catch(() => {
-          WalletBaseService.logger(`Requesting assets for ${wallet.title} failed`, LOGGER_TYPES.ERROR);
-        });
+					return;
+				})
+				.catch(() => {
+					WalletBaseService.logger(`Requesting assets for ${wallet.title} failed`, LOGGER_TYPES.ERROR);
+				});
 
-      return;
-    }
+			return;
+		}
 	}
 
 	private setValidators(): void {

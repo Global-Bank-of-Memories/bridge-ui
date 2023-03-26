@@ -39,7 +39,7 @@ export class OkcService extends WalletBaseService {
 		formData.append('log_index', logIndex);
 
 		return this.httpClient
-			.post(`${environment.bridge}/ethereum/withdraw/stellar`, formData, { responseType: 'text' })
+			.post(`${environment.bridge}/okx/withdraw/stellar`, formData, { responseType: 'text' })
 			.pipe(filter(Boolean));
 	}
 
