@@ -14,6 +14,7 @@ import {IFundLevel} from '@home/services/concordium/fund-level.interface';
 })
 export class StakingComponent implements OnInit {
 	stakingForm: FormGroup;
+	isLoading = true;
 	isStaked = false;
 	fundLevel: IFundLevel;
 	minStakingPeriod = 90;
@@ -49,27 +50,30 @@ export class StakingComponent implements OnInit {
 		  });
 
 		this.stakingService.getConcordiumProvider().then(() => {
-			this.stakingService.getPoolStaking(this.wallet.walletId).then((data) => {
-			  console.log(data);
-			});
+			this.isLoading = false;
+			this.initForm();
 		});
-
-		this.initForm();
 	}
 
 	stake(): void {
-    console.log('stake');
-		this.stakingService.stake(this.wallet.walletId).then((data) => {
-			console.log(data);
+    console.log(this.stakingForm.value);
+    console.log(this.stakingForm.invalid);
+		if (this.stakingForm.invalid) {
+			return;
+		}
+		this.stakingService.stake(
+			this.stakingForm.value.amount,
+			this.wallet.walletId).then((data) => {
+			  console.log(data);
 		});
 	}
 	private initForm(): void {
 		this.stakingForm = this.fb.group({
-			amount: [this.wallet?.balance || 0,
+			amount: [
+				this.wallet?.balance || 0,
 				[
 					Validators.required,
-					Validators.min(1),
-					Validators.max(Number(this.wallet?.balance))
+					Validators.min(1)
 				]
 			],
 			period: [this.defaultStakingPeriod, Validators.required]

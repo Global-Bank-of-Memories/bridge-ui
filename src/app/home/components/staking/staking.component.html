@@ -7,7 +7,7 @@
       <div class="gbm-label-1 mb-2">Your fund level</div>
       <div class="card-gray"></div>
     </div>
-    <form [formGroup]="stakingForm">
+    <form *ngIf="!isLoading" [formGroup]="stakingForm">
       <div class="mb-24">
         <div class="d-flex align-items-center mb-2">
           <div class="gbm-label-1 mr-8">Lock amount</div>

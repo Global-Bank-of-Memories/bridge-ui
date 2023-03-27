@@ -45,7 +45,7 @@ export class ConcordiumCommonService {
 	 * @param ccdAmount CCD Amount to initialize the contract with.
 	 * @returns Contract Address.
 	 */
-	async initContract<T>(
+	public async initContract<T>(
 		provider: WalletApi,
 		contractInfo: ContractInfo,
 		account: string,
@@ -90,7 +90,7 @@ export class ConcordiumCommonService {
 	 * @param invoker Invoker Account.
 	 * @returns Buffer of the return value.
 	 */
-	async invokeContract<T>(
+	public async invokeContract<T>(
 		provider: WalletApi,
 		contractInfo: ContractInfo,
 		contract: ContractAddress,
@@ -99,6 +99,7 @@ export class ConcordiumCommonService {
 		invoker?: ContractAddress | AccountAddress
 	): Promise<Buffer> {
 		const { schemaBuffer, contractName } = contractInfo;
+
 		const parameter = !!params
 			? this.serializeParams(contractName, schemaBuffer, methodName, params)
 			: undefined;
@@ -108,6 +109,7 @@ export class ConcordiumCommonService {
 			invoker,
 			method: `${contractName}.${methodName}`,
 		});
+
 
 		if (!res || res.tag === 'failure') {
 			const msg =
@@ -142,7 +144,7 @@ export class ConcordiumCommonService {
 	 * @param amount CCD Amount to update the contract with.
 	 * @returns Update contract Outcomes.
 	 */
-	async updateContract<T>(
+	public async updateContract<T>(
 		provider: WalletApi,
 		contractInfo: ContractInfo,
 		paramJson: T,

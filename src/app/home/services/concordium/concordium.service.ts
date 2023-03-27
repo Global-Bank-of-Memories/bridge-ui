@@ -7,7 +7,7 @@ import { AccountTransactionType } from '@concordium/common-sdk/lib/types';
 import { CcdAmount } from '@concordium/common-sdk/lib/types/ccdAmount';
 import { toBuffer, serializeUpdateContractParameters } from '@concordium/web-sdk';
 import { environment } from '@environments/environment';
-import { BRIDGE_CONTRACT_RAW_SCHEMA } from './concordium.model';
+import { BRIDGE_CONTRACT_RAW_SCHEMA } from '@shared/models/concordium.model';
 import { WalletApi } from '@concordium/browser-wallet-api-helpers/lib/wallet-api-types';
 
 @Injectable({
