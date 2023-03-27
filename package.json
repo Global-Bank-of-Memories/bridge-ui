@@ -12,7 +12,7 @@
     "lint:fix": "npm run prettier:fix && npm run stylelint:fix && npm run eslint:fix",
     "prettier": "prettier \"./**/*{.ts,.js,.less,.html}\" --check",
     "prettier:fix": "prettier \"./**/*{.ts,.js,.less,.html}\" --write",
-    "start": "ng serve --host 0.0.0.0 --poll 500",
+    "start": "ng serve --host 0.0.0.0 --ssl=true --poll 500",
     "start:prod": "node .",
     "stylelint": "stylelint \"src/**/*.less\" --custom-syntax postcss-less",
     "stylelint:fix": "stylelint --fix \"src/**/*.less\" --custom-syntax=postcss-less"

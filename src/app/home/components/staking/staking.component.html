@@ -65,11 +65,28 @@
       </div>
     </form>
     <div>
-      <gbm-button class="bridge-form-container__submit"
+      <gbm-button *ngIf="!isStaked"
+                  class="bridge-form-container__submit"
                   title="Stake"
+                  [loading]="isInteracting"
                   (click)="stake()"
                   [className]="'gbm-btn gbm-btn-md gbm-btn-full-width gbm-btn-primary gbm-btn-rounded gbm-button-2'">
       </gbm-button>
+      <div *ngIf="isStaked" class="d-flex align-items-center justify-content-between">
+        <gbm-button class="bridge-form-container__submit"
+                    title="Cancel"
+                    [loading]="isInteracting"
+                    (click)="unstake()"
+                    [className]="'gbm-btn gbm-btn-md gbm-btn-primary gbm-btn-link gbm-button-2'">
+        </gbm-button>
+        <gbm-button class="bridge-form-container__submit"
+                    title="Withdraw"
+                    [disabled]="true"
+                    [loading]="isInteracting"
+                    (click)="harvestRewards()"
+                    [className]="'gbm-btn gbm-btn-md gbm-btn-primary gbm-btn-rounded gbm-button-2'">
+        </gbm-button>
+      </div>
     </div>
   </div>
 </div>

@@ -11,6 +11,9 @@ import {IFundLevel} from '@home/services/concordium/fund-level.interface';
 import {map} from 'rxjs/operators';
 import {ConcordiumCommonService} from '@shared/services/concordium/concordium-common.service';
 import {STAKING_CONTRACT_INFO, WGBM_CONTRACT_INFO} from '@shared/models/constants';
+import {AccountAddress, deserializeReceiveReturnValue} from '@concordium/web-sdk';
+import {Buffer} from 'buffer';
+import {WGBM_CONTRACT_RAW_SCHEMA} from '@shared/models/concordium.model';
 
 @Injectable({
 	providedIn: 'root',
@@ -66,7 +69,7 @@ export class StakingService {
 		);
 	}
 
-	public async isOperatorOf(wallet: string): Promise<void> {
+	public async isOperatorOf(wallet: string): Promise<any> {
 		const isOperatorOfMethod = 'operatorOf';
 		const params = [
 			{
@@ -85,8 +88,18 @@ export class StakingService {
 			WGBM_CONTRACT_INFO,
 			this.wgbmContractAddress,
 			isOperatorOfMethod,
-			params
+			params,
+			new AccountAddress(wallet)
 		);
+
+		const returnValues = deserializeReceiveReturnValue(
+			result,
+			WGBM_CONTRACT_INFO.schemaBuffer,
+			this.wgbmContractName,
+			isOperatorOfMethod,
+			0,
+		);
+		return returnValues;
 	}
 
 	public async stake(amount: number, wallet: string): Promise<void> {
@@ -95,10 +108,14 @@ export class StakingService {
 		const parameters = {
 			amount,
 			pool_id: 0,
-			owned_entry_point: ''
+			owned_entrypoint_name: ''
 		};
-
-		await this.updateOperator(wallet);
+		const isOperator = await this.isOperatorOf(wallet);
+		if (!isOperator || !isOperator[0]) {
+			await this.updateOperator(wallet);
+		} else {
+			await this.updateOperator(wallet);
+		}
 
 		const result = await this.concordiumCommonService.updateContract(
 			this.concordiumClient,
@@ -106,7 +123,8 @@ export class StakingService {
 			parameters,
 			wallet,
 			this.stakingContractAddress,
-			method
+			method,
+			BigInt(99999),
 		);
 	}
 
@@ -114,7 +132,7 @@ export class StakingService {
 		const method = 'unstake';
 		const parameters = {
 			pool_id: 0,
-			owned_entry_point: ''
+			owned_entrypoint_name: ''
 		};
 
 		const result = await this.concordiumCommonService.updateContract(
@@ -131,7 +149,7 @@ export class StakingService {
 		const method = 'harvestRewards';
 		const parameters = {
 			pool_id: 0,
-			owned_entry_point: ''
+			owned_entrypoint_name: ''
 		};
 
 		const result = await this.concordiumCommonService.updateContract(
@@ -144,7 +162,7 @@ export class StakingService {
 		);
 	}
 
-	public async getPoolStaking(wallet: string): Promise<void> {
+	public async getPoolStaking(wallet: string): Promise<any> {
 		const method = 'getPoolStaking';
 		const params = {
 			pool_id: this.poolId
@@ -155,7 +173,18 @@ export class StakingService {
 			STAKING_CONTRACT_INFO,
 			this.stakingContractAddress,
 			method,
-			params
+			params,
+			new AccountAddress(wallet)
 		);
+
+		const returnValues = deserializeReceiveReturnValue(
+			result,
+			STAKING_CONTRACT_INFO.schemaBuffer,
+			STAKING_CONTRACT_INFO.contractName,
+			method,
+			0,
+		);
+
+		return returnValues;
 	}
 }
