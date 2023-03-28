@@ -12,8 +12,6 @@ import {map} from 'rxjs/operators';
 import {ConcordiumCommonService} from '@shared/services/concordium/concordium-common.service';
 import {STAKING_CONTRACT_INFO, WGBM_CONTRACT_INFO} from '@shared/models/constants';
 import {AccountAddress, deserializeReceiveReturnValue} from '@concordium/web-sdk';
-import {Buffer} from 'buffer';
-import {WGBM_CONTRACT_RAW_SCHEMA} from '@shared/models/concordium.model';
 
 @Injectable({
 	providedIn: 'root',
@@ -106,18 +104,16 @@ export class StakingService {
 		const method = 'stake';
 
 		const parameters = {
-			amount,
+			amount: amount * 10000000,
 			pool_id: 0,
 			owned_entrypoint_name: ''
 		};
 		const isOperator = await this.isOperatorOf(wallet);
 		if (!isOperator || !isOperator[0]) {
 			await this.updateOperator(wallet);
-		} else {
-			await this.updateOperator(wallet);
 		}
 
-		const result = await this.concordiumCommonService.updateContract(
+		await this.concordiumCommonService.updateContract(
 			this.concordiumClient,
 			STAKING_CONTRACT_INFO,
 			parameters,

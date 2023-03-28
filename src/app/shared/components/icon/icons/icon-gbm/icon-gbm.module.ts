@@ -4,8 +4,11 @@ import { IconService } from '../../icon.service';
 import { IconGbmComponent } from './icon-gbm.component';
 
 @NgModule({
-	imports: [CommonModule],
-	declarations: [IconGbmComponent]
+    imports: [CommonModule],
+    exports: [
+        IconGbmComponent
+    ],
+    declarations: [IconGbmComponent]
 })
 export class IconGbmModule {
 	constructor(iconService: IconService) {

@@ -14,9 +14,11 @@ import {IFundLevel} from '@home/services/concordium/fund-level.interface';
 })
 export class StakingComponent implements OnInit {
 	stakingForm: FormGroup;
+	isPeriod = false;
 	isLoading = true;
 	isInteracting = false;
 	isStaked = false;
+	stakedAmount = 0;
 	fundLevel: IFundLevel;
 	minStakingPeriod = 90;
 	maxStakingPeriod = 120;
@@ -43,19 +45,19 @@ export class StakingComponent implements OnInit {
 		this.concordiumService.getWalletData().subscribe((data) => {
 			this.fundLevel = data;
 		});
+
 		this.stakingService
 			.getStakingLevel()
 			.subscribe((data) => {
-			  console.log(data);
 		  });
 
 		this.initForm();
 		this.stakingService.getConcordiumProvider().then(() => {
 			this.isLoading = false;
 			this.stakingService.getPoolStaking(this.wallet.walletId).then((data) => {
-				console.log(data);
 				if (data?.staked_amount > 0) {
 					this.isStaked = true;
+					this.stakedAmount = localStorage.getItem('bom_stakedAmount') ? Number(localStorage.getItem('bom_stakedAmount')) : 0;
 				}
 			});
 		});
@@ -70,6 +72,11 @@ export class StakingComponent implements OnInit {
 			this.stakingForm.value.amount,
 			this.wallet.walletId
 		).then((data) => {
+			this.isInteracting = false;
+			localStorage.setItem('bom_stakedAmount', this.stakingForm.value.amount);
+			this.isStaked = true;
+			this.stakedAmount = this.stakingForm.value.amount;
+		}).catch((error) => {
 			this.isInteracting = false;
 		});
 	}
