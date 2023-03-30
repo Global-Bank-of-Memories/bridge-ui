@@ -92,6 +92,7 @@ export class StakingComponent implements OnInit {
 			this.notification.showNotification = true;
 			this.notification.notificationType = 'success';
 			this.notification.message = this.notification.notificationTextSuccess;
+			this.getStakingInfo();
 		}).catch((error) => {
 			this.isInteracting = false;
 			this.notification.showNotification = true;
@@ -116,7 +117,9 @@ export class StakingComponent implements OnInit {
 
 	private getStakingInfo(): void {
 		this.stakingService.getPoolStaking(this.wallet.walletId).then((data) => {
+			this.resetNotification();
 			if (data?.user_staked_amount <= 0) {
+				this.isStaked = false;
 				return;
 			}
 			this.isStaked = true;
