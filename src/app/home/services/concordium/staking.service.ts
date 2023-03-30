@@ -18,17 +18,16 @@ import {AccountAddress, deserializeReceiveReturnValue} from '@concordium/web-sdk
 })
 export class StakingService {
 	private concordiumClient: WalletApi;
-	private contractName = 'gbm_Staking';
 	private wgbmContractName = 'wGBM';
 	private wgbmContractAddress: ContractAddress = {
 		index: 2928n,
 		subindex: 0n
 	};
 	private stakingContractAddress: ContractAddress = {
-		index: 3921n,
+		index: 4180n,
 		subindex: 0n
 	};
-	poolId = 0;
+	poolId = 1;
 
 	constructor(
 		private httpClient: HttpClient,
@@ -105,7 +104,7 @@ export class StakingService {
 
 		const parameters = {
 			amount: amount * 10000000,
-			pool_id: 0,
+			pool_id: this.poolId,
 			owned_entrypoint_name: ''
 		};
 		const isOperator = await this.isOperatorOf(wallet);
@@ -127,7 +126,7 @@ export class StakingService {
 	public async unstake(wallet: string): Promise<void> {
 		const method = 'unstake';
 		const parameters = {
-			pool_id: 0,
+			pool_id: this.poolId,
 			owned_entrypoint_name: ''
 		};
 
@@ -144,7 +143,7 @@ export class StakingService {
 	public async harvestRewards(wallet: string): Promise<void> {
 		const method = 'harvestRewards';
 		const parameters = {
-			pool_id: 0,
+			pool_id: this.poolId,
 			owned_entrypoint_name: ''
 		};
 

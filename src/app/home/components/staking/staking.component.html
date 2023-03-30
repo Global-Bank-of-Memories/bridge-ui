@@ -6,17 +6,26 @@
     <div class="mb-4">
       <div *ngIf="isStaked" class="card-gray">
         <div class="d-flex align-items-center row">
-          <div class="d-flex align-items-center mb-3">
-            <gbm-icon [name]="'gbmCoin'"
-                      [width]="'18px'"
-                      [height]="'18px'"
-                      [fill]="'--blue-60_light'">
-
-            </gbm-icon>
-            <div class="gbm-label-1 ml-8">WGBM Reward: 0</div>
+          <div *ngIf="notification.showNotification"
+               class="top-notification top-notification_{{notification.notificationType}}">
+            {{notification.message}}
+            <span *ngIf="notification.notificationType === 'success'">
+              {{harvestableAmount + stakedAmount}} WGBM
+            </span>
           </div>
-          <div class="d-flex align-items-center">
+          <div class="p-16">
+            <div class="d-flex align-items-center mb-3">
+              <gbm-icon [name]="'gbmCoin'"
+                        [width]="'18px'"
+                        [height]="'18px'"
+                        [fill]="'--blue-60_light'">
+
+              </gbm-icon>
+              <div class="gbm-label-1 ml-8">WGBM Reward: {{harvestableAmount}}</div>
+            </div>
+            <div class="d-flex align-items-center">
             <div>Locked amount: <span class="fwb">{{stakedAmount}} GBM</span></div>
+          </div>
           </div>
         </div>
       </div>
@@ -32,8 +41,10 @@
         <div class="wallet-form">
           <input class="gbm-input-rounded gbm-input-1 gbm-form-label__input gbm-input"
                  formControlName="amount"
+                 [class.error]="stakingForm.controls.amount.invalid && stakingForm.controls.amount.touched"
                  type="number"/>
-          <div class="info">
+          <div class="info"
+               [class.error]="stakingForm.controls.amount.invalid && stakingForm.controls.amount.touched">
             <span class="gbm-body-2 info__content">
               Wallet:
               <strong>{{ wallet?.walletId }}</strong>
@@ -45,21 +56,26 @@
           </div>
           <div class="right-wrapper pt-16 pb-16 pr-16">
 
-            <span class="gbm-badge gbm-badge--small d-flex">
+            <span class="gbm-badge gbm-badge--small d-flex align-items-center">
               <gbm-icon [name]="wallet?.icon"
                         [width]="'18px'"
                         [height]="'18px'"
                         [fill]="wallet?.iconColor">
               </gbm-icon>
-              {{ wallet?.abbr }}
+              <span class="ml-8">
+                {{ wallet?.abbr }}
+              </span>
             </span>
             <button [@fade]
-                    class="gbm-btn gbm-btn-primary gbm-btn-rounded">
+                    class="gbm-btn gbm-btn-primary gbm-btn-rounded c-assets-button">
               Assets
             </button>
           </div>
         </div>
-
+        <div *ngIf="stakingForm.controls.amount.invalid && stakingForm.controls.amount.touched"
+             class="error-hint">
+          Can't be less then {{minStakingAmount}}
+        </div>
       </div>
       <div class="mb-24" *ngIf="isPeriod">
         <div class="gbm-label-1 mb-2">Period</div>
@@ -88,9 +104,10 @@
       </gbm-button>
       <gbm-button *ngIf="isStaked" class="bridge-form-container__submit"
                   title="Unstake"
+                  (click)="unstake()"
                   [loading]="isInteracting"
-                  [disabled]="true"
-                  [className]="'gbm-btn gbm-btn-md gbm-btn-full-width gbm-btn-disabled gbm-btn-rounded gbm-button-2'">
+                  [disabled]="isInteracting"
+                  [className]="'gbm-btn gbm-btn-md gbm-btn-full-width gbm-btn-primary gbm-btn-rounded gbm-button-2'">
       </gbm-button>
 <!--      <div *ngIf="isStaked" class="d-flex align-items-center justify-content-between">-->
 <!--        <gbm-button class="bridge-form-container__submit"-->

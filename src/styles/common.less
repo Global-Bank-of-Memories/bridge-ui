@@ -372,6 +372,9 @@ gbm-icon-gbm-coin {
         padding: 4px 8px;
       }
     }
+    &.error {
+      border-color: var(--red-60);
+    }
   }
   .right-wrapper {
     height: 100%;
@@ -385,4 +388,20 @@ gbm-icon-gbm-coin {
 }
 .fwb {
   font-weight: bold;
+}
+
+.top-notification {
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  margin-top: -6px;
+  color: var(--static-white);
+  padding: 12px 16px;
+  width: 624px;
+  margin-left: 4px;
+  &_error {
+    background-color: var(--red-60);
+  }
+  &_success {
+    background-color: var(--blue-60);
+  }
 }

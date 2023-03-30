@@ -18,17 +18,25 @@ export class StakingComponent implements OnInit {
 	isLoading = true;
 	isInteracting = false;
 	isStaked = false;
-	stakedAmount = 0;
+	stakedAmount: string;
+	harvestableAmount: string;
 	fundLevel: IFundLevel;
 	minStakingPeriod = 90;
 	maxStakingPeriod = 120;
+	minStakingAmount = 1;
 	defaultStakingPeriod = this.maxStakingPeriod;
 	sliderOptions: Options = {
 		floor: this.minStakingPeriod,
 		ceil: this.maxStakingPeriod,
 		translate: (value: number): string => value + ' days',
 	};
-
+	notification = {
+		showNotification: false,
+		notificationTextSuccess: 'You have successfully collected',
+		notificationTextError: 'Something went wrong. Please try again!',
+		notificationType: 'success',
+		message: '',
+	};
 	constructor(
 		private readonly walletBase: WalletBaseService,
 		private readonly concordiumService: ConcordiumService,
@@ -41,30 +49,24 @@ export class StakingComponent implements OnInit {
 		return WalletBaseService.state.find(wallet => wallet.id === 'cnc');
 	}
 
-	ngOnInit(): void{
+	public ngOnInit(): void{
 		this.concordiumService.getWalletData().subscribe((data) => {
 			this.fundLevel = data;
 		});
 
-		this.stakingService
-			.getStakingLevel()
-			.subscribe((data) => {
-		  });
-
 		this.initForm();
 		this.stakingService.getConcordiumProvider().then(() => {
 			this.isLoading = false;
-			this.stakingService.getPoolStaking(this.wallet.walletId).then((data) => {
-				if (data?.staked_amount > 0) {
-					this.isStaked = true;
-					this.stakedAmount = localStorage.getItem('bom_stakedAmount') ? Number(localStorage.getItem('bom_stakedAmount')) : 0;
-				}
-			});
+			this.getStakingInfo();
 		});
 	}
 
-	stake(): void {
+	public stake(): void {
+		if (this.isInteracting) {
+			return;
+		}
 		if (this.stakingForm.invalid) {
+			this.stakingForm.markAllAsTouched();
 			return;
 		}
 		this.isInteracting = true;
@@ -72,30 +74,54 @@ export class StakingComponent implements OnInit {
 			this.stakingForm.value.amount,
 			this.wallet.walletId
 		).then((data) => {
-			this.isInteracting = false;
-			localStorage.setItem('bom_stakedAmount', this.stakingForm.value.amount);
-			this.isStaked = true;
-			this.stakedAmount = this.stakingForm.value.amount;
+			this.getStakingInfo();
 		}).catch((error) => {
 			this.isInteracting = false;
 		});
 	}
 
-	unstake(): void {
+	public unstake(): void {
+		if (this.isInteracting) {
+			return;
+		}
 		this.isInteracting = true;
 		this.stakingService.unstake(
+			this.wallet.walletId
+		).then((data) => {
+			this.isInteracting = false;
+			this.notification.showNotification = true;
+			this.notification.notificationType = 'success';
+			this.notification.message = this.notification.notificationTextSuccess;
+		}).catch((error) => {
+			this.isInteracting = false;
+			this.notification.showNotification = true;
+			this.notification.message = this.notification.notificationTextError;
+			this.notification.notificationType = 'error';
+		});
+	}
+
+	public resetNotification(): void {
+		this.notification.showNotification = false;
+		this.notification.message = '';
+	}
+
+	public harvestRewards(): void {
+		this.isInteracting = true;
+		this.stakingService.harvestRewards(
 			this.wallet.walletId
 		).then((data) => {
 			this.isInteracting = false;
 		});
 	}
 
-	harvestRewards(): void {
-		this.isInteracting = true;
-		this.stakingService.harvestRewards(
-			this.wallet.walletId
-		).then((data) => {
-			this.isInteracting = false;
+	private getStakingInfo(): void {
+		this.stakingService.getPoolStaking(this.wallet.walletId).then((data) => {
+			if (data?.user_staked_amount <= 0) {
+				return;
+			}
+			this.isStaked = true;
+			this.stakedAmount = (data.user_staked_amount / 10000000).toFixed(7);
+			this.harvestableAmount = (data.user_harvestable_rewards / 10000000).toFixed(7);
 		});
 	}
 
@@ -105,10 +131,10 @@ export class StakingComponent implements OnInit {
 				this.wallet?.balance || 0,
 				[
 					Validators.required,
-					Validators.min(1)
+					Validators.min(this.minStakingAmount),
 				]
 			],
-			period: [this.defaultStakingPeriod, Validators.required]
+			period: [this.defaultStakingPeriod]
 		});
 	}
 }
