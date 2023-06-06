@@ -24,7 +24,7 @@ export class StakingService {
 		subindex: 0n
 	};
 	private stakingContractAddress: ContractAddress = {
-		index: 4180n,
+		index: 4768n,
 		subindex: 0n
 	};
 	poolId = 1;
