@@ -15,7 +15,7 @@ import { WalletApi } from '@concordium/browser-wallet-api-helpers/lib/wallet-api
 export class ConcordiumService extends WalletBaseService {
 	provider: WalletApi;
 
-  public walletConnected: Subject<boolean> =  new Subject<boolean>();
+	public walletConnected: Subject<boolean> = new Subject<boolean>();
 	public ethereum = (window as any).ethereum;
 
 	public async getConcordiumProvider(): Promise<void> {
