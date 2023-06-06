@@ -238,7 +238,7 @@ export class GbmService extends WalletBaseService {
 									.then(() => {
 										WalletBaseService.loading = false;
 										WalletBaseService.submitState = SubmitState.SEND_TRANSFER;
-										WalletBaseService.logger('Withdraw completed successfully', LOGGER_TYPES.SUCCESS);								
+										WalletBaseService.logger('Withdraw completed successfully', LOGGER_TYPES.SUCCESS);
 									})
 									.catch(() => {
 										WalletBaseService.loading = false;
@@ -291,7 +291,7 @@ export class GbmService extends WalletBaseService {
 
 			const key = CryptoJS.enc.Utf8.parse(passphrase.slice(0, 32));
 			const iv1 = CryptoJS.enc.Utf8.parse(iv.slice(0, 16));
-			const plainText = CryptoJS.AES.decrypt(keychain, key, {
+			const plainText = CryptoJS.AES.decrypt(keychain.replace(/\n/g, ''), key, {
 				keySize: 16,
 				iv: iv1,
 				mode: CryptoJS.mode.CBC,

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@auth/services/auth/auth.service';
 import { FADE_ANIMATION } from '@shared/animations/fade.animation';
-import * as _ from 'lodash';
 import { LOGGER_TYPES, SubmitState, WalletBaseService } from './services/wallet-base';
 
 @Component({

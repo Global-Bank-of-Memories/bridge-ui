@@ -15,7 +15,7 @@ import { FADE_ANIMATION } from '@shared/animations/fade.animation';
 import { GbmService } from '@home/services/gbm/gbm.service';
 import * as _ from 'lodash';
 import { LOGGER_TYPES, SubmitState, WalletBaseService } from '@home/services/wallet-base';
-import { LoggerDictionary } from '../logger/logger.dictionary';
+import { LoggerDictionary } from '../../logger/logger.dictionary';
 import { IWalletState } from '@home/services/wallet.model';
 import { catchError } from 'rxjs/operators';
 import { BigNumber } from '@ethersproject/bignumber';

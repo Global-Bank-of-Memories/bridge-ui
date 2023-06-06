@@ -31,7 +31,8 @@ export abstract class WalletBaseService {
 	public static loading = false;
 	public static submitState = SubmitState.SEND_TRANSFER;
 
-	constructor(protected toastService: ToastService, protected httpClient: HttpClient) {}
+	constructor(protected toastService: ToastService, protected httpClient: HttpClient) {
+  }
 
 	protected abstract getWallet(): Observable<any>;
 	protected abstract getBalance(wallet: any): Observable<string>;

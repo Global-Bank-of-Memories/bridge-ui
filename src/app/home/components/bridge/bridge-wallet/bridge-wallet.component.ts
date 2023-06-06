@@ -3,7 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PolygonService } from '@home/services/polygon/polygon.service';
 import { GbmService } from '@home/services/gbm/gbm.service';
 import { LOGGER_TYPES, WalletBaseService } from '@home/services/wallet-base';
-import { LoggerDictionary } from '../logger/logger.dictionary';
+import { LoggerDictionary } from '../../logger/logger.dictionary';
 import { FADE_ANIMATION } from '@shared/animations/fade.animation';
 import { IWalletState } from '@home/services/wallet.model';
 
