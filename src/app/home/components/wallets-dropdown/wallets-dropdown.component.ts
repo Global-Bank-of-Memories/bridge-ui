@@ -83,6 +83,7 @@ export class WalletsDropdownComponent {
 
 							return wallet;
 						});
+						this.concordium.walletConnected.next(true);
 					});
 
 				return;

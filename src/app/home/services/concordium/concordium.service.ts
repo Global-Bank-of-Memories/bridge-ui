@@ -1,11 +1,10 @@
-import { forkJoin, from, Observable, of } from 'rxjs';
+import { forkJoin, from, Observable, of, Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { catchError, filter, map, switchMap } from 'rxjs/operators';
 import { LOGGER_TYPES, SubmitState, WalletBaseService } from '../wallet-base';
 import { detectConcordiumProvider } from '@concordium/browser-wallet-api-helpers';
 import { AccountTransactionType } from '@concordium/common-sdk/lib/types';
 import { CcdAmount } from '@concordium/common-sdk/lib/types/ccdAmount';
-import { toBuffer, serializeUpdateContractParameters } from '@concordium/web-sdk';
 import { environment } from '@environments/environment';
 import { BRIDGE_CONTRACT_RAW_SCHEMA } from '@shared/models/concordium.model';
 import { WalletApi } from '@concordium/browser-wallet-api-helpers/lib/wallet-api-types';
@@ -16,11 +15,11 @@ import { WalletApi } from '@concordium/browser-wallet-api-helpers/lib/wallet-api
 export class ConcordiumService extends WalletBaseService {
 	provider: WalletApi;
 
+  public walletConnected: Subject<boolean> =  new Subject<boolean>();
 	public ethereum = (window as any).ethereum;
 
 	public async getConcordiumProvider(): Promise<void> {
 		this.provider = await detectConcordiumProvider();
-    console.log('this.provider', this.provider);
 	}
 
 	public getWalletData(): Observable<any> {

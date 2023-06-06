@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {WalletBaseService} from '@home/services/wallet-base';
+import { WalletBaseService} from '@home/services/wallet-base';
 import {IWalletState} from '@home/services/wallet.model';
 import {Options} from '@angular-slider/ngx-slider';
 import { ConcordiumService } from '@home/services/concordium/concordium.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StakingService} from '@home/services/concordium/staking.service';
 import {IFundLevel} from '@home/services/concordium/fund-level.interface';
+import {filter} from 'rxjs/operators';
 
 @Component({
 	selector: 'br-staking',
@@ -54,11 +55,18 @@ export class StakingComponent implements OnInit {
 			this.fundLevel = data;
 		});
 
+		this.concordiumService.walletConnected
+			.pipe(
+				filter(res => !!res)
+			)
+			.subscribe(() => {
+				this.getStakingInfo();
+			});
+
 		this.initForm();
-		this.stakingService.getConcordiumProvider().then(() => {
-			this.isLoading = false;
-			this.getStakingInfo();
-		});
+		this.stakingService
+			.getConcordiumProvider()
+			.then(() => this.getStakingInfo());
 	}
 
 	public stake(): void {
@@ -116,16 +124,23 @@ export class StakingComponent implements OnInit {
 	}
 
 	private getStakingInfo(): void {
-		this.stakingService.getPoolStaking(this.wallet.walletId).then((data) => {
-			this.resetNotification();
-			if (data?.user_staked_amount <= 0) {
-				this.isStaked = false;
-				return;
+		this.stakingService.getPoolStaking(this.wallet.walletId).then(
+			(data) => {
+				this.resetNotification();
+				if (data?.user_staked_amount <= 0) {
+					this.isStaked = false;
+					this.isLoading = false;
+					return;
+				}
+				this.isStaked = true;
+				this.isLoading = false;
+				this.stakedAmount = (data.user_staked_amount / 10000000).toFixed(7);
+				this.harvestableAmount = (data.user_harvestable_rewards / 10000000).toFixed(7);
+		  },
+			() => {
+				this.isLoading = false;
 			}
-			this.isStaked = true;
-			this.stakedAmount = (data.user_staked_amount / 10000000).toFixed(7);
-			this.harvestableAmount = (data.user_harvestable_rewards / 10000000).toFixed(7);
-		});
+		);
 	}
 
 	private initForm(): void {
