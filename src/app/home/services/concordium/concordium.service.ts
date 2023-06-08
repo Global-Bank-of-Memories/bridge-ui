@@ -229,6 +229,7 @@ export class ConcordiumService extends WalletBaseService {
 	}
 
 	public async requestAssets(walletId: string): Promise<any> {
-		return this.provider.addCIS2Tokens(walletId, [''], 2928n, 0n);
+		const provider = await detectConcordiumProvider();
+		return provider.addCIS2Tokens(walletId, [], 2928n, 0n);
 	}
 }

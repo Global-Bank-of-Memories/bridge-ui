@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { WalletBaseService} from '@home/services/wallet-base';
+import {LOGGER_TYPES, WalletBaseService} from '@home/services/wallet-base';
 import {IWalletState} from '@home/services/wallet.model';
 import {Options} from '@angular-slider/ngx-slider';
 import { ConcordiumService } from '@home/services/concordium/concordium.service';
@@ -7,6 +7,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StakingService} from '@home/services/concordium/staking.service';
 import {IFundLevel} from '@home/services/concordium/fund-level.interface';
 import {filter} from 'rxjs/operators';
+import * as _ from 'lodash';
 
 @Component({
 	selector: 'br-staking',
@@ -123,6 +124,23 @@ export class StakingComponent implements OnInit {
 		});
 	}
 
+	public onRequestAssets(): void {
+		this.concordiumService
+			.requestAssets(this.wallet.walletId)
+			.then(res => {
+				if (res && res.success && !_.isEmpty(res.result)) {
+					WalletBaseService.logger(`Assets request for ${this.wallet.walletId} succeeded`, LOGGER_TYPES.SUCCESS);
+				} else {
+					WalletBaseService.logger(`Requesting assets for ${this.wallet.walletId} failed`, LOGGER_TYPES.ERROR);
+				}
+
+				return;
+			})
+			.catch(() => {
+				WalletBaseService.logger(`Requesting assets for ${this.wallet.title} failed`, LOGGER_TYPES.ERROR);
+			});
+
+	}
 	private getStakingInfo(): void {
 		this.stakingService.getPoolStaking(this.wallet.walletId).then(
 			(data) => {
