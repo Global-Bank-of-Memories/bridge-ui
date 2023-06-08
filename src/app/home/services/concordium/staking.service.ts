@@ -27,7 +27,7 @@ export class StakingService {
 		index: 4768n,
 		subindex: 0n
 	};
-	poolId = 1;
+	poolId = 0;
 
 	constructor(
 		private httpClient: HttpClient,
