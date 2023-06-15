@@ -10,13 +10,13 @@ import {
 
 
 export const WGBM_CONTRACT_INFO: ContractInfo = {
-	contractName: 'wgbm_token',
+	contractName: 'wGBM',
 	schemaBuffer: Buffer.from(WGBM_CONTRACT_RAW_SCHEMA, 'base64'),
 	moduleRef: new ModuleReference(WGB_CONTRACT_MODULE_REF),
 };
 
 export const STAKING_CONTRACT_INFO: ContractInfo = {
-	contractName: 'wgbm_staking1',
+	contractName: 'gbm_Staking',
 	schemaBuffer: Buffer.from(STAKING_CONTRACT_RAW_SCHEMA, 'base64'),
 	moduleRef: new ModuleReference(STAKING_CONTRACT_MODULE_REF),
 };

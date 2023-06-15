@@ -18,7 +18,7 @@ import {AccountAddress, deserializeReceiveReturnValue} from '@concordium/web-sdk
 })
 export class StakingService {
 	private concordiumClient: WalletApi;
-	private wgbmContractName = 'wgbm_token';
+	private wgbmContractName = 'wGBM';
 	private wgbmContractAddress: ContractAddress = {
 		index: 9352n,
 		subindex: 0n
