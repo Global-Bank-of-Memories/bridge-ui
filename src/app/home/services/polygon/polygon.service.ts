@@ -9,7 +9,6 @@ import { LOGGER_TYPES, SubmitState, WalletBaseService } from '../wallet-base';
 import { environment } from '@environments/environment';
 import StellarSdk, { Keypair, TransactionBuilder } from 'stellar-sdk';
 import { BigNumber } from '@ethersproject/bignumber';
-import { GbmService } from '../gbm/gbm.service';
 import { LoggerDictionary } from '@home/components/logger/logger.dictionary';
 import { GBM_NETWORK_PASSPHRASE, WGBM_MATIC_TOKEN_ADDRESS } from '../gbm/gbm.model';
 import StellarHDWallet from 'stellar-hd-wallet';

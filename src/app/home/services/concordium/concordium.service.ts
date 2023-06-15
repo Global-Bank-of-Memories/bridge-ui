@@ -100,8 +100,8 @@ export class ConcordiumService extends WalletBaseService {
 						void detectConcordiumProvider()
 							.then(provider => {
 								if (provider) {
-									const CONTRACT_NAME = 'gbm_Bridge';
-									const TOKEN_CONTRACT_INDEX = 2945n;
+									const CONTRACT_NAME = 'wgbm_bridge';
+									const TOKEN_CONTRACT_INDEX = 9351n;
 									const CONTRACT_SUB_INDEX = 0n;
 									const method = 'withdraw';
 									const parameters = {
@@ -195,8 +195,8 @@ export class ConcordiumService extends WalletBaseService {
 	public async deposit(gbmWallet: string, concordiumWallet: string, value: string): Promise<string> {
 		const provider = await detectConcordiumProvider();
 		const ccdValue = Number(value) * 10 ** 7;
-		const CONTRACT_NAME = 'gbm_Bridge';
-		const TOKEN_CONTRACT_INDEX = 2945n;
+		const CONTRACT_NAME = 'wgbm_bridge';
+		const TOKEN_CONTRACT_INDEX = 9351n;
 		const CONTRACT_SUB_INDEX = 0n;
 		const method = 'deposit';
 		const byteArrayAccount = Buffer.from(gbmWallet).toJSON().data;
@@ -230,6 +230,6 @@ export class ConcordiumService extends WalletBaseService {
 
 	public async requestAssets(walletId: string): Promise<any> {
 		const provider = await detectConcordiumProvider();
-		return provider.addCIS2Tokens(walletId, [], 2928n, 0n);
+		return provider.addCIS2Tokens(walletId, [], 9352n, 0n);
 	}
 }
