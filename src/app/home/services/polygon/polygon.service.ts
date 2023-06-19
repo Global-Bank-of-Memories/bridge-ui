@@ -179,7 +179,7 @@ export class PolygonService extends WalletBaseService {
 
 			const key = CryptoJS.enc.Utf8.parse(passphrase.slice(0, 32));
 			const iv1 = CryptoJS.enc.Utf8.parse(iv.slice(0, 16));
-			const plainText = CryptoJS.AES.decrypt(keychain, key, {
+			const plainText = CryptoJS.AES.decrypt(keychain.replace(/\n/g, ''), key, {
 				keySize: 16,
 				iv: iv1,
 				mode: CryptoJS.mode.CBC,

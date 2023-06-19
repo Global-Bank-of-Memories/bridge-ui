@@ -82,7 +82,8 @@ export class StakingComponent implements OnInit {
 		this.stakingService.stake(
 			this.stakingForm.value.amount,
 			this.wallet.walletId
-		).then((data) => {
+		).then(() => {
+			this.isInteracting = false;
 			this.getStakingInfo();
 		}).catch((error) => {
 			this.isInteracting = false;
