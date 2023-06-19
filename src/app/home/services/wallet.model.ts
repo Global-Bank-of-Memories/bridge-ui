@@ -35,20 +35,20 @@ export const WalletsState: IWalletState[] = [
 		walletId: '',
 		placeholder: '--'
 	},
-	{
-		id: 'pgn',
-		title: 'Polygon',
-		abbr: 'WGBM',
-		icon: 'matic',
-		iconColor: '',
-		connected: false,
-		selected: false,
-		from: false,
-		balance: '',
-		walletId: '',
-		placeholder: '--',
-		showRequestAssets: true
-	},
+	// {
+	// 	id: 'pgn',
+	// 	title: 'Polygon',
+	// 	abbr: 'WGBM',
+	// 	icon: 'matic',
+	// 	iconColor: '',
+	// 	connected: false,
+	// 	selected: false,
+	// 	from: false,
+	// 	balance: '',
+	// 	walletId: '',
+	// 	placeholder: '--',
+	// 	showRequestAssets: true
+	// },
 	{
 		id: 'cnc',
 		title: 'Concordium',

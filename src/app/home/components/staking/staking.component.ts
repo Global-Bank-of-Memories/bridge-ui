@@ -52,9 +52,28 @@ export class StakingComponent implements OnInit {
 	}
 
 	public ngOnInit(): void{
-		this.concordiumService.getWalletData().subscribe((data) => {
-			this.fundLevel = data;
-		});
+		this.concordiumService
+			.getWalletData()
+			.subscribe((data) => {
+			  this.fundLevel = data;
+				WalletBaseService.state = WalletBaseService.state.map(wallet => {
+					if (wallet.id === 'cnc') {
+						return {
+							...wallet,
+							connected: true
+						};
+					}
+					return wallet;
+				});
+
+				this.getStakingInfo();
+			});
+
+		this.stakingService
+			.getConcordiumProvider()
+			.then((res) => {
+				this.getStakingInfo();
+			});
 
 		this.concordiumService.walletConnected
 			.pipe(
@@ -65,9 +84,6 @@ export class StakingComponent implements OnInit {
 			});
 
 		this.initForm();
-		this.stakingService
-			.getConcordiumProvider()
-			.then(() => this.getStakingInfo());
 	}
 
 	public stake(): void {
@@ -142,6 +158,7 @@ export class StakingComponent implements OnInit {
 			});
 
 	}
+
 	private getStakingInfo(): void {
 		this.stakingService.getPoolStaking(this.wallet.walletId).then(
 			(data) => {
