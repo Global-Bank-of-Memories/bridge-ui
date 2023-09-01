@@ -170,10 +170,10 @@ export class BridgeFormComponent
 				return;
 			}
 
-			if (WalletBaseService.submitState === SubmitState.WITHDRAW) {
-				this.withdraw();
-				return;
-			}
+			// if (WalletBaseService.submitState === SubmitState.WITHDRAW) {
+			// 	this.withdraw();
+			// 	return;
+			// }
 		}
 	}
 
@@ -188,7 +188,7 @@ export class BridgeFormComponent
 
 		if (this.walletTo?.id === 'cnc') {
 			void this.concordiumService.handleWithdraw(this.transactionHash, this.walletTo?.walletId || '').then(() => {
-				void this.polygonService.getWalletData().toPromise().then(() => {});
+				void this.concordiumService.getWalletData().toPromise().then(() => {});
 			});
 			return;
 		}
@@ -272,6 +272,7 @@ export class BridgeFormComponent
 						this.gbmService.getWalletData().subscribe(() => {
 							WalletBaseService.logger('Balance for GBM has been updated', LOGGER_TYPES.INFO);
 						});
+            this.withdraw();
 					})
 					.catch(() => {
 						WalletBaseService.loading = false;
@@ -297,10 +298,10 @@ export class BridgeFormComponent
 										WalletBaseService.submitState = SubmitState.WITHDRAW;
 										WalletBaseService.loading = false;
 
-										void this.polygonService.getWalletData().toPromise().then(() => {});
 										this.gbmService.getWalletData().subscribe(() => {
 											WalletBaseService.logger('Balance for GBM has been updated', LOGGER_TYPES.INFO);
 										});
+                    this.withdraw();
 									})
 									.catch(() => {
 										WalletBaseService.logger('Error while withdraw', LOGGER_TYPES.ERROR);
@@ -338,6 +339,7 @@ export class BridgeFormComponent
 					this.gbmService.getWalletData().subscribe(() => {
 						WalletBaseService.logger('Balance for GBM has been updated', LOGGER_TYPES.INFO);
 					});
+          this.withdraw();
 				},
 				err => {
 					WalletBaseService.loading = false;
@@ -359,6 +361,7 @@ export class BridgeFormComponent
 					this.gbmService.getWalletData().subscribe(() => {
 						WalletBaseService.logger('Balance for GBM has been updated', LOGGER_TYPES.INFO);
 					});
+          this.withdraw();
 				},
 				err => {
 					WalletBaseService.loading = false;
