@@ -108,7 +108,7 @@ export class ConcordiumService extends WalletBaseService {
 							.then(provider => {
 								if (provider) {
 									const CONTRACT_NAME = 'gbm_Bridge';
-									const TOKEN_CONTRACT_INDEX = 2928n;
+									const TOKEN_CONTRACT_INDEX = 2945n;
 									const CONTRACT_SUB_INDEX = 0n;
 									const method = 'withdraw';
 									const indexes = [];
@@ -209,7 +209,7 @@ export class ConcordiumService extends WalletBaseService {
 		const provider = await detectConcordiumProvider();
 		const ccdValue = Number(value) * 10 ** 7;
 		const CONTRACT_NAME = 'gbm_Bridge';
-		const TOKEN_CONTRACT_INDEX = 2928n;
+		const TOKEN_CONTRACT_INDEX = 2945n;
 		const CONTRACT_SUB_INDEX = 0n;
 		const method = 'deposit';
 		const byteArrayAccount = Buffer.from(gbmWallet).toJSON().data;
