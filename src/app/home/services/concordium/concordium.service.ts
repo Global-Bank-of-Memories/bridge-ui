@@ -158,7 +158,6 @@ export class ConcordiumService extends WalletBaseService {
 												});
 										})
 										.catch((err) => {
-                      console.log(err);
 											WalletBaseService.loading = false;
 											WalletBaseService.logger('Error while sending transaction', LOGGER_TYPES.ERROR);
 										});
