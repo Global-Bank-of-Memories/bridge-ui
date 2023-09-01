@@ -8,6 +8,7 @@ import { CcdAmount } from '@concordium/common-sdk/lib/types/ccdAmount';
 import { environment } from '@environments/environment';
 import { BRIDGE_CONTRACT_RAW_SCHEMA } from '@shared/models/concordium.model';
 import { WalletApi } from '@concordium/browser-wallet-api-helpers/lib/wallet-api-types';
+import * as url from 'url';
 
 @Injectable({
 	providedIn: 'root'
@@ -65,18 +66,24 @@ export class ConcordiumService extends WalletBaseService {
 		const formData: FormData = new FormData();
 		formData.append('transaction_hash', transactionHash);
 		formData.append('destination', walletTo);
+		const requests = [];
+		environment.bridge.forEach(((api: string) => {
+			requests.push(this.httpClient.post(`${api}/stellar/withdraw/concordium`, formData).pipe(filter(Boolean)));
+		}));
 
-		return this.httpClient.post(`${environment.bridge}/stellar/withdraw/concordium`, formData).pipe(filter(Boolean));
+		return forkJoin(requests);
 	}
 
 	public concordiumDeposit(transactionHash: string, walletTo: string): Observable<any> {
 		const formData: FormData = new FormData();
 		formData.append('hash', transactionHash);
 		formData.append('stellar_address', walletTo);
+		const requests = [];
+		environment.bridge.forEach(((api: string) => {
+			requests.push(this.httpClient.post(`${api}/concordium/deposit`, formData, { responseType: 'text' }).pipe(filter(Boolean)));
+		}));
 
-		return this.httpClient
-			.post(`${environment.bridge}/concordium/deposit`, formData, { responseType: 'text' })
-			.pipe(filter(Boolean));
+		return forkJoin(requests);
 	}
 
 	public async handleWithdraw(transactionHash: string, walletTo: string): Promise<void> {
@@ -104,12 +111,18 @@ export class ConcordiumService extends WalletBaseService {
 									const TOKEN_CONTRACT_INDEX = 9355n;
 									const CONTRACT_SUB_INDEX = 0n;
 									const method = 'withdraw';
+									const indexes = [];
+									const signatures = [];
+									withdrawConcordiumResponse.forEach((response, index) => {
+										indexes.push(index);
+										signatures.push(Buffer.from(response.signature, 'hex').toJSON().data);
+									});
 									const parameters = {
-										amount: Number(withdrawConcordiumResponse.amount),
-										expiration: withdrawConcordiumResponse.expiration * 1000,
-										id: Buffer.from(withdrawConcordiumResponse.deposit_id, 'hex').toJSON().data,
-										indexes: [0],
-										signatures: [Buffer.from(withdrawConcordiumResponse.signature, 'hex').toJSON().data],
+										amount: Number(withdrawConcordiumResponse[0].amount),
+										expiration: withdrawConcordiumResponse[0].expiration * 1000,
+										id: Buffer.from(withdrawConcordiumResponse[0].deposit_id, 'hex').toJSON().data,
+										indexes,
+										signatures,
 										to: {
 											Account: [withdrawConcordiumResponse.address]
 										}

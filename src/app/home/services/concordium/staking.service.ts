@@ -24,7 +24,7 @@ export class StakingService {
 		subindex: 0n
 	};
 	private stakingContractAddress: ContractAddress = {
-		index: 9353n,
+		index: 6039n,
 		subindex: 0n
 	};
 	poolId = 0;
@@ -155,6 +155,84 @@ export class StakingService {
 			this.stakingContractAddress,
 			method
 		);
+	}
+
+	public async getUserStakedAmount(wallet: string): Promise<any> {
+		const method = 'user_staked_amount';
+		const params = {
+			pool_id: this.poolId
+		};
+
+		const result = await this.concordiumCommonService.invokeContract(
+			this.concordiumClient,
+			STAKING_CONTRACT_INFO,
+			this.stakingContractAddress,
+			method,
+			params,
+			new AccountAddress(wallet)
+		);
+
+		const returnValues = deserializeReceiveReturnValue(
+			result,
+			STAKING_CONTRACT_INFO.schemaBuffer,
+			STAKING_CONTRACT_INFO.contractName,
+			method,
+			0,
+		);
+
+		return returnValues;
+	}
+
+	public async getUserHarvestableRewards(wallet: string): Promise<any> {
+		const method = 'user_harvestable_rewards';
+		const params = {
+			pool_id: this.poolId
+		};
+
+		const result = await this.concordiumCommonService.invokeContract(
+			this.concordiumClient,
+			STAKING_CONTRACT_INFO,
+			this.stakingContractAddress,
+			method,
+			params,
+			new AccountAddress(wallet)
+		);
+
+		const returnValues = deserializeReceiveReturnValue(
+			result,
+			STAKING_CONTRACT_INFO.schemaBuffer,
+			STAKING_CONTRACT_INFO.contractName,
+			method,
+			0,
+		);
+
+		return returnValues;
+	}
+
+	public async getRewardsTokenPerBlock(wallet: string): Promise<any> {
+		const method = 'reward_tokens_per_block';
+		const params = {
+			pool_id: this.poolId
+		};
+
+		const result = await this.concordiumCommonService.invokeContract(
+			this.concordiumClient,
+			STAKING_CONTRACT_INFO,
+			this.stakingContractAddress,
+			method,
+			params,
+			new AccountAddress(wallet)
+		);
+
+		const returnValues = deserializeReceiveReturnValue(
+			result,
+			STAKING_CONTRACT_INFO.schemaBuffer,
+			STAKING_CONTRACT_INFO.contractName,
+			method,
+			0,
+		);
+
+		return returnValues;
 	}
 
 	public async getPoolStaking(wallet: string): Promise<any> {

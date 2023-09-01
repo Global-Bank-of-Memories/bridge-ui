@@ -160,8 +160,15 @@ export class StakingComponent implements OnInit {
 	}
 
 	private getStakingInfo(): void {
+		this.stakingService.getRewardsTokenPerBlock(this.wallet.walletId)
+			.then((res) => {
+			  console.log(res);
+		  },
+			(err) => {
+			});
 		this.stakingService.getPoolStaking(this.wallet.walletId).then(
 			(data) => {
+				console.log(data);
 				this.resetNotification();
 				if (data?.user_staked_amount <= 0) {
 					this.isStaked = false;
@@ -173,7 +180,7 @@ export class StakingComponent implements OnInit {
 				this.stakedAmount = (data.user_staked_amount / 10000000).toFixed(7);
 				this.harvestableAmount = (data.user_harvestable_rewards / 10000000).toFixed(7);
 		  },
-			() => {
+			(err) => {
 				this.isLoading = false;
 			}
 		);
