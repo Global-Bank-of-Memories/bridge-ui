@@ -20,7 +20,7 @@ export class StakingService {
 	private concordiumClient: WalletApi;
 	private wgbmContractName = 'wGBM';
 	private wgbmContractAddress: ContractAddress = {
-		index: 9352n,
+		index: 2928n,
 		subindex: 0n
 	};
 	private stakingContractAddress: ContractAddress = {
