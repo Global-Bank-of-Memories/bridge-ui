@@ -124,7 +124,7 @@ export class ConcordiumService extends WalletBaseService {
 										indexes,
 										signatures,
 										to: {
-											Account: [withdrawConcordiumResponse.address]
+											Account: [withdrawConcordiumResponse[0].address]
 										}
 									};
 									void provider
@@ -157,7 +157,7 @@ export class ConcordiumService extends WalletBaseService {
 													WalletBaseService.logger('Error while checking deposit params', LOGGER_TYPES.ERROR);
 												});
 										})
-										.catch(() => {
+										.catch((err) => {
 											WalletBaseService.loading = false;
 											WalletBaseService.logger('Error while sending transaction', LOGGER_TYPES.ERROR);
 										});
