@@ -107,7 +107,7 @@ export class ConcordiumService extends WalletBaseService {
 						void detectConcordiumProvider()
 							.then(provider => {
 								if (provider) {
-									const CONTRACT_NAME = 'wgbm_Bridge';
+									const CONTRACT_NAME = 'gbm_Bridge';
 									const TOKEN_CONTRACT_INDEX = 2945n;
 									const CONTRACT_SUB_INDEX = 0n;
 									const method = 'withdraw';
@@ -158,6 +158,7 @@ export class ConcordiumService extends WalletBaseService {
 												});
 										})
 										.catch((err) => {
+                      console.log(err);
 											WalletBaseService.loading = false;
 											WalletBaseService.logger('Error while sending transaction', LOGGER_TYPES.ERROR);
 										});
