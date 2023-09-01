@@ -21,16 +21,17 @@ import { HomeRoutingModule } from './home-routing.module';
 import { BridgeComponent } from './components/bridge/bridge.component';
 import { StakingComponent } from './components/staking/staking.component';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import { GbmCountDownModule } from '@shared/components/countdown-timer/countdown-timer.module';
 
 @NgModule({
 	declarations: [
-    HomeComponent,
-    BridgeFormComponent,
-    BridgeWalletComponent,
-    WalletsDropdownComponent,
-    BridgeComponent,
-    StakingComponent
-  ],
+		HomeComponent,
+		BridgeFormComponent,
+		BridgeWalletComponent,
+		WalletsDropdownComponent,
+		BridgeComponent,
+		StakingComponent
+	],
 	exports: [HomeComponent],
 	imports: [
 		CommonModule,
@@ -46,7 +47,8 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
 		HttpClientModule,
 		GbmAutoFocusModule,
 		NgbTooltipModule,
-    NgxSliderModule
+		NgxSliderModule,
+		GbmCountDownModule
 	],
 	providers: [DecimalPipe]
 })

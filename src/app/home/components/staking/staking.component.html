@@ -24,8 +24,15 @@
               <div class="gbm-label-1 ml-8">WGBM Reward: {{harvestableAmount}}</div>
             </div>
             <div class="d-flex align-items-center">
-            <div>Locked amount: <span class="fwb">{{stakedAmount}} GBM</span></div>
+            <div>Your Locked amount: <span class="fwb">{{stakedAmount}} GBM</span></div>
           </div>
+            <div class="d-flex align-items-center">
+              <div>Total staked: <span class="fwb">{{poolStakedAmount}} GBM</span></div>
+            </div>
+            <div>
+              <gbm-countdown-timer [targetDate]="canUnstakeIn" (isTimerFinished)="onTimerFinished($event)">
+              </gbm-countdown-timer>
+            </div>
           </div>
         </div>
       </div>
@@ -107,7 +114,7 @@
                   title="Unstake"
                   (click)="unstake()"
                   [loading]="isInteracting"
-                  [disabled]="isInteracting"
+                  [disabled]="isInteracting || !isPossibleToUnstake"
                   [className]="'gbm-btn gbm-btn-md gbm-btn-full-width gbm-btn-primary gbm-btn-rounded gbm-button-2'">
       </gbm-button>
 <!--      <div *ngIf="isStaked" class="d-flex align-items-center justify-content-between">-->

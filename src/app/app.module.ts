@@ -24,6 +24,7 @@ import { JwtInterceptor } from '@auth/interceptors/auth.interceptor';
 import { GbmIconModule } from '@shared/components/icon/icon.module';
 import { NgrxModule } from './ngrx.module';
 import { GbmHeadingModule } from '@shared/components/heading/heading.module';
+import {GbmCountDownModule} from "@shared/components/countdown-timer/countdown-timer.module";
 
 @NgModule({
 	declarations: [AppComponent],
@@ -48,7 +49,8 @@ import { GbmHeadingModule } from '@shared/components/heading/heading.module';
 		GbmHeadingModule,
 		GbmHeaderModule,
 		GbmThemeModule,
-		GbmConnectionStateModule
+		GbmConnectionStateModule,
+    GbmCountDownModule
 	],
 	providers: [
 		AppService,

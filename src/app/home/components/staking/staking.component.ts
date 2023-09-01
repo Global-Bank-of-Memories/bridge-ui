@@ -26,7 +26,11 @@ export class StakingComponent implements OnInit {
 	minStakingPeriod = 90;
 	maxStakingPeriod = 120;
 	minStakingAmount = 1;
+	poolStakedAmount: string;
 	defaultStakingPeriod = this.maxStakingPeriod;
+	canUnstakeIn = new Date(Date.now() + 0);
+	isPossibleToUnstake = false;
+
 	sliderOptions: Options = {
 		floor: this.minStakingPeriod,
 		ceil: this.maxStakingPeriod,
@@ -107,7 +111,7 @@ export class StakingComponent implements OnInit {
 	}
 
 	public unstake(): void {
-		if (this.isInteracting) {
+		if (this.isInteracting || !this.isPossibleToUnstake) {
 			return;
 		}
 		this.isInteracting = true;
@@ -131,6 +135,11 @@ export class StakingComponent implements OnInit {
 		this.notification.showNotification = false;
 		this.notification.message = '';
 	}
+
+  public onTimerFinished(res: boolean): void {
+    debugger;
+    this.isPossibleToUnstake = res;
+  }
 
 	public harvestRewards(): void {
 		this.isInteracting = true;
@@ -160,15 +169,8 @@ export class StakingComponent implements OnInit {
 	}
 
 	private getStakingInfo(): void {
-		this.stakingService.getRewardsTokenPerBlock(this.wallet.walletId)
-			.then((res) => {
-			  console.log(res);
-		  },
-			(err) => {
-			});
 		this.stakingService.getPoolStaking(this.wallet.walletId).then(
 			(data) => {
-				console.log(data);
 				this.resetNotification();
 				if (data?.user_staked_amount <= 0) {
 					this.isStaked = false;
@@ -179,6 +181,8 @@ export class StakingComponent implements OnInit {
 				this.isLoading = false;
 				this.stakedAmount = (data.user_staked_amount / 10000000).toFixed(7);
 				this.harvestableAmount = (data.user_harvestable_rewards / 10000000).toFixed(7);
+				this.poolStakedAmount = (data.pool_staked_amount / 10000000).toFixed(7);
+				this.canUnstakeIn = new Date(data.staked_time +  data.min_blocks_unstake * data.block_duration);
 		  },
 			(err) => {
 				this.isLoading = false;
