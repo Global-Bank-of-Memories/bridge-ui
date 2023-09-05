@@ -208,7 +208,7 @@ export class ConcordiumService extends WalletBaseService {
 	public async deposit(gbmWallet: string, concordiumWallet: string, value: string): Promise<string> {
 		const provider = await detectConcordiumProvider();
 		const ccdValue = Number(value) * 10 ** 7;
-		const CONTRACT_NAME = 'wgbm_Bridge';
+		const CONTRACT_NAME = 'gbm_Bridge';
 		const TOKEN_CONTRACT_INDEX = 2945n;
 		const CONTRACT_SUB_INDEX = 0n;
 		const method = 'deposit';
