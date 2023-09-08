@@ -25,7 +25,7 @@ export class StakingComponent implements OnInit {
 	fundLevel: IFundLevel;
 	minStakingPeriod = 90;
 	maxStakingPeriod = 120;
-	minStakingAmount = 1;
+	minStakingAmount = 5;
 	poolStakedAmount: string;
 	defaultStakingPeriod = this.maxStakingPeriod;
 	canUnstakeIn = new Date(Date.now() + 0);
@@ -136,10 +136,9 @@ export class StakingComponent implements OnInit {
 		this.notification.message = '';
 	}
 
-  public onTimerFinished(res: boolean): void {
-    debugger;
-    this.isPossibleToUnstake = res;
-  }
+	public onTimerFinished(res: boolean): void {
+		this.isPossibleToUnstake = res;
+	}
 
 	public harvestRewards(): void {
 		this.isInteracting = true;
@@ -169,6 +168,9 @@ export class StakingComponent implements OnInit {
 	}
 
 	private getStakingInfo(): void {
+		if (!this.wallet.walletId) {
+			return;
+		}
 		this.stakingService.getPoolStaking(this.wallet.walletId).then(
 			(data) => {
 				this.resetNotification();

@@ -3,17 +3,18 @@ import { WalletApi } from '@concordium/browser-wallet-api-helpers/lib/wallet-api
 import {
 	ContractAddress,
 	AccountAddress,
-	AccountTransactionType,
 	UpdateContractPayload,
-	serializeUpdateContractParameters,
 	ModuleReference,
 	InitContractPayload,
 	InstanceInfo,
 	TransactionStatusEnum,
 	TransactionSummary,
 	CcdAmount,
+	ConcordiumGRPCClient,
+	serializeUpdateContractParameters,
 } from '@concordium/web-sdk';
 import { Buffer } from 'buffer/';
+import { AccountTransactionType } from '@concordium/common-sdk/lib/types';
 
 export interface ParamContractAddress { index: number; subindex: number }
 export interface ContractInfo {
@@ -91,7 +92,7 @@ export class ConcordiumCommonService {
 	 * @returns Buffer of the return value.
 	 */
 	public async invokeContract<T>(
-		provider: WalletApi,
+		grpcClient: ConcordiumGRPCClient,
 		contractInfo: ContractInfo,
 		contract: ContractAddress,
 		methodName: string,
@@ -99,18 +100,18 @@ export class ConcordiumCommonService {
 		invoker?: ContractAddress | AccountAddress
 	): Promise<Buffer> {
 		const { schemaBuffer, contractName } = contractInfo;
-
+		debugger;
 		const parameter = !!params
 			? this.serializeParams(contractName, schemaBuffer, methodName, params)
 			: undefined;
-		const res = await provider.getJsonRpcClient().invokeContract({
+		console.log(parameter);
+		const res = await grpcClient.invokeContract({
 			parameter,
 			contract,
 			invoker,
 			method: `${contractName}.${methodName}`,
 		});
-
-
+		console.log(res);
 		if (!res || res.tag === 'failure') {
 			const msg =
         'failed invoking contract ' +
@@ -200,7 +201,7 @@ export class ConcordiumCommonService {
 			);
 		}
 
-		return instanceInfo;
+		return instanceInfo as InstanceInfo;
 	}
 
 	/**
@@ -257,11 +258,12 @@ export class ConcordiumCommonService {
 		methodName: string,
 		params: T
 	): Buffer {
+    console.log('serializeParams');
 		return serializeUpdateContractParameters(
 			contractName,
 			methodName,
 			params,
-			schema
+			schema,
 		);
 	}
 
@@ -313,7 +315,7 @@ export class ConcordiumCommonService {
 		throw Error('unable to parse Contract Address from input outcomes');
 	}
 
-	toBigInt(num: BigInt | number): bigint {
+	toBigInt(num: bigint | number): bigint {
 		return BigInt(num.toString(10));
 	}
 

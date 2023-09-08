@@ -20,3 +20,6 @@ export const STAKING_CONTRACT_INFO: ContractInfo = {
 	schemaBuffer: Buffer.from(STAKING_CONTRACT_RAW_SCHEMA, 'base64'),
 	moduleRef: new ModuleReference(STAKING_CONTRACT_MODULE_REF),
 };
+
+export const CONNCORDIUM_NODE_ENDPOINT = "https://grpc.testnet.concordium.com";
+export const CONCORDIUM_NODE_PORT = 20000;
