@@ -3,17 +3,18 @@ import { WalletApi } from '@concordium/browser-wallet-api-helpers/lib/wallet-api
 import {
 	ContractAddress,
 	AccountAddress,
-	AccountTransactionType,
 	UpdateContractPayload,
-	serializeUpdateContractParameters,
 	ModuleReference,
 	InitContractPayload,
 	InstanceInfo,
 	TransactionStatusEnum,
 	TransactionSummary,
 	CcdAmount,
+	ConcordiumGRPCClient,
+	serializeUpdateContractParameters,
 } from '@concordium/web-sdk';
 import { Buffer } from 'buffer/';
+import { AccountTransactionType } from '@concordium/common-sdk/lib/types';
 
 export interface ParamContractAddress { index: number; subindex: number }
 export interface ContractInfo {
@@ -91,7 +92,7 @@ export class ConcordiumCommonService {
 	 * @returns Buffer of the return value.
 	 */
 	public async invokeContract<T>(
-		provider: WalletApi,
+		grpcClient: ConcordiumGRPCClient,
 		contractInfo: ContractInfo,
 		contract: ContractAddress,
 		methodName: string,
@@ -99,17 +100,16 @@ export class ConcordiumCommonService {
 		invoker?: ContractAddress | AccountAddress
 	): Promise<Buffer> {
 		const { schemaBuffer, contractName } = contractInfo;
-
 		const parameter = !!params
 			? this.serializeParams(contractName, schemaBuffer, methodName, params)
 			: undefined;
-		const res = await provider.getJsonRpcClient().invokeContract({
+
+		const res = await grpcClient.invokeContract({
 			parameter,
 			contract,
 			invoker,
 			method: `${contractName}.${methodName}`,
 		});
-
 
 		if (!res || res.tag === 'failure') {
 			const msg =
@@ -200,7 +200,7 @@ export class ConcordiumCommonService {
 			);
 		}
 
-		return instanceInfo;
+		return instanceInfo as InstanceInfo;
 	}
 
 	/**
@@ -261,7 +261,7 @@ export class ConcordiumCommonService {
 			contractName,
 			methodName,
 			params,
-			schema
+			schema,
 		);
 	}
 
@@ -313,7 +313,7 @@ export class ConcordiumCommonService {
 		throw Error('unable to parse Contract Address from input outcomes');
 	}
 
-	toBigInt(num: BigInt | number): bigint {
+	toBigInt(num: bigint | number): bigint {
 		return BigInt(num.toString(10));
 	}
 

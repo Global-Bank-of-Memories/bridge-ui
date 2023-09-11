@@ -10,8 +10,13 @@ import { environment } from '@environments/environment';
 import {IFundLevel} from '@home/services/concordium/fund-level.interface';
 import {map} from 'rxjs/operators';
 import {ConcordiumCommonService} from '@shared/services/concordium/concordium-common.service';
-import {STAKING_CONTRACT_INFO, WGBM_CONTRACT_INFO} from '@shared/models/constants';
-import {AccountAddress, deserializeReceiveReturnValue} from '@concordium/web-sdk';
+import {
+	CONCORDIUM_NODE_PORT,
+	CONNCORDIUM_NODE_ENDPOINT,
+	STAKING_CONTRACT_INFO,
+	WGBM_CONTRACT_INFO
+} from '@shared/models/constants';
+import { AccountAddress, createConcordiumClient, deserializeReceiveReturnValue, ConcordiumGRPCClient } from '@concordium/web-sdk';
 
 @Injectable({
 	providedIn: 'root',
@@ -27,12 +32,14 @@ export class StakingService {
 		index: 6309n,
 		subindex: 0n
 	};
-	poolId = 0;
+	poolId = 1;
+	grpcClient: ConcordiumGRPCClient;
 
 	constructor(
 		private httpClient: HttpClient,
 		private concordiumCommonService: ConcordiumCommonService
 	) {
+		this.grpcClient = createConcordiumClient(CONNCORDIUM_NODE_ENDPOINT, Number(CONCORDIUM_NODE_PORT));
 	}
 
 	public async getConcordiumProvider(): Promise<void> {
@@ -81,7 +88,7 @@ export class StakingService {
 				},
 			}];
 		const result = await this.concordiumCommonService.invokeContract(
-			this.concordiumClient,
+			this.grpcClient,
 			WGBM_CONTRACT_INFO,
 			this.wgbmContractAddress,
 			isOperatorOfMethod,
@@ -160,11 +167,11 @@ export class StakingService {
 	public async getPoolStaking(wallet: string): Promise<any> {
 		const method = 'getPoolStaking';
 		const params = {
-			pool_id: this.poolId
+			pool_id: this.poolId,
+			address: { Account: [wallet]},
 		};
-
 		const result = await this.concordiumCommonService.invokeContract(
-			this.concordiumClient,
+			this.grpcClient,
 			STAKING_CONTRACT_INFO,
 			this.stakingContractAddress,
 			method,
@@ -179,7 +186,6 @@ export class StakingService {
 			method,
 			0,
 		);
-
 		return returnValues;
 	}
 }

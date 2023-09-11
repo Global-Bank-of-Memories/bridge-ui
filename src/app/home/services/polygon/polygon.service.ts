@@ -83,7 +83,6 @@ export class PolygonService extends WalletBaseService {
 					}
 				})
 				.catch(err => {
-					console.log(err);
 					clearInterval(interval);
 					WalletBaseService.logger('Error while withdraw', LOGGER_TYPES.ERROR);
 					WalletBaseService.loading = false;
