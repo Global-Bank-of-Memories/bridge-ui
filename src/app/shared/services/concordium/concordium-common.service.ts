@@ -100,18 +100,17 @@ export class ConcordiumCommonService {
 		invoker?: ContractAddress | AccountAddress
 	): Promise<Buffer> {
 		const { schemaBuffer, contractName } = contractInfo;
-		debugger;
 		const parameter = !!params
 			? this.serializeParams(contractName, schemaBuffer, methodName, params)
 			: undefined;
-		console.log(parameter);
+
 		const res = await grpcClient.invokeContract({
 			parameter,
 			contract,
 			invoker,
 			method: `${contractName}.${methodName}`,
 		});
-		console.log(res);
+
 		if (!res || res.tag === 'failure') {
 			const msg =
         'failed invoking contract ' +
@@ -258,7 +257,6 @@ export class ConcordiumCommonService {
 		methodName: string,
 		params: T
 	): Buffer {
-    console.log('serializeParams');
 		return serializeUpdateContractParameters(
 			contractName,
 			methodName,

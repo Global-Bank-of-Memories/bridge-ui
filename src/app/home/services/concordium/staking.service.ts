@@ -168,9 +168,8 @@ export class StakingService {
 		const method = 'getPoolStaking';
 		const params = {
 			pool_id: this.poolId,
-      address: wallet
+			address: { Account: [wallet]},
 		};
-		debugger;
 		const result = await this.concordiumCommonService.invokeContract(
 			this.grpcClient,
 			STAKING_CONTRACT_INFO,
@@ -187,7 +186,6 @@ export class StakingService {
 			method,
 			0,
 		);
-
 		return returnValues;
 	}
 }
